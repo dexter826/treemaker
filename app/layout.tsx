@@ -12,8 +12,8 @@ const cormorantGaramond = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: 'Family Tree Maker',
-  description: 'A modern, interactive family tree builder with Google Login and public sharing.',
+  title: 'Family Tree Maker | Xây dựng cây gia phả trực tuyến',
+  description: 'Nền tảng hiện đại để lưu giữ và kết nối các thế hệ trong gia đình bạn.',
 };
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
