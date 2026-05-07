@@ -12,7 +12,7 @@ export function TreeToolbar() {
   const currentTree = useStore(state => state.currentTree);
   const persons = useStore(state => state.persons);
   const setSelectedPersonId = useStore(state => state.setSelectedPersonId);
-  const { zoomIn, zoomOut, fitView, setCenter, getNode } = useReactFlow();
+  const { zoomIn, zoomOut, fitView } = useReactFlow();
   
   const [searchOpen, setSearchOpen] = useState(false);
 
@@ -21,55 +21,58 @@ export function TreeToolbar() {
   const handleShare = () => {
     const url = `${window.location.origin}/share/${currentTree.share_token}`;
     navigator.clipboard.writeText(url);
-    toast.success('Share link copied to clipboard!');
+    toast.success('Đã sao chép khóa chia sẻ!');
   };
 
   const focusPerson = (id: string) => {
     setSearchOpen(false);
     setSelectedPersonId(id);
-    // Focus node is handled in family-tree-canvas useEffect, but we could also do it here.
   };
 
   return (
-    <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
-      <div className="bg-background/80 backdrop-blur-md border shadow-sm rounded-lg p-1.5 flex items-center gap-1">
-        <Link href="/">
-          <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
-            <ArrowLeft className="w-4 h-4" />
-          </Button>
+    <div className="absolute top-6 left-6 z-10 flex flex-col md:flex-row items-start md:items-center gap-4">
+      {/* Title Block */}
+      <div className="bg-background border-2 border-foreground flex items-stretch shadow-[4px_4px_0px_0px_var(--color-foreground)]">
+        <Link href="/" className="flex items-center justify-center border-r-2 border-foreground hover:bg-foreground hover:text-background transition-colors w-12">
+          <ArrowLeft className="w-5 h-5" />
         </Link>
-        <div className="w-px h-6 bg-border mx-1" />
-        <h1 className="font-semibold px-2 text-sm max-w-[150px] truncate">{currentTree.name}</h1>
+        <div className="px-4 py-2 flex flex-col justify-center">
+          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Hồ Sơ Hiện Tại</span>
+          <h1 className="font-serif font-black text-lg uppercase tracking-tight max-w-[200px] truncate">{currentTree.name}</h1>
+        </div>
       </div>
 
-      <div className="bg-background/80 backdrop-blur-md border shadow-sm rounded-lg p-1.5 flex items-center gap-1">
-        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => zoomIn({ duration: 300 })}>
-          <ZoomIn className="w-4 h-4" />
+      {/* Controls Block */}
+      <div className="bg-background border-2 border-foreground flex items-center shadow-[4px_4px_0px_0px_var(--color-foreground)]">
+        <Button variant="ghost" className="h-12 w-12 rounded-none border-r-2 border-foreground hover:bg-foreground hover:text-background flex items-center justify-center" onClick={() => zoomIn({ duration: 300 })}>
+          <ZoomIn className="w-5 h-5" />
         </Button>
-        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => zoomOut({ duration: 300 })}>
-          <ZoomOut className="w-4 h-4" />
+        <Button variant="ghost" className="h-12 w-12 rounded-none border-r-2 border-foreground hover:bg-foreground hover:text-background flex items-center justify-center" onClick={() => zoomOut({ duration: 300 })}>
+          <ZoomOut className="w-5 h-5" />
         </Button>
-        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => fitView({ duration: 800, padding: 0.2 })}>
-          <Maximize className="w-4 h-4" />
+        <Button variant="ghost" className="h-12 w-12 rounded-none hover:bg-foreground hover:text-background flex items-center justify-center" onClick={() => fitView({ duration: 800, padding: 0.2 })}>
+          <Maximize className="w-5 h-5" />
         </Button>
       </div>
 
-      <div className="bg-background/80 backdrop-blur-md border shadow-sm rounded-lg p-1.5 flex items-center gap-1">
+      {/* Action Block */}
+      <div className="bg-background border-2 border-foreground flex items-center shadow-[4px_4px_0px_0px_var(--color-foreground)]">
         <Popover open={searchOpen} onOpenChange={setSearchOpen}>
-          <PopoverTrigger className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 w-8">
-            <Search className="w-4 h-4" />
+          <PopoverTrigger className="h-12 w-12 rounded-none border-r-2 border-foreground hover:bg-foreground hover:text-background flex items-center justify-center transition-colors">
+            <Search className="w-5 h-5" />
           </PopoverTrigger>
-          <PopoverContent className="w-[200px] p-0" align="start">
-            <Command>
-              <CommandInput placeholder="Search person..." />
+          <PopoverContent className="w-[280px] p-0 border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--color-foreground)]" align="start">
+            <Command className="rounded-none">
+              <CommandInput placeholder="Tìm kiếm cá nhân..." className="border-none focus:ring-0" />
               <CommandList>
-                <CommandEmpty>No person found.</CommandEmpty>
+                <CommandEmpty>Không tìm thấy.</CommandEmpty>
                 <CommandGroup>
                   {persons.map((person) => (
                     <CommandItem
                       key={person.id}
                       value={`${person.first_name} ${person.last_name}`}
                       onSelect={() => focusPerson(person.id)}
+                      className="rounded-none cursor-pointer aria-selected:bg-primary/10 aria-selected:text-primary font-bold uppercase tracking-widest text-xs py-3"
                     >
                       <Check className="mr-2 h-4 w-4 opacity-0" />
                       {person.first_name} {person.last_name}
@@ -81,9 +84,13 @@ export function TreeToolbar() {
           </PopoverContent>
         </Popover>
 
-        <Button variant="default" size="sm" className="h-8 gap-2 ml-1" onClick={handleShare}>
-          <Share2 className="w-3.5 h-3.5" />
-          Share
+        <Button 
+          variant="ghost" 
+          className="h-12 px-4 rounded-none font-bold uppercase tracking-widest text-xs gap-2 hover:bg-primary hover:text-primary-foreground" 
+          onClick={handleShare}
+        >
+          <Share2 className="w-4 h-4" />
+          <span>Chia sẻ</span>
         </Button>
       </div>
     </div>

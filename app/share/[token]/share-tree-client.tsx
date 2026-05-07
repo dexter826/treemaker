@@ -20,12 +20,12 @@ export function ShareTreeClient({ token }: { token: string }) {
           .single();
 
         if (error || !data) {
-          setError('Tree not found or invalid link.');
+          setError('Không tìm thấy cây gia phả hoặc liên kết không hợp lệ.');
         } else {
           setTreeId(data.id);
         }
       } catch (err: any) {
-        setError('Error loading shared tree');
+        setError('Lỗi khi tải dữ liệu chia sẻ');
       }
     }
     load();
@@ -41,8 +41,9 @@ export function ShareTreeClient({ token }: { token: string }) {
 
   if (!treeId) {
     return (
-      <div className="w-full h-screen flex items-center justify-center bg-background">
-         <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+      <div className="w-full h-screen flex flex-col items-center justify-center bg-background text-foreground space-y-4">
+        <div className="w-10 h-10 rounded-none border-4 border-foreground border-t-transparent animate-spin" />
+        <p className="font-serif italic text-muted-foreground tracking-widest uppercase text-sm">Đang truy xuất hệ thống...</p>
       </div>
     );
   }

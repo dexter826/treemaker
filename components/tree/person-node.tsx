@@ -15,36 +15,47 @@ export function PersonNode({ data }: { data: { person: Person } }) {
   return (
     <div 
       className={cn(
-        "relative rounded-xl border-2 bg-card p-3 w-[220px] shadow-sm transition-all cursor-pointer",
-        isSelected ? "border-primary ring-4 ring-primary/20 shadow-md" : "border-border hover:border-primary/50",
-        person.gender === 'male' && !isSelected && "border-blue-200 dark:border-blue-900/50",
-        person.gender === 'female' && !isSelected && "border-pink-200 dark:border-pink-900/50"
+        "relative w-[260px] bg-background cursor-pointer transition-all duration-300 group",
+        "border-2",
+        isSelected ? "border-primary scale-[1.02] shadow-[4px_4px_0px_0px_var(--color-primary)]" : "border-foreground hover:shadow-[4px_4px_0px_0px_var(--color-foreground)]"
       )}
       onClick={() => setSelectedPersonId(person.id)}
     >
-      <Handle type="target" position={Position.Top} className="w-3 h-3 bg-muted-foreground" />
-      <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-muted-foreground" />
+      <Handle type="target" position={Position.Top} className={cn("w-full h-2 rounded-none border-0 top-0 translate-y-[-50%]", isSelected ? "bg-primary" : "bg-foreground")} />
+      <Handle type="source" position={Position.Bottom} className={cn("w-full h-2 rounded-none border-0 bottom-0 translate-y-[50%]", isSelected ? "bg-primary" : "bg-foreground")} />
       
       {/* Spouse handles (left/right) */}
-      <Handle type="source" position={Position.Left} id="left" className="w-2 h-2 opacity-50" />
-      <Handle type="target" position={Position.Right} id="right" className="w-2 h-2 opacity-50" />
+      <Handle type="source" position={Position.Left} id="left" className="w-1 h-8 rounded-none border-0 bg-primary opacity-50" />
+      <Handle type="target" position={Position.Right} id="right" className="w-1 h-8 rounded-none border-0 bg-primary opacity-50" />
 
-      <div className="flex items-center gap-3">
-        <Avatar className="h-12 w-12 border">
-          <AvatarImage src={person.avatar_url || ''} />
-          <AvatarFallback className="bg-muted">
-            <User className="h-6 w-6 text-muted-foreground" />
-          </AvatarFallback>
-        </Avatar>
+      {/* Gender/Status Header */}
+      <div className={cn("px-3 py-1 flex items-center justify-between border-b-2 text-[10px] uppercase font-bold tracking-widest", isSelected ? "border-primary bg-primary/5 text-primary" : "border-foreground bg-foreground/5 text-foreground")}>
+        <span>{person.gender === 'male' ? 'Nam' : person.gender === 'female' ? 'Nữ' : 'Khác'}</span>
+        {person.spouse_id && <Heart className="w-3 h-3 text-primary" />}
+      </div>
+
+      <div className="flex items-stretch">
+        <div className={cn("p-3 flex items-center justify-center border-r-2", isSelected ? "border-primary" : "border-foreground")}>
+          <Avatar className={cn("h-14 w-14 rounded-none border-2", isSelected ? "border-primary" : "border-foreground")}>
+            <AvatarImage src={person.avatar_url || ''} className="object-cover" />
+            <AvatarFallback className="bg-transparent rounded-none">
+              <User className={cn("h-6 w-6", isSelected ? "text-primary" : "text-foreground")} />
+            </AvatarFallback>
+          </Avatar>
+        </div>
         
-        <div className="flex flex-col flex-1 min-w-0">
-          <h3 className="font-semibold text-sm truncate" title={`${person.first_name} ${person.last_name}`}>
-            {person.first_name} {person.last_name}
+        <div className="flex flex-col flex-1 p-3 justify-center min-w-0">
+          <h3 className={cn("font-serif font-bold text-lg leading-tight truncate uppercase", isSelected ? "text-primary" : "text-foreground")} title={`${person.first_name} ${person.last_name}`}>
+            <span className="block text-xs font-sans text-muted-foreground uppercase tracking-widest mb-0.5">Tên</span>
+            {person.first_name} <br/> {person.last_name}
           </h3>
           
-          <div className="text-xs text-muted-foreground mt-0.5 truncate flex items-center justify-between">
-            <span>{person.birth_date ? new Date(person.birth_date).getFullYear() : '?'} - {person.death_date ? new Date(person.death_date).getFullYear() : 'Present'}</span>
-            {person.spouse_id && <Heart className="w-3 h-3 text-red-400" />}
+          <div className="mt-2 pt-2 border-t-2 border-foreground/10 flex items-center justify-between text-xs font-bold text-muted-foreground">
+            <span className="tracking-widest">
+              {person.birth_date ? new Date(person.birth_date).getFullYear() : '—'} 
+              {' / '} 
+              {person.death_date ? new Date(person.death_date).getFullYear() : '—'}
+            </span>
           </div>
         </div>
       </div>

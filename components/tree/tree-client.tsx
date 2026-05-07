@@ -39,12 +39,11 @@ export default function TreeClient({ treeId }: { treeId: string }) {
         setCurrentTree(tree);
         setPersons(persons || []);
         
-        // Determine if read only by checking owner vs current session
         const { data: { session } } = await supabase.auth.getSession();
         setIsReadOnly(session?.user?.id !== tree.owner_id);
 
       } catch (error: any) {
-        toast.error('Failed to load family tree: ' + error.message);
+        toast.error('Lỗi truy xuất hệ thống: ' + error.message);
       } finally {
         setIsLoading(false);
       }
@@ -55,11 +54,9 @@ export default function TreeClient({ treeId }: { treeId: string }) {
 
   if (isLoading) {
     return (
-      <div className="w-full h-screen flex items-center justify-center bg-background">
-        <div className="animate-pulse flex flex-col items-center">
-          <div className="w-12 h-12 rounded-full border-4 border-primary border-t-transparent animate-spin mb-4" />
-          <p className="text-muted-foreground">Loading Family Tree...</p>
-        </div>
+      <div className="w-full h-screen flex flex-col items-center justify-center bg-background text-foreground space-y-4">
+        <div className="w-10 h-10 rounded-none border-4 border-foreground border-t-transparent animate-spin" />
+        <p className="font-serif italic text-muted-foreground tracking-widest uppercase text-sm">Đang truy xuất hệ thống...</p>
       </div>
     );
   }

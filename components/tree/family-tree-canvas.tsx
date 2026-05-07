@@ -9,14 +9,13 @@ import {
   Panel,
   useReactFlow,
   Node,
-  Edge
+  Edge,
+  BackgroundVariant
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useStore } from '../../lib/store';
 import { PersonNode } from './person-node';
 import { generateNodesAndEdges, getLayoutedElements } from '../../lib/layout';
-import { Button } from '../ui/button';
-import { Plus, Maximize, ZoomIn, ZoomOut, Save } from 'lucide-react';
 import { toast } from 'sonner';
 
 const nodeTypes = {
@@ -47,16 +46,24 @@ export function FamilyTreeCanvas() {
       initialEdges
     );
 
-    setNodes(layoutedNodes);
-    setEdges(layoutedEdges);
+    const styledEdges = layoutedEdges.map(edge => ({
+      ...edge,
+      type: 'step',
+      style: {
+        stroke: 'var(--color-foreground)',
+        strokeWidth: 2,
+        strokeDasharray: '4 4'
+      }
+    }));
 
-    // Give it a moment to render then fit view
+    setNodes(layoutedNodes);
+    setEdges(styledEdges);
+
     setTimeout(() => {
       fitView({ padding: 0.2, duration: 800 });
     }, 50);
   }, [persons, setNodes, setEdges, fitView]);
 
-  // Focus node logic
   useEffect(() => {
     if (selectedPersonId) {
       const node = nodes.find(n => n.id === selectedPersonId);
@@ -67,7 +74,7 @@ export function FamilyTreeCanvas() {
   }, [selectedPersonId, nodes, fitView]);
 
   return (
-    <div className="w-full h-full relative" style={{ background: 'var(--background)' }}>
+    <div className="w-full h-full relative bg-background">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -79,20 +86,27 @@ export function FamilyTreeCanvas() {
         maxZoom={2}
         proOptions={{ hideAttribution: true }}
       >
-        <Background color="#ef4444" gap={16} size={1} />
-        <Controls showInteractive={false} className="bg-background border shadow-sm rounded-md overflow-hidden" />
+        <Background 
+          variant={BackgroundVariant.Lines} 
+          color="var(--color-foreground)" 
+          gap={40} 
+          size={1} 
+          className="opacity-[0.05]" 
+        />
+        <Controls 
+          showInteractive={false} 
+          className="bg-background border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--color-foreground)] overflow-hidden !fill-foreground" 
+        />
         <MiniMap 
           nodeColor={(n) => {
-            const p = n.data?.person as any;
-            if (p?.gender === 'male') return '#93c5fd';
-            if (p?.gender === 'female') return '#f9a8d4';
-            return '#e2e8f0';
+            const isSelected = n.id === selectedPersonId;
+            if (isSelected) return 'var(--color-primary)';
+            return 'var(--color-foreground)';
           }}
-          maskColor="rgba(0,0,0,0.1)" 
-          className="bg-background border shadow-sm rounded-md"
+          maskColor="var(--color-background)" 
+          className="bg-background border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--color-foreground)]"
+          style={{ backgroundColor: 'var(--color-background)', maskImage: 'none', opacity: 0.8 }}
         />
-        
-        {/* We can place additional custom panels here if needed */}
       </ReactFlow>
     </div>
   );

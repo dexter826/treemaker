@@ -2,12 +2,11 @@ import { useState } from 'react';
 import { useStore } from '../../lib/store';
 import { PersonForm } from './person-form';
 import { Button } from '../ui/button';
-import { X, UserPlus, Trash2 } from 'lucide-react';
+import { X, UserPlus, Trash2, Loader2 } from 'lucide-react';
 import { ScrollArea } from '../ui/scroll-area';
-import { Separator } from '../ui/separator';
 import { supabase } from '../../lib/supabase';
 import { toast } from 'sonner';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogHeader } from '../ui/dialog';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 
@@ -23,6 +22,10 @@ export function Sidebar() {
 
   const [isAddingRelative, setIsAddingRelative] = useState<string | null>(null); // 'father', 'mother', 'spouse', 'child'
   const [newRelativeName, setNewRelativeName] = useState({ first: '', last: '' });
+  
+  // Dialog state for deleting
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   if (!selectedPersonId) return null;
 
@@ -32,16 +35,20 @@ export function Sidebar() {
 
   const handleDelete = async () => {
     if (isReadOnly) return;
-    if (!confirm('Are you sure you want to delete this person? relationships will be orphaned or severed.')) return;
+    setIsDeleting(true);
 
     try {
       const { error } = await supabase.from('persons').delete().eq('id', person.id);
       if (error) throw error;
       
       removePerson(person.id);
-      toast.success('Person deleted');
+      toast.success('Đã xóa hồ sơ');
+      setSelectedPersonId(null);
+      setIsDeleteDialogOpen(false);
     } catch (error: any) {
-      toast.error('Failed to delete: ' + error.message);
+      toast.error('Lỗi khi xóa: ' + error.message);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -51,7 +58,7 @@ export function Sidebar() {
     try {
       const newPersonData: any = {
         tree_id: currentTree.id,
-        first_name: newRelativeName.first || 'Unknown',
+        first_name: newRelativeName.first || 'Khuyết Danh',
         last_name: newRelativeName.last || '',
         gender: isAddingRelative === 'father' ? 'male' : isAddingRelative === 'mother' ? 'female' : 'other'
       };
@@ -59,7 +66,6 @@ export function Sidebar() {
       if (isAddingRelative === 'child') {
         if (person.gender === 'male') newPersonData.father_id = person.id;
         else if (person.gender === 'female') newPersonData.mother_id = person.id;
-        // if known spouse exist, connect them as well
         if (person.spouse_id) {
             const spouse = persons.find(p => p.id === person.spouse_id);
             if (spouse && spouse.gender === 'female') newPersonData.mother_id = spouse.id;
@@ -77,106 +83,155 @@ export function Sidebar() {
       
       addPersonStore(newPerson as any);
 
-      // Link current person to the new relative if it's parent or spouse
       if (isAddingRelative === 'father') {
-        const { error: linkErr } = await supabase.from('persons').update({ father_id: newPerson.id }).eq('id', person.id);
-        if (linkErr) throw linkErr;
+        await supabase.from('persons').update({ father_id: newPerson.id }).eq('id', person.id);
         updatePersonStore({ ...person, father_id: newPerson.id });
       } else if (isAddingRelative === 'mother') {
-        const { error: linkErr } = await supabase.from('persons').update({ mother_id: newPerson.id }).eq('id', person.id);
-        if (linkErr) throw linkErr;
+        await supabase.from('persons').update({ mother_id: newPerson.id }).eq('id', person.id);
         updatePersonStore({ ...person, mother_id: newPerson.id });
       } else if (isAddingRelative === 'spouse') {
-        // Enforce symmetric spouse relation
         await supabase.from('persons').update({ spouse_id: newPerson.id }).eq('id', person.id);
         await supabase.from('persons').update({ spouse_id: person.id }).eq('id', newPerson.id);
         updatePersonStore({ ...person, spouse_id: newPerson.id });
         updatePersonStore({ ...newPerson, spouse_id: person.id } as any);
       }
 
-      toast.success(`${isAddingRelative} added!`);
+      toast.success(`Đã thêm ${isAddingRelative}!`);
       setIsAddingRelative(null);
       setNewRelativeName({ first: '', last: '' });
-      setSelectedPersonId(newPerson.id); // focus newly created
+      setSelectedPersonId(newPerson.id);
     } catch (err: any) {
-      toast.error('Failed to add relative: ' + err.message);
+      toast.error('Lỗi thêm người thân: ' + err.message);
     }
+  };
+
+  const relationshipMap: Record<string, string> = {
+    father: 'Cha',
+    mother: 'Mẹ',
+    spouse: 'Vợ/Chồng',
+    child: 'Con'
   };
 
   return (
     <>
-      <div className="w-[350px] h-full bg-background border-l flex flex-col shadow-xl z-10 absolute right-0 top-0">
-        <div className="flex items-center justify-between p-4 border-b">
-          <h2 className="font-semibold text-lg">{isReadOnly ? 'Details' : 'Edit Person'}</h2>
-          <Button variant="ghost" size="icon" onClick={() => setSelectedPersonId(null)}>
-            <X className="w-5 h-5" />
+      <div className="w-[400px] h-full bg-background border-l-2 border-foreground flex flex-col z-10 absolute right-0 top-0">
+        <div className="flex items-center justify-between p-6 border-b-2 border-foreground bg-primary/5">
+          <div>
+            <h2 className="font-serif font-black text-xl uppercase tracking-widest">{isReadOnly ? 'Hồ Sơ' : 'Cập Nhật Hồ Sơ'}</h2>
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mt-1">
+              ID: {person.id.split('-')[0]}
+            </p>
+          </div>
+          <Button variant="ghost" size="icon" className="h-10 w-10 rounded-none border-2 border-transparent hover:border-foreground transition-all cursor-pointer" onClick={() => setSelectedPersonId(null)}>
+            <X className="w-6 h-6" />
           </Button>
         </div>
 
         <ScrollArea className="flex-1">
-          <div className="p-4 space-y-6">
+          <div className="p-6">
             <PersonForm person={person} isReadOnly={isReadOnly} />
             
             {!isReadOnly && (
-              <>
-                <Separator />
-                <div className="space-y-4">
-                  <h3 className="font-medium text-sm text-muted-foreground">Quick Actions</h3>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button variant="outline" size="sm" className="justify-start" onClick={() => setIsAddingRelative('father')} disabled={!!person.father_id}>
-                      <UserPlus className="w-4 h-4 mr-2" /> Add Father
-                    </Button>
-                    <Button variant="outline" size="sm" className="justify-start" onClick={() => setIsAddingRelative('mother')} disabled={!!person.mother_id}>
-                      <UserPlus className="w-4 h-4 mr-2" /> Add Mother
-                    </Button>
-                    <Button variant="outline" size="sm" className="justify-start" onClick={() => setIsAddingRelative('spouse')} disabled={!!person.spouse_id}>
-                      <UserPlus className="w-4 h-4 mr-2" /> Add Spouse
-                    </Button>
-                    <Button variant="outline" size="sm" className="justify-start" onClick={() => setIsAddingRelative('child')}>
-                      <UserPlus className="w-4 h-4 mr-2" /> Add Child
-                    </Button>
-                  </div>
-                  
-                  <div className="pt-4">
-                    <Button variant="destructive" size="sm" className="w-full" onClick={handleDelete}>
-                      <Trash2 className="w-4 h-4 mr-2" /> Delete Person
-                    </Button>
-                  </div>
+              <div className="mt-10 border-t-4 border-foreground pt-8 space-y-6">
+                <h3 className="font-bold text-xs uppercase tracking-[0.2em] text-foreground bg-primary/10 inline-block px-2 py-1">Tác Vụ Mở Rộng</h3>
+                
+                <div className="grid grid-cols-2 gap-0 border-2 border-foreground">
+                  <Button variant="ghost" className="h-12 justify-start rounded-none border-r-2 border-b-2 border-foreground hover:bg-primary hover:text-primary-foreground font-bold text-[10px] uppercase tracking-widest cursor-pointer" onClick={() => setIsAddingRelative('father')} disabled={!!person.father_id}>
+                    <UserPlus className="w-4 h-4 mr-2" /> Cha
+                  </Button>
+                  <Button variant="ghost" className="h-12 justify-start rounded-none border-b-2 border-foreground hover:bg-primary hover:text-primary-foreground font-bold text-[10px] uppercase tracking-widest cursor-pointer" onClick={() => setIsAddingRelative('mother')} disabled={!!person.mother_id}>
+                    <UserPlus className="w-4 h-4 mr-2" /> Mẹ
+                  </Button>
+                  <Button variant="ghost" className="h-12 justify-start rounded-none border-r-2 border-foreground hover:bg-primary hover:text-primary-foreground font-bold text-[10px] uppercase tracking-widest cursor-pointer" onClick={() => setIsAddingRelative('spouse')} disabled={!!person.spouse_id}>
+                    <UserPlus className="w-4 h-4 mr-2" /> Vợ/Chồng
+                  </Button>
+                  <Button variant="ghost" className="h-12 justify-start rounded-none border-foreground hover:bg-primary hover:text-primary-foreground font-bold text-[10px] uppercase tracking-widest cursor-pointer" onClick={() => setIsAddingRelative('child')}>
+                    <UserPlus className="w-4 h-4 mr-2" /> Con
+                  </Button>
                 </div>
-              </>
+                
+                <div className="pt-6">
+                  <Button variant="destructive" className="w-full rounded-none h-12 font-bold uppercase tracking-widest text-[10px] border-2 border-destructive hover:bg-background hover:text-destructive transition-all cursor-pointer" onClick={() => setIsDeleteDialogOpen(true)}>
+                    <Trash2 className="w-4 h-4 mr-2" /> Xóa Hồ Sơ Này
+                  </Button>
+                </div>
+              </div>
             )}
           </div>
         </ScrollArea>
       </div>
 
+      {/* Add Relative Dialog */}
       <Dialog open={!!isAddingRelative} onOpenChange={(v) => !v && setIsAddingRelative(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Add {isAddingRelative}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
+        <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
+          <div className="border-b-2 border-foreground bg-primary/5 p-6">
+            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest">
+              Định danh {isAddingRelative ? relationshipMap[isAddingRelative] : ''}
+            </DialogTitle>
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mt-2">
+              Liên kết với: {person.first_name} {person.last_name}
+            </p>
+          </div>
+          
+          <div className="space-y-6 p-6">
             <div className="space-y-2">
-              <Label>First Name</Label>
+              <Label className="text-[10px] font-bold uppercase tracking-[0.2em]">Tên / First Name</Label>
               <Input 
                 autoFocus
                 value={newRelativeName.first} 
                 onChange={e => setNewRelativeName({ ...newRelativeName, first: e.target.value })}
-                placeholder="e.g. John"
+                placeholder="Ví dụ: John"
+                className="rounded-none border-2 border-foreground focus:border-primary focus:ring-0 h-12 font-bold"
               />
             </div>
             <div className="space-y-2">
-              <Label>Last Name</Label>
+              <Label className="text-[10px] font-bold uppercase tracking-[0.2em]">Họ / Last Name</Label>
               <Input 
                 value={newRelativeName.last} 
                 onChange={e => setNewRelativeName({ ...newRelativeName, last: e.target.value })}
-                placeholder="e.g. Doe"
+                placeholder="Ví dụ: Doe"
+                className="rounded-none border-2 border-foreground focus:border-primary focus:ring-0 h-12 font-bold"
               />
             </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsAddingRelative(null)}>Cancel</Button>
-            <Button onClick={submitAddRelative}>Save</Button>
-          </DialogFooter>
+          
+          <div className="border-t-2 border-foreground p-0 flex">
+            <Button variant="ghost" className="flex-1 rounded-none h-14 border-r-2 border-foreground font-bold uppercase tracking-widest hover:bg-foreground hover:text-background cursor-pointer" onClick={() => setIsAddingRelative(null)}>
+              Hủy
+            </Button>
+            <Button className="flex-1 rounded-none h-14 bg-primary hover:bg-foreground text-background font-bold uppercase tracking-widest cursor-pointer" onClick={submitAddRelative}>
+              Ghi Nhận
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
+          <div className="border-b-2 border-foreground bg-destructive/10 p-6">
+            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest text-destructive">
+              Xác Nhận Xóa
+            </DialogTitle>
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mt-2">
+              Hành động này không thể hoàn tác
+            </p>
+          </div>
+          
+          <div className="p-6">
+            <p className="text-sm font-medium leading-relaxed">
+              Bạn có chắc chắn muốn xóa hồ sơ của <span className="font-bold">{person.first_name} {person.last_name}</span> không? Các liên kết phả hệ liên quan có thể bị đứt gãy.
+            </p>
+          </div>
+          
+          <div className="border-t-2 border-foreground p-0 flex">
+            <Button variant="ghost" className="flex-1 rounded-none h-14 border-r-2 border-foreground font-bold uppercase tracking-widest hover:bg-foreground hover:text-background cursor-pointer" onClick={() => setIsDeleteDialogOpen(false)}>
+              Giữ Lại
+            </Button>
+            <Button variant="destructive" className="flex-1 rounded-none h-14 border-2 border-transparent hover:border-destructive font-bold uppercase tracking-widest cursor-pointer disabled:opacity-50" onClick={handleDelete} disabled={isDeleting}>
+              {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Chấp Nhận Xóa'}
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </>
