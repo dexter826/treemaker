@@ -41,12 +41,12 @@ export function PersonNode({ data }: { data: { person: Person } }) {
       )}
       onClick={handleClick}
     >
-      <Handle type="target" position={Position.Top} className={cn("w-full h-2 rounded-none border-0 top-0 translate-y-[-50%]", isSelected ? "bg-primary" : "bg-foreground")} />
-      <Handle type="source" position={Position.Bottom} className={cn("w-full h-2 rounded-none border-0 bottom-0 translate-y-[50%]", isSelected ? "bg-primary" : "bg-foreground")} />
+      <Handle id="top" type="target" position={Position.Top} className={cn("w-full h-2 rounded-none border-0 top-0 translate-y-[-50%]", isSelected ? "bg-primary" : "bg-foreground")} />
+      <Handle id="bottom" type="source" position={Position.Bottom} className={cn("w-full h-2 rounded-none border-0 bottom-0 translate-y-[50%]", isSelected ? "bg-primary" : "bg-foreground")} />
       
       {/* Spouse handles (left/right) */}
-      <Handle type="source" position={Position.Left} id="left" className="w-1 h-8 rounded-none border-0 bg-primary opacity-50" />
-      <Handle type="target" position={Position.Right} id="right" className="w-1 h-8 rounded-none border-0 bg-primary opacity-50" />
+      <Handle id="left" type="target" position={Position.Left} className="w-1 h-8 rounded-none border-0 bg-primary opacity-50" />
+      <Handle id="right" type="source" position={Position.Right} className="w-1 h-8 rounded-none border-0 bg-primary opacity-50" />
 
       {/* Gender/Status Header */}
       <div className={cn("px-3 py-1 flex items-center justify-between border-b-2 text-[10px] uppercase font-bold tracking-widest", isSelected ? "border-primary bg-primary/5 text-primary" : "border-foreground bg-foreground/5 text-foreground")}>

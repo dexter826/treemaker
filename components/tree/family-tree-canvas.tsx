@@ -19,7 +19,8 @@ import {
   useReactFlow,
   Node,
   Edge,
-  BackgroundVariant
+  BackgroundVariant,
+  Connection
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useStore } from '../../lib/store';
@@ -55,9 +56,8 @@ export function FamilyTreeCanvas() {
     
     setIsConfirmOpen(false);
     
-    // Perform deletions in database and store
     for (const edge of edgeToDelete) {
-      const parts = edge.id.split('-');
+      const parts = edge.id.split(':');
       const type = parts[1];
       
       try {
@@ -93,6 +93,46 @@ export function FamilyTreeCanvas() {
     toast.success('Đã xóa kết nối thành công');
     setEdgeToDelete(null);
   };
+
+  const onConnect = useCallback(async (params: Connection) => {
+    if (isReadOnly) return;
+    
+    const { source, target, sourceHandle, targetHandle } = params;
+    if (!source || !target) return;
+    if (source === target) return;
+
+    const sourcePerson = persons.find(p => p.id === source);
+    const targetPerson = persons.find(p => p.id === target);
+
+    if (!sourcePerson || !targetPerson) return;
+
+    try {
+      if (sourceHandle === 'bottom' && targetHandle === 'top') {
+        // Liên kết Cha/Mẹ -> Con
+        if (sourcePerson.gender === 'male') {
+          await personService.addFather(target, source);
+          updatePerson({ ...targetPerson, father_id: source });
+          toast.success(`Đã kết nối Cha: ${sourcePerson.full_name} -> ${targetPerson.full_name}`);
+        } else if (sourcePerson.gender === 'female') {
+          await personService.addMother(target, source);
+          updatePerson({ ...targetPerson, mother_id: source });
+          toast.success(`Đã kết nối Mẹ: ${sourcePerson.full_name} -> ${targetPerson.full_name}`);
+        } else {
+          toast.error('Giới tính người cha/mẹ chưa xác định');
+        }
+      } else if ((sourceHandle === 'left' || sourceHandle === 'right') && 
+                 (targetHandle === 'left' || targetHandle === 'right')) {
+        // Liên kết Vợ/Chồng
+        await personService.addSpouse(source, target);
+        updatePerson({ ...sourcePerson, spouse_id: target });
+        updatePerson({ ...targetPerson, spouse_id: source });
+        toast.success(`Đã kết nối Vợ/Chồng: ${sourcePerson.full_name} & ${targetPerson.full_name}`);
+      }
+    } catch (error: any) {
+      console.error('Lỗi khi kết nối:', error);
+      toast.error('Không thể tạo kết nối');
+    }
+  }, [persons, isReadOnly, updatePerson]);
   
   const { fitView } = useReactFlow();
 
@@ -152,6 +192,7 @@ export function FamilyTreeCanvas() {
         }))}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
         onBeforeDelete={onBeforeDelete}
         nodeTypes={nodeTypes}
         deleteKeyCode={['Backspace', 'Delete']}

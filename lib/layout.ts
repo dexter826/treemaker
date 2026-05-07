@@ -19,37 +19,39 @@ export const generateNodesAndEdges = (persons: Person[]) => {
 
     if (person.father_id) {
       edges.push({
-        id: `e-father-${person.father_id}-${person.id}`,
+        id: `e:father:${person.father_id}:${person.id}`,
         source: person.father_id,
         target: person.id,
+        sourceHandle: 'bottom',
+        targetHandle: 'top',
         type: 'smoothstep',
         animated: true,
-        label: 'Father',
         style: { stroke: '#3b82f6', strokeWidth: 2 },
       });
     }
 
     if (person.mother_id) {
       edges.push({
-        id: `e-mother-${person.mother_id}-${person.id}`,
+        id: `e:mother:${person.mother_id}:${person.id}`,
         source: person.mother_id,
         target: person.id,
+        sourceHandle: 'bottom',
+        targetHandle: 'top',
         type: 'smoothstep',
         animated: true,
-        label: 'Mother',
         style: { stroke: '#ec4899', strokeWidth: 2 },
       });
     }
 
     if (person.spouse_id) {
-      // To avoid duplicate spouse edges (A->B and B->A), we only add if A < B
       if (person.id < person.spouse_id) {
         edges.push({
-          id: `e-spouse-${person.id}-${person.spouse_id}`,
+          id: `e:spouse:${person.id}:${person.spouse_id}`,
           source: person.id,
           target: person.spouse_id,
+          sourceHandle: 'right',
+          targetHandle: 'left',
           type: 'straight',
-          label: 'Spouse',
           style: { stroke: '#10b981', strokeWidth: 2, strokeDasharray: '5,5' },
         });
       }
@@ -76,6 +78,7 @@ export const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'T
   });
 
   edges.forEach((edge) => {
+    if (edge.id.includes('spouse')) return;
     dagreGraph.setEdge(edge.source, edge.target);
   });
 

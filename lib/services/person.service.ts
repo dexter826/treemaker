@@ -75,10 +75,14 @@ export const personService = {
   },
 
   async addSpouse(personId: string, spouseId: string): Promise<void> {
-    await Promise.all([
+    const results = await Promise.all([
       supabase.from('persons').update({ spouse_id: spouseId }).eq('id', personId),
       supabase.from('persons').update({ spouse_id: personId }).eq('id', spouseId)
     ]);
+    
+    for (const res of results) {
+      if (res.error) throw res.error;
+    }
   },
 
   async removeFather(personId: string): Promise<void> {
@@ -100,10 +104,14 @@ export const personService = {
   },
 
   async removeSpouse(personId: string, spouseId: string): Promise<void> {
-    await Promise.all([
+    const results = await Promise.all([
       supabase.from('persons').update({ spouse_id: null }).eq('id', personId),
       supabase.from('persons').update({ spouse_id: null }).eq('id', spouseId)
     ]);
+
+    for (const res of results) {
+      if (res.error) throw res.error;
+    }
   },
 
   async uploadAvatar(file: File): Promise<string> {
