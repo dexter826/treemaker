@@ -1,16 +1,16 @@
-import { useStore } from '../../lib/store';
-import { Button } from '../ui/button';
+import { useStore } from '@/lib/store';
+import { Button } from '@/components/ui/button';
 import { Search, Share2, ArrowLeft, Check, UserPlus } from 'lucide-react';
 
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '../ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogTitle } from '../ui/dialog';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { personService } from '../../lib/services/person.service';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { personService } from '@/lib/services/person.service';
 
 export function TreeToolbar() {
   const currentTree = useStore(state => state.currentTree);

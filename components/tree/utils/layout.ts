@@ -1,10 +1,11 @@
 import dagre from 'dagre';
 import { Node, Edge, MarkerType } from '@xyflow/react';
-import { Person } from '../types';
+import { Person } from '@/types';
 
 const nodeWidth = 220;
 const nodeHeight = 100;
 
+// Chuyển đổi dữ liệu Person sang định dạng Nodes/Edges của React Flow.
 export const generateNodesAndEdges = (persons: Person[]) => {
   const nodes: Node[] = [];
   const edges: Edge[] = [];
@@ -61,6 +62,7 @@ export const generateNodesAndEdges = (persons: Person[]) => {
   return { nodes, edges };
 };
 
+// Tính toán vị trí các node bằng thuật toán Dagre.
 export const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'TB') => {
   const dagreGraph = new dagre.graphlib.Graph();
   dagreGraph.setDefaultEdgeLabel(() => ({}));

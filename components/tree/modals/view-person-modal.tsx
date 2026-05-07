@@ -1,6 +1,6 @@
 "use client"
-import { useStore } from '../../lib/store';
-import { Dialog, DialogContent, DialogTitle } from '../ui/dialog';
+import { useStore } from '@/lib/store';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 
 export function ViewPersonModal() {
   const viewPersonId = useStore((state) => state.viewPersonId);

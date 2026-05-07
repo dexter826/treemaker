@@ -1,10 +1,10 @@
 import { Handle, Position } from '@xyflow/react';
-import { Person } from '../../types';
-import { useStore } from '../../lib/store';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { cn } from '../../lib/utils';
+import { Person } from '@/types';
+import { useStore } from '@/lib/store';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { cn } from '@/lib/utils';
 import { User, Heart } from 'lucide-react';
-import { PersonCardActions } from './person-card-actions';
+import { PersonCardActions } from '../parts/person-card-actions';
 
 export function PersonNode({ data }: { data: { person: Person } }) {
   const { person } = data;
@@ -44,11 +44,9 @@ export function PersonNode({ data }: { data: { person: Person } }) {
       <Handle id="top" type="target" position={Position.Top} className={cn("w-full h-2 rounded-none border-0 top-0 translate-y-[-50%]", isSelected ? "bg-primary" : "bg-foreground")} />
       <Handle id="bottom" type="source" position={Position.Bottom} className={cn("w-full h-2 rounded-none border-0 bottom-0 translate-y-[50%]", isSelected ? "bg-primary" : "bg-foreground")} />
       
-      {/* Spouse handles (left/right) */}
       <Handle id="left" type="target" position={Position.Left} className="w-1 h-8 rounded-none border-0 bg-primary opacity-50" />
       <Handle id="right" type="source" position={Position.Right} className="w-1 h-8 rounded-none border-0 bg-primary opacity-50" />
 
-      {/* Gender/Status Header */}
       <div className={cn("px-3 py-1 flex items-center justify-between border-b-2 text-[10px] uppercase font-bold tracking-widest", isSelected ? "border-primary bg-primary/5 text-primary" : "border-foreground bg-foreground/5 text-foreground")}>
         <span>{person.gender === 'male' ? 'Nam' : person.gender === 'female' ? 'Nữ' : 'Khác'}</span>
         {person.spouse_id && <Heart className="w-3 h-3 text-primary" />}

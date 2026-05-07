@@ -1,7 +1,7 @@
 "use client"
-import { useStore } from '../../lib/store';
-import { Person } from '../../types';
-import { Button } from '../ui/button';
+import { useStore } from '@/lib/store';
+import { Person } from '@/types';
+import { Button } from '@/components/ui/button';
 import { Pencil, Eye } from 'lucide-react';
 
 interface PersonCardActionsProps {

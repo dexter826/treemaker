@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback } from 'react'
 import ReactCrop, { Crop, PixelCrop, PercentCrop, centerCrop, makeAspectCrop } from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
-import { Button } from '../ui/button'
+import { Button } from '@/components/ui/button'
 import { Upload, X, User, Crop as CropIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import Image from 'next/image'

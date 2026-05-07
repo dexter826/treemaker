@@ -1,15 +1,15 @@
 import { useState, useMemo } from 'react';
-import { useStore } from '../../lib/store';
-import { PersonForm } from './person-form';
-import { Button } from '../ui/button';
+import { useStore } from '@/lib/store';
+import { PersonForm } from '../forms/person-form';
+import { Button } from '@/components/ui/button';
 import { X, UserPlus, Trash2, Loader2, Plus } from 'lucide-react';
-import { ScrollArea } from '../ui/scroll-area';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from 'sonner';
-import { Dialog, DialogContent, DialogTitle, DialogHeader } from '../ui/dialog';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { Select } from '../ui/select';
-import { personService } from '../../lib/services/person.service';
+import { Dialog, DialogContent, DialogTitle, DialogHeader } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select } from '@/components/ui/select';
+import { personService } from '@/lib/services/person.service';
 
 export function Sidebar() {
   const selectedPersonId = useStore((state) => state.selectedPersonId);
@@ -21,7 +21,7 @@ export function Sidebar() {
   const addPersonStore = useStore((state) => state.addPerson);
   const updatePersonStore = useStore((state) => state.updatePerson);
 
-  const [isAddingRelative, setIsAddingRelative] = useState<string | null>(null); // 'father', 'mother', 'spouse', 'child'
+  const [isAddingRelative, setIsAddingRelative] = useState<string | null>(null);
   const [newRelativeName, setNewRelativeName] = useState('');
   const [selectedExistingPersonId, setSelectedExistingPersonId] = useState<string>('');
 
@@ -44,7 +44,6 @@ export function Sidebar() {
     });
   }, [isAddingRelative, persons, personId]);
   
-  // Dialog state for deleting
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -212,7 +211,6 @@ export function Sidebar() {
         </ScrollArea>
       </div>
 
-      {/* Add Relative Dialog */}
       <Dialog open={!!isAddingRelative} onOpenChange={(v) => { if (!v) { setIsAddingRelative(null); setNewRelativeName(''); setSelectedExistingPersonId(''); } }}>
         <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
           <div className="border-b-2 border-foreground bg-primary/5 p-6">
@@ -266,7 +264,6 @@ export function Sidebar() {
         </DialogContent>
       </Dialog>
 
-      {/* Delete Confirmation Dialog */}
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
           <div className="border-b-2 border-foreground bg-destructive/10 p-6">

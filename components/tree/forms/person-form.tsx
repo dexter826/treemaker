@@ -1,17 +1,17 @@
 import { useState } from 'react';
-import { Person } from '../../types';
-import { useStore } from '../../lib/store';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { Button } from '../ui/button';
-import { Textarea } from '../ui/textarea';
+import { Person } from '@/types';
+import { useStore } from '@/lib/store';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
-import { Select } from '../ui/select';
-import { DatePicker } from '../ui/date-picker';
+import { Select } from '@/components/ui/select';
+import { DatePicker } from '@/components/ui/date-picker';
 import { AvatarUpload } from './avatar-upload';
-import { personService } from '../../lib/services/person.service';
-import { Separator } from '../ui/separator';
+import { personService } from '@/lib/services/person.service';
+import { Separator } from '@/components/ui/separator';
 
 export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly: boolean }) {
   const updatePerson = useStore((state) => state.updatePerson);
@@ -61,7 +61,6 @@ export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly:
 
   return (
     <div className="space-y-6">
-      {/* Identity Section */}
       <div className="flex flex-col items-center space-y-4">
         <div className="flex flex-col items-center space-y-1">
           <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground text-center">Ảnh Đại Diện</Label>
@@ -103,7 +102,6 @@ export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly:
 
       <Separator className="bg-foreground/20" />
 
-      {/* Life Timeline Section */}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1">
           <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Ngày Sinh</Label>
@@ -125,7 +123,6 @@ export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly:
 
       <Separator className="bg-foreground/20" />
 
-      {/* Context Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-1">
           <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Nghề Nghiệp</Label>
@@ -153,7 +150,6 @@ export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly:
 
       <Separator className="bg-foreground/20" />
 
-      {/* Bio Section */}
       <div className="space-y-1">
         <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Tiểu Sử</Label>
         <Textarea 
