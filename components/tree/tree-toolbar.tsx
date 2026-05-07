@@ -1,7 +1,7 @@
 import { useStore } from '../../lib/store';
 import { Button } from '../ui/button';
-import { ZoomIn, ZoomOut, Maximize, Search, Share2, ArrowLeft, Check } from 'lucide-react';
-import { useReactFlow } from '@xyflow/react';
+import { Search, Share2, ArrowLeft, Check } from 'lucide-react';
+
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
@@ -12,7 +12,7 @@ export function TreeToolbar() {
   const currentTree = useStore(state => state.currentTree);
   const persons = useStore(state => state.persons);
   const setSelectedPersonId = useStore(state => state.setSelectedPersonId);
-  const { zoomIn, zoomOut, fitView } = useReactFlow();
+  
   
   const [searchOpen, setSearchOpen] = useState(false);
 
@@ -40,19 +40,6 @@ export function TreeToolbar() {
           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Hồ Sơ Hiện Tại</span>
           <h1 className="font-serif font-black text-lg uppercase tracking-tight max-w-[200px] truncate">{currentTree.name}</h1>
         </div>
-      </div>
-
-      {/* Controls Block */}
-      <div className="bg-background border-2 border-foreground flex items-center shadow-[4px_4px_0px_0px_var(--color-foreground)]">
-        <Button variant="ghost" className="h-12 w-12 rounded-none border-r-2 border-foreground hover:bg-foreground hover:text-background flex items-center justify-center" onClick={() => zoomIn({ duration: 300 })}>
-          <ZoomIn className="w-5 h-5" />
-        </Button>
-        <Button variant="ghost" className="h-12 w-12 rounded-none border-r-2 border-foreground hover:bg-foreground hover:text-background flex items-center justify-center" onClick={() => zoomOut({ duration: 300 })}>
-          <ZoomOut className="w-5 h-5" />
-        </Button>
-        <Button variant="ghost" className="h-12 w-12 rounded-none hover:bg-foreground hover:text-background flex items-center justify-center" onClick={() => fitView({ duration: 800, padding: 0.2 })}>
-          <Maximize className="w-5 h-5" />
-        </Button>
       </div>
 
       {/* Action Block */}

@@ -2,13 +2,14 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
-import { Loader2, ArrowRight, Plus } from 'lucide-react';
+import { ArrowRight, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { AuthForm } from '@/components/auth/auth-form';
 import { Dialog, DialogContent, DialogTitle, DialogFooter, DialogHeader } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
 
 export default function DashboardPage() {
   const [session, setSession] = useState<any>(null);
@@ -89,9 +90,8 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground space-y-4">
-        <Loader2 className="w-10 h-10 animate-spin text-primary" />
-        <p className="font-serif italic text-muted-foreground tracking-widest uppercase text-sm">Đang truy xuất hệ thống...</p>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <LoadingSpinner size="lg" text="Đang truy xuất hệ thống..." />
       </div>
     );
   }
@@ -261,7 +261,7 @@ export default function DashboardPage() {
                 Hủy
               </Button>
               <Button type="submit" disabled={creating} className="flex-1 rounded-none h-14 bg-primary hover:bg-foreground text-background font-bold uppercase tracking-widest cursor-pointer">
-                {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Ghi Nhận'}
+                {creating ? <LoadingSpinner size="sm" className="text-background" /> : 'Ghi Nhận'}
               </Button>
             </div>
           </form>

@@ -1,28 +1,88 @@
 "use client"
 
-import { useState, useRef } from 'react'
-import { supabase } from '../../lib/supabase'
+import { useState, useRef, useCallback } from 'react'
+import ReactCrop, { Crop, PixelCrop, PercentCrop, centerCrop, makeAspectCrop } from 'react-image-crop'
+import 'react-image-crop/dist/ReactCrop.css'
 import { Button } from '../ui/button'
-import { Loader2, Upload, X, User } from 'lucide-react'
+import { Upload, X, User, Crop as CropIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import Image from 'next/image'
 
 interface AvatarUploadProps {
   currentUrl: string | null
-  onUploadSuccess: (url: string) => void
+  onFileSelect: (file: File | null) => void
   disabled?: boolean
 }
 
-export function AvatarUpload({ currentUrl, onUploadSuccess, disabled }: AvatarUploadProps) {
-  const [isUploading, setIsUploading] = useState(false)
+function centerAspectCrop(mediaWidth: number, mediaHeight: number) {
+  return centerCrop(
+    makeAspectCrop({ unit: '%', width: 90 }, 1, mediaWidth, mediaHeight),
+    mediaWidth,
+    mediaHeight
+  )
+}
+
+function getCroppedImg(image: HTMLImageElement, crop: PixelCrop | PercentCrop): Promise<File> {
+  const canvas = document.createElement('canvas')
+  const ctx = canvas.getContext('2d')
+
+  if (!ctx) throw new Error('No 2d context')
+
+  const naturalWidth = image.naturalWidth
+  const naturalHeight = image.naturalHeight
+
+  let cropX: number, cropY: number, cropWidth: number, cropHeight: number
+
+  if (crop.unit === '%') {
+    cropX = (crop.x / 100) * naturalWidth
+    cropY = (crop.y / 100) * naturalHeight
+    cropWidth = (crop.width / 100) * naturalWidth
+    cropHeight = (crop.height / 100) * naturalHeight
+  } else {
+    cropX = crop.x
+    cropY = crop.y
+    cropWidth = crop.width
+    cropHeight = crop.height
+  }
+
+  canvas.width = cropWidth
+  canvas.height = cropHeight
+
+  ctx.drawImage(
+    image,
+    cropX,
+    cropY,
+    cropWidth,
+    cropHeight,
+    0,
+    0,
+    cropWidth,
+    cropHeight
+  )
+
+  return new Promise((resolve) => {
+    canvas.toBlob((blob) => {
+      if (!blob) throw new Error('Canvas is empty')
+      const file = new File([blob], 'avatar.jpg', { type: 'image/jpeg' })
+      resolve(file)
+    }, 'image/jpeg', 0.9)
+  })
+}
+
+export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploadProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [showCropModal, setShowCropModal] = useState(false)
+  const [srcForCrop, setSrcForCrop] = useState<string | null>(null)
+  const [crop, setCrop] = useState<Crop>()
+  const [completedCrop, setCompletedCrop] = useState<PixelCrop | undefined>()
+  const imgRef = useRef<HTMLImageElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
 
-    // Kiểm tra định dạng và dung lượng (giới hạn 2MB)
     if (!file.type.startsWith('image/')) {
       toast.error('Vui lòng chọn tệp hình ảnh')
       return
@@ -32,40 +92,41 @@ export function AvatarUpload({ currentUrl, onUploadSuccess, disabled }: AvatarUp
       return
     }
 
-    // Tạo preview cục bộ
     const objectUrl = URL.createObjectURL(file)
-    setPreviewUrl(objectUrl)
+    setSrcForCrop(objectUrl)
+    setShowCropModal(true)
+  }
+
+  const handleCropComplete = useCallback((_: Crop, percentageCrop: PercentCrop) => {
+    setCompletedCrop(percentageCrop as unknown as PixelCrop)
+  }, [])
+
+  const handleCropConfirm = async () => {
+    if (!imgRef.current || !completedCrop) return
 
     try {
-      setIsUploading(true)
-      const fileExt = file.name.split('.').pop()
-      const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`
-      const filePath = `avatars/${fileName}`
-
-      // Upload lên Supabase Storage
-      const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(filePath, file)
-
-      if (uploadError) throw uploadError
-
-      // Lấy URL công khai
-      const { data: { publicUrl } } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(filePath)
-
-      onUploadSuccess(publicUrl)
-      toast.success('Ảnh đã được tải lên')
+      const croppedFile = await getCroppedImg(imgRef.current, completedCrop)
+      const preview = URL.createObjectURL(croppedFile)
+      
+      setPreviewUrl(preview)
+      setSelectedFile(croppedFile)
+      onFileSelect(croppedFile)
+      setShowCropModal(false)
     } catch (error: any) {
-      toast.error('Lỗi upload: ' + error.message)
-      setPreviewUrl(null)
-    } finally {
-      setIsUploading(false)
+      toast.error('Lỗi xử lý ảnh: ' + error.message)
+    }
+  }
+
+  const handleCropCancel = () => {
+    setShowCropModal(false)
+    setSrcForCrop(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
     }
   }
 
   const triggerFileInput = () => {
-    if (!disabled && !isUploading) {
+    if (!disabled) {
       fileInputRef.current?.click()
     }
   }
@@ -73,10 +134,14 @@ export function AvatarUpload({ currentUrl, onUploadSuccess, disabled }: AvatarUp
   const clearImage = (e: React.MouseEvent) => {
     e.stopPropagation()
     setPreviewUrl(null)
-    onUploadSuccess('') // Xóa URL ảnh
+    setSelectedFile(null)
+    onFileSelect(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
   }
 
-  const displayUrl = previewUrl || currentUrl
+  const displayUrl = previewUrl || currentUrl || null
 
   return (
     <div className="space-y-2 flex flex-col items-center">
@@ -92,7 +157,7 @@ export function AvatarUpload({ currentUrl, onUploadSuccess, disabled }: AvatarUp
               fill 
               className="object-cover"
             />
-            {!disabled && !isUploading && (
+            {!disabled && (
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <Upload className="text-white h-6 w-6" />
               </div>
@@ -105,13 +170,7 @@ export function AvatarUpload({ currentUrl, onUploadSuccess, disabled }: AvatarUp
           </div>
         )}
 
-        {isUploading && (
-          <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
-            <Loader2 className="h-6 w-6 animate-spin text-primary" />
-          </div>
-        )}
-
-        {displayUrl && !disabled && !isUploading && (
+        {displayUrl && !disabled && (
           <button
             onClick={clearImage}
             className="absolute top-1 right-1 bg-foreground text-background p-1 hover:bg-primary transition-colors"
@@ -127,8 +186,44 @@ export function AvatarUpload({ currentUrl, onUploadSuccess, disabled }: AvatarUp
         onChange={handleFileChange}
         accept="image/*"
         className="hidden"
-        disabled={disabled || isUploading}
+        disabled={disabled}
       />
+
+      {showCropModal && srcForCrop && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+          <div className="bg-background p-4 rounded-lg max-w-md w-full">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bold">Cắt Ảnh Đại Diện</h3>
+              <button onClick={handleCropCancel} className="text-muted-foreground hover:text-foreground">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <ReactCrop
+              crop={crop}
+              onChange={(_, percentCrop) => setCrop(percentCrop)}
+              onComplete={handleCropComplete}
+              aspect={1}
+              circularCrop
+            >
+              <img
+                ref={imgRef}
+                src={srcForCrop}
+                alt="Crop preview"
+                className="max-h-[50vh]"
+              />
+            </ReactCrop>
+            <div className="flex gap-2 mt-4">
+              <Button variant="outline" onClick={handleCropCancel} className="flex-1">
+                Hủy
+              </Button>
+              <Button onClick={handleCropConfirm} className="flex-1">
+                <CropIcon className="h-4 w-4 mr-2" />
+                Xác Nhận
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

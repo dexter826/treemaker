@@ -17,10 +17,33 @@ import { Separator } from '../ui/separator';
 export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly: boolean }) {
   const updatePerson = useStore((state) => state.updatePerson);
   const [formData, setFormData] = useState<Person>(person);
+  const [selectedAvatarFile, setSelectedAvatarFile] = useState<File | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleAvatarSelect = (file: File | null) => {
+    setSelectedAvatarFile(file);
+  };
+
+  const uploadAvatar = async (file: File): Promise<string> => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+    const filePath = `avatars/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('avatars')
+      .upload(filePath, file);
+
+    if (uploadError) throw uploadError;
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('avatars')
+      .getPublicUrl(filePath);
+
+    return publicUrl;
   };
 
   const handleSave = async () => {
@@ -28,6 +51,12 @@ export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly:
     setIsSaving(true);
     
     try {
+      let avatarUrl = formData.avatar_url;
+
+      if (selectedAvatarFile) {
+        avatarUrl = await uploadAvatar(selectedAvatarFile);
+      }
+
       const { data, error } = await supabase
         .from('persons')
         .update({
@@ -38,7 +67,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly:
           bio: formData.bio,
           occupation: formData.occupation,
           address: formData.address,
-          avatar_url: formData.avatar_url,
+          avatar_url: avatarUrl,
         })
         .eq('id', person.id)
         .select()
@@ -47,6 +76,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly:
       if (error) throw error;
       
       updatePerson(data as Person);
+      setSelectedAvatarFile(null);
       toast.success('Hồ sơ đã được cập nhật');
     } catch (error: any) {
       toast.error('Lỗi khi cập nhật: ' + error.message);
@@ -63,7 +93,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly:
           <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground text-center">Ảnh Đại Diện</Label>
           <AvatarUpload 
             currentUrl={formData.avatar_url}
-            onUploadSuccess={(url) => setFormData({ ...formData, avatar_url: url })}
+            onFileSelect={handleAvatarSelect}
             disabled={isReadOnly}
           />
         </div>

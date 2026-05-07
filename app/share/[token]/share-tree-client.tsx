@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../../lib/supabase';
 import TreeClient from '../../../components/tree/tree-client';
-import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { LoadingSpinner } from '../../../components/ui/loading-spinner';
 
 export function ShareTreeClient({ token }: { token: string }) {
   const [treeId, setTreeId] = useState<string | null>(null);
@@ -41,9 +41,8 @@ export function ShareTreeClient({ token }: { token: string }) {
 
   if (!treeId) {
     return (
-      <div className="w-full h-screen flex flex-col items-center justify-center bg-background text-foreground space-y-4">
-        <div className="w-10 h-10 rounded-none border-4 border-foreground border-t-transparent animate-spin" />
-        <p className="font-serif italic text-muted-foreground tracking-widest uppercase text-sm">Đang truy xuất hệ thống...</p>
+      <div className="w-full h-screen flex items-center justify-center bg-background">
+        <LoadingSpinner size="lg" text="Đang truy xuất hệ thống..." />
       </div>
     );
   }
