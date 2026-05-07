@@ -1,6 +1,6 @@
 import { useStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
-import { Search, Share2, ArrowLeft, Check, UserPlus, Mars, Venus } from 'lucide-react';
+import { Search, Share2, ArrowLeft, Check, UserPlus, Mars, Venus, LayoutGrid, Loader2 } from 'lucide-react';
 
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -12,11 +12,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { personService } from '@/lib/services/person.service';
 import { Select } from '@/components/ui/select';
+import { generateNodesAndEdges, getLayoutedElements } from '../utils/layout';
 
 export function TreeToolbar() {
   const currentTree = useStore(state => state.currentTree);
   const persons = useStore(state => state.persons);
   const setSelectedPersonId = useStore(state => state.setSelectedPersonId);
+  const updatePersonPositions = useStore(state => state.updatePersonPositions);
   const isReadOnly = useStore(state => state.isReadOnly);
   
   
@@ -25,9 +27,40 @@ export function TreeToolbar() {
   const [newPersonName, setNewPersonName] = useState('');
   const [newPersonGender, setNewPersonGender] = useState<'male' | 'female'>('male');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLayouting, setIsLayouting] = useState(false);
   const addPerson = useStore(state => state.addPerson);
 
   if (!currentTree) return null;
+
+  const handleAutoLayout = async () => {
+    if (isLayouting) return;
+    setIsLayouting(true);
+    
+    try {
+      const { nodes: initialNodes, edges: initialEdges } = generateNodesAndEdges(persons);
+      const { nodes: layoutedNodes } = getLayoutedElements(initialNodes, initialEdges);
+      
+      const updates = layoutedNodes.map(node => ({
+        id: node.id,
+        x: node.position.x,
+        y: node.position.y
+      }));
+
+      updatePersonPositions(updates);
+
+      await personService.updatePositions(updates.map(u => ({
+        id: u.id,
+        position_x: u.x,
+        position_y: u.y
+      })));
+
+      toast.success('Đã tự động sắp xếp và lưu vị trí!');
+    } catch (err: any) {
+      toast.error('Lỗi khi sắp xếp: ' + err.message);
+    } finally {
+      setIsLayouting(false);
+    }
+  };
 
   const handleShare = () => {
     const url = `${window.location.origin}/share/${currentTree.share_token}`;
@@ -114,11 +147,25 @@ export function TreeToolbar() {
           <>
             <Button 
               variant="ghost" 
-              className="h-12 px-4" 
+              className="h-12 px-4 border-r-2 border-foreground" 
+              onClick={handleAutoLayout}
+              disabled={isLayouting}
+            >
+              {isLayouting ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <LayoutGrid className="w-4 h-4" />
+              )}
+              <span className="ml-2 hidden sm:inline">Sắp xếp</span>
+            </Button>
+
+            <Button 
+              variant="ghost" 
+              className="h-12 px-4 border-r-2 border-foreground" 
               onClick={handleShare}
             >
               <Share2 className="w-4 h-4" />
-              <span>Chia sẻ</span>
+              <span className="ml-2 hidden sm:inline">Chia sẻ</span>
             </Button>
 
             <Button 
@@ -127,7 +174,7 @@ export function TreeToolbar() {
               onClick={() => setIsAddPersonOpen(true)}
             >
               <UserPlus className="w-4 h-4" />
-              <span>Thêm người</span>
+              <span className="ml-2 hidden sm:inline">Thêm người</span>
             </Button>
           </>
         )}

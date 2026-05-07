@@ -17,6 +17,7 @@ interface AppState {
   setPersons: (persons: Person[]) => void;
   addPerson: (person: Person) => void;
   updatePerson: (person: Person) => void;
+  updatePersonPositions: (updates: { id: string; x: number; y: number }[]) => void;
   removePerson: (id: string) => void;
   setSelectedPersonId: (id: string | null) => void;
   setViewPersonId: (id: string | null) => void;
@@ -41,6 +42,15 @@ export const useStore = create<AppState>((set) => ({
   addPerson: (person) => set((state) => ({ persons: [...state.persons, person] })),
   updatePerson: (updated) => set((state) => ({
     persons: state.persons.map((p) => p.id === updated.id ? updated : p)
+  })),
+  updatePersonPositions: (updates: { id: string; x: number; y: number }[]) => set((state) => ({
+    persons: state.persons.map((p) => {
+      const update = updates.find(u => u.id === p.id);
+      if (update) {
+        return { ...p, position_x: update.x, position_y: update.y };
+      }
+      return p;
+    })
   })),
   removePerson: (id) => set((state) => ({
     persons: state.persons.filter(p => p.id !== id),

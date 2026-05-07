@@ -130,5 +130,16 @@ export const personService = {
       .getPublicUrl(filePath);
 
     return publicUrl;
-  }
+  },
+async updatePositions(updates: { id: string; position_x: number; position_y: number }[]): Promise<void> {
+  const { error } = await supabase.rpc('update_person_positions', {
+    updates: updates.map(u => ({
+      id: u.id,
+      position_x: u.position_x,
+      position_y: u.position_y
+    }))
+  });
+
+  if (error) throw error;
+}
 };

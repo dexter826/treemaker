@@ -23,12 +23,8 @@ export function useTreeFlow(persons: Person[], selectedPersonId: string | null) 
     }
 
     const { nodes: initialNodes, edges: initialEdges } = generateNodesAndEdges(persons);
-    const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
-      initialNodes,
-      initialEdges
-    );
 
-    const styledEdges = layoutedEdges.map(edge => ({
+    const styledEdges = initialEdges.map(edge => ({
       ...edge,
       type: 'step',
       style: {
@@ -38,7 +34,7 @@ export function useTreeFlow(persons: Person[], selectedPersonId: string | null) 
       }
     }));
 
-    setNodes(layoutedNodes);
+    setNodes(initialNodes);
     setEdges(styledEdges);
 
     const timer = setTimeout(() => {
@@ -46,7 +42,7 @@ export function useTreeFlow(persons: Person[], selectedPersonId: string | null) 
     }, 50);
 
     return () => clearTimeout(timer);
-  }, [persons, setNodes, setEdges, fitView]);
+  }, [persons.length, setNodes, setEdges, fitView]); 
 
   useEffect(() => {
     if (selectedPersonId) {

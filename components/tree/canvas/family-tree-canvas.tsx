@@ -16,6 +16,8 @@ import { useStore } from '@/lib/store';
 import { PersonNode } from './person-node';
 import { useTreeFlow } from '../hooks/use-tree-flow';
 import { useTreeConnections } from '../hooks/use-tree-connections';
+import { personService } from '@/lib/services/person.service';
+import { toast } from 'sonner';
 
 const nodeTypes = {
   personNode: PersonNode,
@@ -27,6 +29,7 @@ export function FamilyTreeCanvas() {
   const isReadOnly = useStore((state) => state.isReadOnly);
   const selectedPersonId = useStore((state) => state.selectedPersonId);
   const updatePerson = useStore((state) => state.updatePerson);
+  const updatePersonPositions = useStore((state) => state.updatePersonPositions);
   
   const { 
     nodes, 
@@ -43,6 +46,24 @@ export function FamilyTreeCanvas() {
     isConfirmOpen,
     setIsConfirmOpen
   } = useTreeConnections(persons, isReadOnly, updatePerson, setEdges);
+
+  const onNodeDragStop = async (_: any, node: any) => {
+    if (isReadOnly) return;
+    try {
+      const x = node.position.x;
+      const y = node.position.y;
+      
+      updatePersonPositions([{ id: node.id, x, y }]);
+
+      await personService.update(node.id, {
+        position_x: x,
+        position_y: y
+      });
+    } catch (error) {
+      console.error('Failed to save position:', error);
+      toast.error('Lỗi khi lưu vị trí hồ sơ');
+    }
+  };
 
   return (
     <div className="w-full h-full relative bg-background">
@@ -61,8 +82,10 @@ export function FamilyTreeCanvas() {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         onBeforeDelete={onBeforeDelete}
+        onNodeDragStop={onNodeDragStop}
         nodeTypes={nodeTypes}
         deleteKeyCode={['Backspace', 'Delete']}
+        nodesDraggable={!isReadOnly}
         fitView
         minZoom={0.1}
         maxZoom={2}

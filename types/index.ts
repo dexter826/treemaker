@@ -23,6 +23,8 @@ export interface Person {
   father_id: string | null;
   mother_id: string | null;
   spouse_id: string | null;
+  position_x: number | null;
+  position_y: number | null;
   created_at: string;
   updated_at: string;
 }

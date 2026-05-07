@@ -14,7 +14,10 @@ export const generateNodesAndEdges = (persons: Person[]) => {
     nodes.push({
       id: person.id,
       type: 'personNode',
-      position: { x: 0, y: 0 },
+      position: { 
+        x: person.position_x ?? 0, 
+        y: person.position_y ?? 0 
+      },
       data: { person },
     });
 
