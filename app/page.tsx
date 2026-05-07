@@ -1,6 +1,7 @@
 "use client"
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
+import { treeService } from '@/lib/services/tree.service';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Plus } from 'lucide-react';
 import Link from 'next/link';
@@ -22,14 +23,8 @@ export default function DashboardPage() {
 
   const fetchTrees = async (userId: string) => {
     try {
-      const { data, error } = await supabase
-        .from('family_trees')
-        .select('*')
-        .eq('owner_id', userId)
-        .order('created_at', { ascending: false });
-        
-      if (error) throw error;
-      setTrees(data || []);
+      const data = await treeService.getAllByUser(userId);
+      setTrees(data);
     } catch (error: any) {
       toast.error('Lỗi truy xuất hệ thống: ' + error.message);
     } finally {
@@ -59,24 +54,7 @@ export default function DashboardPage() {
     
     setCreating(true);
     try {
-      const { data: tree, error: treeError } = await supabase
-        .from('family_trees')
-        .insert({ owner_id: session.user.id, name: newTreeName.trim() })
-        .select()
-        .single();
-
-      if (treeError) throw treeError;
-      
-      const { error: rootError } = await supabase
-        .from('persons')
-        .insert({
-          tree_id: tree.id,
-          full_name: 'Khuyết Danh',
-          gender: 'other'
-        });
-        
-      if (rootError) throw rootError;
-
+      await treeService.create(session.user.id, newTreeName);
       fetchTrees(session.user.id);
       toast.success('Hồ sơ gia phả đã được khởi tạo.');
       setIsCreateOpen(false);

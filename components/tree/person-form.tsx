@@ -1,17 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Person } from '../../types';
 import { useStore } from '../../lib/store';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
-import { supabase } from '../../lib/supabase';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import { Select } from '../ui/select';
 import { DatePicker } from '../ui/date-picker';
 import { AvatarUpload } from './avatar-upload';
-
+import { personService } from '../../lib/services/person.service';
 import { Separator } from '../ui/separator';
 
 export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly: boolean }) {
@@ -28,24 +27,6 @@ export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly:
     setSelectedAvatarFile(file);
   };
 
-  const uploadAvatar = async (file: File): Promise<string> => {
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
-    const filePath = `avatars/${fileName}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from('avatars')
-      .upload(filePath, file);
-
-    if (uploadError) throw uploadError;
-
-    const { data: { publicUrl } } = supabase.storage
-      .from('avatars')
-      .getPublicUrl(filePath);
-
-    return publicUrl;
-  };
-
   const handleSave = async () => {
     if (isReadOnly) return;
     setIsSaving(true);
@@ -54,28 +35,21 @@ export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly:
       let avatarUrl = formData.avatar_url;
 
       if (selectedAvatarFile) {
-        avatarUrl = await uploadAvatar(selectedAvatarFile);
+        avatarUrl = await personService.uploadAvatar(selectedAvatarFile);
       }
 
-      const { data, error } = await supabase
-        .from('persons')
-        .update({
-          full_name: formData.full_name,
-          gender: formData.gender,
-          birth_date: formData.birth_date || null,
-          death_date: formData.death_date || null,
-          bio: formData.bio,
-          occupation: formData.occupation,
-          address: formData.address,
-          avatar_url: avatarUrl,
-        })
-        .eq('id', person.id)
-        .select()
-        .single();
-        
-      if (error) throw error;
+      const data = await personService.update(person.id, {
+        full_name: formData.full_name,
+        gender: formData.gender,
+        birth_date: formData.birth_date || null,
+        death_date: formData.death_date || null,
+        bio: formData.bio,
+        occupation: formData.occupation,
+        address: formData.address,
+        avatar_url: avatarUrl,
+      });
       
-      updatePerson(data as Person);
+      updatePerson(data);
       setSelectedAvatarFile(null);
       toast.success('Hồ sơ đã được cập nhật');
     } catch (error: any) {

@@ -4,11 +4,11 @@ import { PersonForm } from './person-form';
 import { Button } from '../ui/button';
 import { X, UserPlus, Trash2, Loader2 } from 'lucide-react';
 import { ScrollArea } from '../ui/scroll-area';
-import { supabase } from '../../lib/supabase';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogTitle, DialogHeader } from '../ui/dialog';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
+import { personService } from '../../lib/services/person.service';
 
 export function Sidebar() {
   const selectedPersonId = useStore((state) => state.selectedPersonId);
@@ -38,8 +38,7 @@ export function Sidebar() {
     setIsDeleting(true);
 
     try {
-      const { error } = await supabase.from('persons').delete().eq('id', person.id);
-      if (error) throw error;
+      await personService.delete(person.id);
       
       removePerson(person.id);
       toast.success('Đã xóa hồ sơ');
@@ -72,27 +71,20 @@ export function Sidebar() {
         }
       }
 
-      const { data: newPerson, error } = await supabase
-        .from('persons')
-        .insert(newPersonData)
-        .select()
-        .single();
-
-      if (error) throw error;
+      const newPerson = await personService.create(newPersonData);
       
-      addPersonStore(newPerson as any);
+      addPersonStore(newPerson);
 
       if (isAddingRelative === 'father') {
-        await supabase.from('persons').update({ father_id: newPerson.id }).eq('id', person.id);
+        await personService.addFather(person.id, newPerson.id);
         updatePersonStore({ ...person, father_id: newPerson.id });
       } else if (isAddingRelative === 'mother') {
-        await supabase.from('persons').update({ mother_id: newPerson.id }).eq('id', person.id);
+        await personService.addMother(person.id, newPerson.id);
         updatePersonStore({ ...person, mother_id: newPerson.id });
       } else if (isAddingRelative === 'spouse') {
-        await supabase.from('persons').update({ spouse_id: newPerson.id }).eq('id', person.id);
-        await supabase.from('persons').update({ spouse_id: person.id }).eq('id', newPerson.id);
+        await personService.addSpouse(person.id, newPerson.id);
         updatePersonStore({ ...person, spouse_id: newPerson.id });
-        updatePersonStore({ ...newPerson, spouse_id: person.id } as any);
+        updatePersonStore({ ...newPerson, spouse_id: person.id });
       }
 
       toast.success(`Đã thêm ${isAddingRelative}!`);

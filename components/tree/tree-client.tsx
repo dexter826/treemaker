@@ -6,6 +6,7 @@ import { FamilyTreeCanvas } from './family-tree-canvas';
 import { TreeToolbar } from './tree-toolbar';
 import { Sidebar } from './sidebar';
 import { supabase } from '../../lib/supabase';
+import { treeService } from '../../lib/services/tree.service';
 import { toast } from 'sonner';
 import { LoadingSpinner } from '../ui/loading-spinner';
 
@@ -20,25 +21,10 @@ export default function TreeClient({ treeId }: { treeId: string }) {
     async function loadTree() {
       setIsLoading(true);
       try {
-        // Fetch Tree
-        const { data: tree, error: treeError } = await supabase
-          .from('family_trees')
-          .select('*')
-          .eq('id', treeId)
-          .single();
-          
-        if (treeError) throw treeError;
-
-        // Fetch Persons
-        const { data: persons, error: personsError } = await supabase
-          .from('persons')
-          .select('*')
-          .eq('tree_id', treeId);
-          
-        if (personsError) throw personsError;
-
+        const { tree, persons } = await treeService.loadWithPersons(treeId);
+        
         setCurrentTree(tree);
-        setPersons(persons || []);
+        setPersons(persons);
         
         const { data: { session } } = await supabase.auth.getSession();
         setIsReadOnly(session?.user?.id !== tree.owner_id);
