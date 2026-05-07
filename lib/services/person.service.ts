@@ -81,6 +81,31 @@ export const personService = {
     ]);
   },
 
+  async removeFather(personId: string): Promise<void> {
+    const { error } = await supabase
+      .from('persons')
+      .update({ father_id: null })
+      .eq('id', personId);
+
+    if (error) throw error;
+  },
+
+  async removeMother(personId: string): Promise<void> {
+    const { error } = await supabase
+      .from('persons')
+      .update({ mother_id: null })
+      .eq('id', personId);
+
+    if (error) throw error;
+  },
+
+  async removeSpouse(personId: string, spouseId: string): Promise<void> {
+    await Promise.all([
+      supabase.from('persons').update({ spouse_id: null }).eq('id', personId),
+      supabase.from('persons').update({ spouse_id: null }).eq('id', spouseId)
+    ]);
+  },
+
   async uploadAvatar(file: File): Promise<string> {
     const fileExt = file.name.split('.').pop();
     const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
