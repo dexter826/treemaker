@@ -4,13 +4,33 @@ import { useStore } from '../../lib/store';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { cn } from '../../lib/utils';
 import { User, Heart } from 'lucide-react';
+import { PersonCardActions } from './person-card-actions';
 
 export function PersonNode({ data }: { data: { person: Person } }) {
   const { person } = data;
   const setSelectedPersonId = useStore((state) => state.setSelectedPersonId);
   const selectedPersonId = useStore((state) => state.selectedPersonId);
+  const isReadOnly = useStore((state) => state.isReadOnly);
+  const showCardActions = useStore((state) => state.showCardActions);
+  const setShowCardActions = useStore((state) => state.setShowCardActions);
+  const setViewPersonId = useStore((state) => state.setViewPersonId);
 
   const isSelected = selectedPersonId === person.id;
+  const isShowingActions = showCardActions === person.id;
+
+  const handleClick = () => {
+    if (isShowingActions) {
+      setShowCardActions(null);
+    } else if (isReadOnly) {
+      setViewPersonId(person.id);
+    } else {
+      setShowCardActions(person.id);
+    }
+  };
+
+  const handleCloseActions = () => {
+    setShowCardActions(null);
+  };
 
   return (
     <div 
@@ -19,7 +39,7 @@ export function PersonNode({ data }: { data: { person: Person } }) {
         "border-2",
         isSelected ? "border-primary scale-[1.02] shadow-[4px_4px_0px_0px_var(--color-primary)]" : "border-foreground hover:shadow-[4px_4px_0px_0px_var(--color-foreground)]"
       )}
-      onClick={() => setSelectedPersonId(person.id)}
+      onClick={handleClick}
     >
       <Handle type="target" position={Position.Top} className={cn("w-full h-2 rounded-none border-0 top-0 translate-y-[-50%]", isSelected ? "bg-primary" : "bg-foreground")} />
       <Handle type="source" position={Position.Bottom} className={cn("w-full h-2 rounded-none border-0 bottom-0 translate-y-[50%]", isSelected ? "bg-primary" : "bg-foreground")} />
@@ -58,6 +78,10 @@ export function PersonNode({ data }: { data: { person: Person } }) {
           </div>
         </div>
       </div>
+
+      {isShowingActions && !isReadOnly && (
+        <PersonCardActions person={person} onClose={handleCloseActions} />
+      )}
     </div>
   );
 }

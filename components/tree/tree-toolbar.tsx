@@ -16,6 +16,7 @@ export function TreeToolbar() {
   const currentTree = useStore(state => state.currentTree);
   const persons = useStore(state => state.persons);
   const setSelectedPersonId = useStore(state => state.setSelectedPersonId);
+  const isReadOnly = useStore(state => state.isReadOnly);
   
   
   const [searchOpen, setSearchOpen] = useState(false);
@@ -100,23 +101,27 @@ export function TreeToolbar() {
           </PopoverContent>
         </Popover>
 
-        <Button 
-          variant="ghost" 
-          className="h-12 px-4 rounded-none font-bold uppercase tracking-widest text-xs gap-2 hover:bg-primary hover:text-primary-foreground" 
-          onClick={handleShare}
-        >
-          <Share2 className="w-4 h-4" />
-          <span>Chia sẻ</span>
-        </Button>
+        {!isReadOnly && (
+          <>
+            <Button 
+              variant="ghost" 
+              className="h-12 px-4 rounded-none font-bold uppercase tracking-widest text-xs gap-2 hover:bg-primary hover:text-primary-foreground" 
+              onClick={handleShare}
+            >
+              <Share2 className="w-4 h-4" />
+              <span>Chia sẻ</span>
+            </Button>
 
-        <Button 
-          variant="ghost" 
-          className="h-12 px-4 rounded-none font-bold uppercase tracking-widest text-xs gap-2 hover:bg-primary hover:text-primary-foreground" 
-          onClick={() => setIsAddPersonOpen(true)}
-        >
-          <UserPlus className="w-4 h-4" />
-          <span>Thêm người</span>
-        </Button>
+            <Button 
+              variant="ghost" 
+              className="h-12 px-4 rounded-none font-bold uppercase tracking-widest text-xs gap-2 hover:bg-primary hover:text-primary-foreground" 
+              onClick={() => setIsAddPersonOpen(true)}
+            >
+              <UserPlus className="w-4 h-4" />
+              <span>Thêm người</span>
+            </Button>
+          </>
+        )}
       </div>
 
       <Dialog open={isAddPersonOpen} onOpenChange={(v) => { if (!v) { setIsAddPersonOpen(false); setNewPersonName(''); } }}>

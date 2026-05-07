@@ -2,9 +2,11 @@
 import { useEffect } from 'react';
 import { ReactFlowProvider } from '@xyflow/react';
 import { useStore } from '../../lib/store';
+import { supabase } from '../../lib/supabase';
 import { FamilyTreeCanvas } from './family-tree-canvas';
 import { TreeToolbar } from './tree-toolbar';
 import { Sidebar } from './sidebar';
+import { ViewPersonModal } from './view-person-modal';
 import { treeService } from '../../lib/services/tree.service';
 import { toast } from 'sonner';
 import { LoadingSpinner } from '../ui/loading-spinner';
@@ -14,7 +16,6 @@ export default function TreeClient({ treeId }: { treeId: string }) {
   const setPersons = useStore(state => state.setPersons);
   const setIsLoading = useStore(state => state.setIsLoading);
   const setIsReadOnly = useStore(state => state.setIsReadOnly);
-  const userId = useStore(state => state.userId);
   const isLoading = useStore(state => state.isLoading);
 
   useEffect(() => {
@@ -26,7 +27,10 @@ export default function TreeClient({ treeId }: { treeId: string }) {
         setCurrentTree(tree);
         setPersons(persons);
         
-        if (userId !== tree.owner_id) {
+        const { data: { session } } = await supabase.auth.getSession();
+        const currentUserId = session?.user?.id;
+        
+        if (currentUserId !== tree.owner_id) {
           setIsReadOnly(true);
         } else {
           setIsReadOnly(false);
@@ -40,7 +44,7 @@ export default function TreeClient({ treeId }: { treeId: string }) {
     }
     
     loadTree();
-  }, [treeId, userId, setCurrentTree, setPersons, setIsLoading, setIsReadOnly]);
+  }, [treeId, setCurrentTree, setPersons, setIsLoading, setIsReadOnly]);
 
   if (isLoading) {
     return (
@@ -56,6 +60,7 @@ export default function TreeClient({ treeId }: { treeId: string }) {
         <TreeToolbar />
         <FamilyTreeCanvas />
         <Sidebar />
+        <ViewPersonModal />
       </ReactFlowProvider>
     </div>
   );

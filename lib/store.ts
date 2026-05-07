@@ -7,6 +7,8 @@ interface AppState {
   currentTree: FamilyTree | null;
   persons: Person[];
   selectedPersonId: string | null;
+  viewPersonId: string | null;
+  showCardActions: string | null;
   isReadOnly: boolean;
   isLoading: boolean;
   
@@ -17,6 +19,8 @@ interface AppState {
   updatePerson: (person: Person) => void;
   removePerson: (id: string) => void;
   setSelectedPersonId: (id: string | null) => void;
+  setViewPersonId: (id: string | null) => void;
+  setShowCardActions: (id: string | null) => void;
   setIsReadOnly: (readOnly: boolean) => void;
   setIsLoading: (loading: boolean) => void;
 }
@@ -26,6 +30,8 @@ export const useStore = create<AppState>((set) => ({
   currentTree: null,
   persons: [],
   selectedPersonId: null,
+  viewPersonId: null,
+  showCardActions: null,
   isReadOnly: false,
   isLoading: true,
   
@@ -41,6 +47,8 @@ export const useStore = create<AppState>((set) => ({
     selectedPersonId: state.selectedPersonId === id ? null : state.selectedPersonId
   })),
   setSelectedPersonId: (id) => set({ selectedPersonId: id }),
+  setViewPersonId: (id) => set({ viewPersonId: id }),
+  setShowCardActions: (id) => set({ showCardActions: id }),
   setIsReadOnly: (readOnly) => set({ isReadOnly: readOnly }),
   setIsLoading: (loading) => set({ isLoading: loading }),
 }));
