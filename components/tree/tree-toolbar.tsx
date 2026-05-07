@@ -70,12 +70,12 @@ export function TreeToolbar() {
                   {persons.map((person) => (
                     <CommandItem
                       key={person.id}
-                      value={`${person.first_name} ${person.last_name}`}
+                      value={person.full_name}
                       onSelect={() => focusPerson(person.id)}
                       className="rounded-none cursor-pointer aria-selected:bg-primary/10 aria-selected:text-primary font-bold uppercase tracking-widest text-xs py-3"
                     >
                       <Check className="mr-2 h-4 w-4 opacity-0" />
-                      {person.first_name} {person.last_name}
+                      {person.full_name}
                     </CommandItem>
                   ))}
                 </CommandGroup>

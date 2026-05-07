@@ -12,8 +12,7 @@ export interface FamilyTree {
 export interface Person {
   id: string;
   tree_id: string;
-  first_name: string;
-  last_name: string;
+  full_name: string;
   gender: Gender;
   birth_date: string | null;
   death_date: string | null;

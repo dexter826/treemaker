@@ -45,9 +45,9 @@ export function PersonNode({ data }: { data: { person: Person } }) {
         </div>
         
         <div className="flex flex-col flex-1 p-3 justify-center min-w-0">
-          <h3 className={cn("font-serif font-bold text-lg leading-tight truncate uppercase", isSelected ? "text-primary" : "text-foreground")} title={`${person.first_name} ${person.last_name}`}>
-            <span className="block text-xs font-sans text-muted-foreground uppercase tracking-widest mb-0.5">Tên</span>
-            {person.first_name} <br/> {person.last_name}
+          <h3 className={cn("font-serif font-bold text-lg leading-tight uppercase", isSelected ? "text-primary" : "text-foreground")} title={person.full_name}>
+            <span className="block text-xs font-sans text-muted-foreground uppercase tracking-widest mb-1">Thành Viên</span>
+            {person.full_name}
           </h3>
           
           <div className="mt-2 pt-2 border-t-2 border-foreground/10 flex items-center justify-between text-xs font-bold text-muted-foreground">

@@ -15,8 +15,7 @@ ALTER TABLE public.family_trees ENABLE ROW LEVEL SECURITY;
 CREATE TABLE public.persons (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   tree_id UUID REFERENCES public.family_trees(id) ON DELETE CASCADE,
-  first_name TEXT DEFAULT '' NOT NULL,
-  last_name TEXT DEFAULT '' NOT NULL,
+  full_name TEXT DEFAULT '' NOT NULL,
   gender TEXT CHECK (gender IN ('male', 'female', 'other')) DEFAULT 'other',
   birth_date DATE,
   death_date DATE,

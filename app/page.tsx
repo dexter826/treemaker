@@ -70,8 +70,7 @@ export default function DashboardPage() {
         .from('persons')
         .insert({
           tree_id: tree.id,
-          first_name: 'Khuyết Danh',
-          last_name: '',
+          full_name: 'Khuyết Danh',
           gender: 'other'
         });
         

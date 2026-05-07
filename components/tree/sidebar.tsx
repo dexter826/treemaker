@@ -21,7 +21,7 @@ export function Sidebar() {
   const updatePersonStore = useStore((state) => state.updatePerson);
 
   const [isAddingRelative, setIsAddingRelative] = useState<string | null>(null); // 'father', 'mother', 'spouse', 'child'
-  const [newRelativeName, setNewRelativeName] = useState({ first: '', last: '' });
+  const [newRelativeName, setNewRelativeName] = useState('');
   
   // Dialog state for deleting
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -58,8 +58,7 @@ export function Sidebar() {
     try {
       const newPersonData: any = {
         tree_id: currentTree.id,
-        first_name: newRelativeName.first || 'Khuyết Danh',
-        last_name: newRelativeName.last || '',
+        full_name: newRelativeName || 'Khuyết Danh',
         gender: isAddingRelative === 'father' ? 'male' : isAddingRelative === 'mother' ? 'female' : 'other'
       };
 
@@ -98,7 +97,7 @@ export function Sidebar() {
 
       toast.success(`Đã thêm ${isAddingRelative}!`);
       setIsAddingRelative(null);
-      setNewRelativeName({ first: '', last: '' });
+      setNewRelativeName('');
       setSelectedPersonId(newPerson.id);
     } catch (err: any) {
       toast.error('Lỗi thêm người thân: ' + err.message);
@@ -114,7 +113,7 @@ export function Sidebar() {
 
   return (
     <>
-      <div className="w-[400px] h-full bg-background border-l-2 border-foreground flex flex-col z-10 absolute right-0 top-0">
+      <div className="w-[400px] h-full bg-background border-l-2 border-foreground flex flex-col z-10 absolute right-0 top-0 overflow-hidden">
         <div className="flex items-center justify-between p-6 border-b-2 border-foreground bg-primary/5">
           <div>
             <h2 className="font-serif font-black text-xl uppercase tracking-widest">{isReadOnly ? 'Hồ Sơ' : 'Cập Nhật Hồ Sơ'}</h2>
@@ -127,7 +126,7 @@ export function Sidebar() {
           </Button>
         </div>
 
-        <ScrollArea className="flex-1">
+        <ScrollArea className="flex-1 min-h-0">
           <div className="p-6">
             <PersonForm person={person} isReadOnly={isReadOnly} />
             
@@ -169,27 +168,18 @@ export function Sidebar() {
               Định danh {isAddingRelative ? relationshipMap[isAddingRelative] : ''}
             </DialogTitle>
             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mt-2">
-              Liên kết với: {person.first_name} {person.last_name}
+              Liên kết với: {person.full_name}
             </p>
           </div>
           
           <div className="space-y-6 p-6">
             <div className="space-y-2">
-              <Label className="text-[10px] font-bold uppercase tracking-[0.2em]">Tên / First Name</Label>
+              <Label className="text-[10px] font-bold uppercase tracking-[0.2em]">Họ và Tên</Label>
               <Input 
                 autoFocus
-                value={newRelativeName.first} 
-                onChange={e => setNewRelativeName({ ...newRelativeName, first: e.target.value })}
-                placeholder="Ví dụ: John"
-                className="rounded-none border-2 border-foreground focus:border-primary focus:ring-0 h-12 font-bold"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-[10px] font-bold uppercase tracking-[0.2em]">Họ / Last Name</Label>
-              <Input 
-                value={newRelativeName.last} 
-                onChange={e => setNewRelativeName({ ...newRelativeName, last: e.target.value })}
-                placeholder="Ví dụ: Doe"
+                value={newRelativeName} 
+                onChange={e => setNewRelativeName(e.target.value)}
+                placeholder="Ví dụ: Nguyễn Văn A"
                 className="rounded-none border-2 border-foreground focus:border-primary focus:ring-0 h-12 font-bold"
               />
             </div>
@@ -220,7 +210,7 @@ export function Sidebar() {
           
           <div className="p-6">
             <p className="text-sm font-medium leading-relaxed">
-              Bạn có chắc chắn muốn xóa hồ sơ của <span className="font-bold">{person.first_name} {person.last_name}</span> không? Các liên kết phả hệ liên quan có thể bị đứt gãy.
+              Bạn có chắc chắn muốn xóa hồ sơ của <span className="font-bold">{person.full_name}</span> không? Các liên kết phả hệ liên quan có thể bị đứt gãy.
             </p>
           </div>
           
