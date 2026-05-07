@@ -33,16 +33,38 @@ export function Sidebar() {
     return persons.filter(p => {
       if (p.id === personId) return false;
       
-      if (isAddingRelative === 'father' && (p.father_id || p.gender !== 'male')) return false;
-      if (isAddingRelative === 'mother' && (p.mother_id || p.gender !== 'female')) return false;
-      if (isAddingRelative === 'spouse' && p.spouse_id) return false;
+      const isParent = person.father_id === p.id || person.mother_id === p.id;
+      const isChild = p.father_id === person.id || p.mother_id === person.id;
+      const isSpouse = person.spouse_id === p.id;
+
+      if (isAddingRelative === 'father') {
+        if (p.gender !== 'male') return false;
+        if (isChild || isSpouse) return false;
+        return true;
+      }
+      
+      if (isAddingRelative === 'mother') {
+        if (p.gender !== 'female') return false;
+        if (isChild || isSpouse) return false;
+        return true;
+      }
+      
+      if (isAddingRelative === 'spouse') {
+        if (p.spouse_id) return false;
+        if (isParent || isChild) return false;
+        return true;
+      }
+      
       if (isAddingRelative === 'child') {
-        if (p.father_id || p.mother_id) return false;
+        if (isParent || isSpouse) return false;
+        if (person.gender === 'male' && p.father_id) return false;
+        if (person.gender === 'female' && p.mother_id) return false;
+        return true;
       }
       
       return true;
     });
-  }, [isAddingRelative, persons, personId]);
+  }, [isAddingRelative, persons, personId, person]);
   
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -88,6 +110,10 @@ export function Sidebar() {
           updatePersonStore({ ...person, spouse_id: existingPerson.id });
           updatePersonStore({ ...existingPerson, spouse_id: person.id });
         } else if (isAddingRelative === 'child') {
+          if (person.gender === 'other') {
+            toast.error('Vui lòng cập nhật giới tính trước khi thêm con');
+            return;
+          }
           if (person.gender === 'male') {
             await personService.addFather(existingPerson.id, person.id);
             updatePersonStore({ ...existingPerson, father_id: person.id });
@@ -118,6 +144,10 @@ export function Sidebar() {
         };
 
         if (isAddingRelative === 'child') {
+          if (person.gender === 'other') {
+            toast.error('Vui lòng cập nhật giới tính trước khi thêm con');
+            return;
+          }
           if (person.gender === 'male') newPersonData.father_id = person.id;
           else if (person.gender === 'female') newPersonData.mother_id = person.id;
           if (person.spouse_id) {

@@ -63,7 +63,7 @@ export function TreeToolbar() {
     <div className="absolute top-6 left-6 z-10 flex flex-col md:flex-row items-start md:items-center gap-4">
       {/* Title Block */}
       <div className="bg-background border-2 border-foreground flex items-stretch shadow-[4px_4px_0px_0px_var(--color-foreground)]">
-        <Link href="/" className="flex items-center justify-center border-r-2 border-foreground hover:bg-foreground hover:text-background transition-colors w-12">
+        <Link href="/" className="flex items-center justify-center border-r-2 border-foreground hover:bg-foreground hover:text-background transition-colors w-12 cursor-pointer">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="px-4 py-2 flex flex-col justify-center">
@@ -75,7 +75,7 @@ export function TreeToolbar() {
       {/* Action Block */}
       <div className="bg-background border-2 border-foreground flex items-center shadow-[4px_4px_0px_0px_var(--color-foreground)]">
         <Popover open={searchOpen} onOpenChange={setSearchOpen}>
-          <PopoverTrigger className="h-12 w-12 rounded-none border-r-2 border-foreground hover:bg-foreground hover:text-background flex items-center justify-center transition-colors">
+          <PopoverTrigger className="h-12 w-12 rounded-none border-r-2 border-foreground hover:bg-foreground hover:text-background flex items-center justify-center transition-colors cursor-pointer">
             <Search className="w-5 h-5" />
           </PopoverTrigger>
           <PopoverContent className="w-[280px] p-0 border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--color-foreground)]" align="start">
@@ -105,7 +105,7 @@ export function TreeToolbar() {
           <>
             <Button 
               variant="ghost" 
-              className="h-12 px-4 rounded-none font-bold uppercase tracking-widest text-xs gap-2 hover:bg-primary hover:text-primary-foreground" 
+              className="h-12 px-4 rounded-none font-bold uppercase tracking-widest text-xs gap-2 hover:bg-primary hover:text-primary-foreground cursor-pointer" 
               onClick={handleShare}
             >
               <Share2 className="w-4 h-4" />
@@ -114,7 +114,7 @@ export function TreeToolbar() {
 
             <Button 
               variant="ghost" 
-              className="h-12 px-4 rounded-none font-bold uppercase tracking-widest text-xs gap-2 hover:bg-primary hover:text-primary-foreground" 
+              className="h-12 px-4 rounded-none font-bold uppercase tracking-widest text-xs gap-2 hover:bg-primary hover:text-primary-foreground cursor-pointer" 
               onClick={() => setIsAddPersonOpen(true)}
             >
               <UserPlus className="w-4 h-4" />
