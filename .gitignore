@@ -36,3 +36,7 @@ coverage/
 
 # TypeScript
 *.tsbuildinfo
+
+# Supabase
+.supabase/
+supabase/.temp/
