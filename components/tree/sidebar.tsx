@@ -128,7 +128,7 @@ export function Sidebar() {
 
         <ScrollArea className="flex-1 min-h-0">
           <div className="p-6">
-            <PersonForm person={person} isReadOnly={isReadOnly} />
+            <PersonForm key={person.id} person={person} isReadOnly={isReadOnly} />
             
             {!isReadOnly && (
               <div className="mt-10 border-t-4 border-foreground pt-8 space-y-6">

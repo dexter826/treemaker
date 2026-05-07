@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import { Select } from '../ui/select';
 import { DatePicker } from '../ui/date-picker';
+import { AvatarUpload } from './avatar-upload';
 
 import { Separator } from '../ui/separator';
 
@@ -17,11 +18,6 @@ export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly:
   const updatePerson = useStore((state) => state.updatePerson);
   const [formData, setFormData] = useState<Person>(person);
   const [isSaving, setIsSaving] = useState(false);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setFormData(person);
-  }, [person]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -62,21 +58,30 @@ export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly:
   return (
     <div className="space-y-6">
       {/* Identity Section */}
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Họ và Tên</Label>
-          <Input 
-            name="full_name" 
-            value={formData.full_name} 
-            onChange={handleChange} 
-            readOnly={isReadOnly}
-            placeholder="Ví dụ: Nguyễn Văn A"
-            className="rounded-none border-2 border-foreground focus:border-primary focus:ring-0 h-10 font-bold"
+      <div className="flex flex-col items-center space-y-4">
+        <div className="flex flex-col items-center space-y-1">
+          <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground text-center">Ảnh Đại Diện</Label>
+          <AvatarUpload 
+            currentUrl={formData.avatar_url}
+            onUploadSuccess={(url) => setFormData({ ...formData, avatar_url: url })}
+            disabled={isReadOnly}
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="space-y-2 md:col-span-1">
+        <div className="grid grid-cols-3 gap-4 w-full">
+          <div className="col-span-2 space-y-1">
+            <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Họ và Tên</Label>
+            <Input 
+              name="full_name" 
+              value={formData.full_name} 
+              onChange={handleChange} 
+              readOnly={isReadOnly}
+              placeholder="Ví dụ: Nguyễn Văn A"
+              className="rounded-none border-2 border-foreground focus:border-primary focus:ring-0 h-10 font-bold w-full"
+            />
+          </div>
+
+          <div className="col-span-1 space-y-1">
             <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Giới Tính</Label>
             <Select 
               options={[
@@ -89,17 +94,6 @@ export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly:
               disabled={isReadOnly}
             />
           </div>
-          <div className="space-y-2 md:col-span-2">
-            <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Ảnh Đại Diện (URL)</Label>
-            <Input 
-              name="avatar_url" 
-              value={formData.avatar_url || ''} 
-              onChange={handleChange}
-              readOnly={isReadOnly}
-              placeholder="https://example.com/photo.jpg"
-              className="rounded-none border-2 border-foreground focus:border-primary focus:ring-0 h-10 font-bold"
-            />
-          </div>
         </div>
       </div>
 
@@ -107,7 +101,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly:
 
       {/* Life Timeline Section */}
       <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
+        <div className="space-y-1">
           <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Ngày Sinh</Label>
           <DatePicker 
             value={formData.birth_date}
@@ -115,7 +109,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly:
             disabled={isReadOnly}
           />
         </div>
-        <div className="space-y-2">
+        <div className="space-y-1">
           <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Ngày Mất</Label>
           <DatePicker 
             value={formData.death_date}
@@ -129,7 +123,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly:
 
       {/* Context Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
+        <div className="space-y-1">
           <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Nghề Nghiệp</Label>
           <Input 
             name="occupation" 
@@ -140,7 +134,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly:
             className="rounded-none border-2 border-foreground focus:border-primary focus:ring-0 h-10 font-bold"
           />
         </div>
-        <div className="space-y-2">
+        <div className="space-y-1">
           <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Địa Chỉ</Label>
           <Input 
             name="address" 
@@ -156,7 +150,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly:
       <Separator className="bg-foreground/20" />
 
       {/* Bio Section */}
-      <div className="space-y-2">
+      <div className="space-y-1">
         <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Tiểu Sử</Label>
         <Textarea 
           name="bio" 
