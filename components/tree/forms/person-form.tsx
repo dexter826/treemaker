@@ -60,7 +60,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly:
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex flex-col items-center space-y-4">
         <div className="flex flex-col items-center space-y-1">
           <Label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground text-center">Ảnh Đại Diện</Label>
@@ -80,7 +80,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly:
               onChange={handleChange} 
               readOnly={isReadOnly}
               placeholder="Ví dụ: Nguyễn Văn A"
-              className="rounded-none border-2 border-foreground focus:border-primary focus:ring-0 h-10 font-bold w-full"
+              className="font-bold w-full"
             />
           </div>
 
@@ -89,8 +89,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly:
             <Select 
               options={[
                 { value: 'male', label: 'Nam' },
-                { value: 'female', label: 'Nữ' },
-                { value: 'other', label: 'Khác' }
+                { value: 'female', label: 'Nữ' }
               ]}
               value={formData.gender}
               onChange={(val) => setFormData({ ...formData, gender: val as any })}
@@ -132,7 +131,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly:
             onChange={handleChange}
             readOnly={isReadOnly}
             placeholder="Ví dụ: Bác sĩ, Kỹ sư..."
-            className="rounded-none border-2 border-foreground focus:border-primary focus:ring-0 h-10 font-bold"
+            className="font-bold"
           />
         </div>
         <div className="space-y-1">
@@ -143,7 +142,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly:
             onChange={handleChange}
             readOnly={isReadOnly}
             placeholder="Ví dụ: Hà Nội, Việt Nam"
-            className="rounded-none border-2 border-foreground focus:border-primary focus:ring-0 h-10 font-bold"
+            className="font-bold"
           />
         </div>
       </div>
@@ -164,7 +163,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person, isReadOnly:
       
       {!isReadOnly && (
         <Button 
-          className="w-full rounded-none h-12 text-sm font-bold uppercase tracking-widest border-2 border-primary bg-primary text-primary-foreground hover:bg-background hover:text-primary transition-all duration-300 relative overflow-hidden"
+          className="w-full relative overflow-hidden"
           onClick={handleSave} 
           disabled={isSaving || JSON.stringify(formData) === JSON.stringify(person)}
         >

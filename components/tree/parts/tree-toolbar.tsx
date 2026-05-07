@@ -1,6 +1,6 @@
 import { useStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
-import { Search, Share2, ArrowLeft, Check, UserPlus } from 'lucide-react';
+import { Search, Share2, ArrowLeft, Check, UserPlus, Mars, Venus } from 'lucide-react';
 
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { personService } from '@/lib/services/person.service';
+import { Select } from '@/components/ui/select';
 
 export function TreeToolbar() {
   const currentTree = useStore(state => state.currentTree);
@@ -22,6 +23,7 @@ export function TreeToolbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [isAddPersonOpen, setIsAddPersonOpen] = useState(false);
   const [newPersonName, setNewPersonName] = useState('');
+  const [newPersonGender, setNewPersonGender] = useState<'male' | 'female'>('male');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const addPerson = useStore(state => state.addPerson);
 
@@ -45,7 +47,7 @@ export function TreeToolbar() {
       const newPerson = await personService.create({
         tree_id: currentTree.id,
         full_name: newPersonName.trim() || 'Khuyết Danh',
-        gender: 'other'
+        gender: newPersonGender
       });
       addPerson(newPerson);
       setSelectedPersonId(newPerson.id);
@@ -92,7 +94,14 @@ export function TreeToolbar() {
                       className="rounded-none cursor-pointer aria-selected:bg-primary/10 aria-selected:text-primary font-bold uppercase tracking-widest text-xs py-3"
                     >
                       <Check className="mr-2 h-4 w-4 opacity-0" />
-                      {person.full_name}
+                      <div className="flex items-center gap-2 flex-1">
+                        {person.gender === 'male' ? (
+                          <Mars className="w-3.5 h-3.5 text-male" />
+                        ) : (
+                          <Venus className="w-3.5 h-3.5 text-female" />
+                        )}
+                        <span>{person.full_name}</span>
+                      </div>
                     </CommandItem>
                   ))}
                 </CommandGroup>
@@ -105,7 +114,7 @@ export function TreeToolbar() {
           <>
             <Button 
               variant="ghost" 
-              className="h-12 px-4 rounded-none font-bold uppercase tracking-widest text-xs gap-2 hover:bg-primary hover:text-primary-foreground cursor-pointer" 
+              className="h-12 px-4" 
               onClick={handleShare}
             >
               <Share2 className="w-4 h-4" />
@@ -114,7 +123,7 @@ export function TreeToolbar() {
 
             <Button 
               variant="ghost" 
-              className="h-12 px-4 rounded-none font-bold uppercase tracking-widest text-xs gap-2 hover:bg-primary hover:text-primary-foreground cursor-pointer" 
+              className="h-12 px-4" 
               onClick={() => setIsAddPersonOpen(true)}
             >
               <UserPlus className="w-4 h-4" />
@@ -136,24 +145,38 @@ export function TreeToolbar() {
           </div>
           
           <div className="space-y-4 p-6">
-            <div className="space-y-2">
-              <Label className="text-[10px] font-bold uppercase tracking-[0.2em]">Họ và Tên</Label>
-              <Input 
-                autoFocus
-                value={newPersonName} 
-                onChange={e => setNewPersonName(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && handleAddPerson()}
-                placeholder="Nhập tên người mới"
-                className="rounded-none border-2 border-foreground focus:border-primary focus:ring-0 h-12 font-bold"
-              />
+            <div className="grid grid-cols-3 gap-4">
+              <div className="col-span-2 space-y-2">
+                <Label className="text-[10px] font-bold uppercase tracking-[0.2em]">Họ và Tên</Label>
+                <Input 
+                  autoFocus
+                  value={newPersonName} 
+                  onChange={e => setNewPersonName(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && handleAddPerson()}
+                  placeholder="Nhập tên người mới"
+                  className="font-bold"
+                />
+              </div>
+
+              <div className="col-span-1 space-y-2">
+                <Label className="text-[10px] font-bold uppercase tracking-[0.2em]">Giới Tính</Label>
+                <Select 
+                  options={[
+                    { value: 'male', label: 'Nam' },
+                    { value: 'female', label: 'Nữ' }
+                  ]}
+                  value={newPersonGender}
+                  onChange={(val: string) => setNewPersonGender(val as any)}
+                />
+              </div>
             </div>
           </div>
           
           <div className="border-t-2 border-foreground p-0 flex">
-            <Button variant="ghost" className="flex-1 rounded-none h-14 border-r-2 border-foreground font-bold uppercase tracking-widest hover:bg-foreground hover:text-background cursor-pointer" onClick={() => { setIsAddPersonOpen(false); setNewPersonName(''); }}>
+            <Button variant="ghost" className="flex-1 h-14 border-r-2" onClick={() => { setIsAddPersonOpen(false); setNewPersonName(''); }}>
               Hủy
             </Button>
-            <Button className="flex-1 rounded-none h-14 bg-primary hover:bg-foreground text-background font-bold uppercase tracking-widest cursor-pointer" onClick={handleAddPerson} disabled={!newPersonName.trim() || isSubmitting}>
+            <Button className="flex-1 h-14" onClick={handleAddPerson} disabled={!newPersonName.trim() || isSubmitting}>
               {isSubmitting ? 'Đang thêm...' : 'Ghi Nhận'}
             </Button>
           </div>

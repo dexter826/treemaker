@@ -23,6 +23,7 @@ export function Sidebar() {
 
   const [isAddingRelative, setIsAddingRelative] = useState<string | null>(null);
   const [newRelativeName, setNewRelativeName] = useState('');
+  const [newRelativeGender, setNewRelativeGender] = useState<'male' | 'female'>('male');
   const [selectedExistingPersonId, setSelectedExistingPersonId] = useState<string>('');
 
   const person = persons.find(p => p.id === selectedPersonId);
@@ -110,10 +111,6 @@ export function Sidebar() {
           updatePersonStore({ ...person, spouse_id: existingPerson.id });
           updatePersonStore({ ...existingPerson, spouse_id: person.id });
         } else if (isAddingRelative === 'child') {
-          if (person.gender === 'other') {
-            toast.error('Vui lòng cập nhật giới tính trước khi thêm con');
-            return;
-          }
           if (person.gender === 'male') {
             await personService.addFather(existingPerson.id, person.id);
             updatePersonStore({ ...existingPerson, father_id: person.id });
@@ -140,14 +137,12 @@ export function Sidebar() {
         const newPersonData: any = {
           tree_id: currentTree.id,
           full_name: newRelativeName || 'Khuyết Danh',
-          gender: isAddingRelative === 'father' ? 'male' : isAddingRelative === 'mother' ? 'female' : 'other'
+          gender: isAddingRelative === 'father' ? 'male' : 
+                  isAddingRelative === 'mother' ? 'female' : 
+                  newRelativeGender
         };
 
         if (isAddingRelative === 'child') {
-          if (person.gender === 'other') {
-            toast.error('Vui lòng cập nhật giới tính trước khi thêm con');
-            return;
-          }
           if (person.gender === 'male') newPersonData.father_id = person.id;
           else if (person.gender === 'female') newPersonData.mother_id = person.id;
           if (person.spouse_id) {
@@ -202,36 +197,36 @@ export function Sidebar() {
               ID: {person.id.split('-')[0]}
             </p>
           </div>
-          <Button variant="ghost" size="icon" className="h-10 w-10 rounded-none border-2 border-transparent hover:border-foreground transition-all cursor-pointer" onClick={() => setSelectedPersonId(null)}>
+          <Button variant="ghost" size="icon" onClick={() => setSelectedPersonId(null)}>
             <X className="w-6 h-6" />
           </Button>
         </div>
 
         <ScrollArea className="flex-1 min-h-0">
-          <div className="p-6">
+          <div className="p-4">
             <PersonForm key={person.id} person={person} isReadOnly={isReadOnly} />
             
             {!isReadOnly && (
-              <div className="mt-10 border-t-4 border-foreground pt-8 space-y-6">
-                <h3 className="font-bold text-xs uppercase tracking-[0.2em] text-foreground bg-primary/10 inline-block px-2 py-1">Tác Vụ Mở Rộng</h3>
+              <div className="mt-4 border-t-2 border-foreground pt-4 space-y-4">
+                <h3 className="font-bold text-[10px] uppercase tracking-[0.2em] text-foreground bg-primary/10 inline-block px-2 py-1">Tác Vụ Mở Rộng</h3>
                 
                 <div className="grid grid-cols-2 gap-0 border-2 border-foreground">
-                  <Button variant="ghost" className="h-12 justify-start rounded-none border-r-2 border-b-2 border-foreground hover:bg-primary hover:text-primary-foreground font-bold text-[10px] uppercase tracking-widest cursor-pointer" onClick={() => { setNewRelativeName(''); setSelectedExistingPersonId(''); setIsAddingRelative('father'); }} disabled={!!person.father_id}>
+                  <Button variant="ghost" className="justify-start text-[10px]" onClick={() => { setNewRelativeName(''); setSelectedExistingPersonId(''); setIsAddingRelative('father'); }} disabled={!!person.father_id}>
                     <UserPlus className="w-4 h-4 mr-2" /> Cha
                   </Button>
-                  <Button variant="ghost" className="h-12 justify-start rounded-none border-b-2 border-foreground hover:bg-primary hover:text-primary-foreground font-bold text-[10px] uppercase tracking-widest cursor-pointer" onClick={() => { setNewRelativeName(''); setSelectedExistingPersonId(''); setIsAddingRelative('mother'); }} disabled={!!person.mother_id}>
+                  <Button variant="ghost" className="justify-start text-[10px]" onClick={() => { setNewRelativeName(''); setSelectedExistingPersonId(''); setIsAddingRelative('mother'); }} disabled={!!person.mother_id}>
                     <UserPlus className="w-4 h-4 mr-2" /> Mẹ
                   </Button>
-                  <Button variant="ghost" className="h-12 justify-start rounded-none border-r-2 border-foreground hover:bg-primary hover:text-primary-foreground font-bold text-[10px] uppercase tracking-widest cursor-pointer" onClick={() => { setNewRelativeName(''); setSelectedExistingPersonId(''); setIsAddingRelative('spouse'); }} disabled={!!person.spouse_id}>
+                  <Button variant="ghost" className="justify-start text-[10px]" onClick={() => { setNewRelativeName(''); setSelectedExistingPersonId(''); setIsAddingRelative('spouse'); }} disabled={!!person.spouse_id}>
                     <UserPlus className="w-4 h-4 mr-2" /> Vợ/Chồng
                   </Button>
-                  <Button variant="ghost" className="h-12 justify-start rounded-none border-foreground hover:bg-primary hover:text-primary-foreground font-bold text-[10px] uppercase tracking-widest cursor-pointer" onClick={() => { setNewRelativeName(''); setSelectedExistingPersonId(''); setIsAddingRelative('child'); }}>
+                  <Button variant="ghost" className="justify-start text-[10px]" onClick={() => { setNewRelativeName(''); setSelectedExistingPersonId(''); setIsAddingRelative('child'); }}>
                     <UserPlus className="w-4 h-4 mr-2" /> Con
                   </Button>
                 </div>
                 
-                <div className="pt-6">
-                  <Button variant="destructive" className="w-full rounded-none h-12 font-bold uppercase tracking-widest text-[10px] border-2 border-destructive hover:bg-background hover:text-destructive transition-all cursor-pointer" onClick={() => setIsDeleteDialogOpen(true)}>
+                <div className="pt-4">
+                  <Button variant="destructive" className="w-full text-[10px]" onClick={() => setIsDeleteDialogOpen(true)}>
                     <Trash2 className="w-4 h-4 mr-2" /> Xóa Hồ Sơ Này
                   </Button>
                 </div>
@@ -252,7 +247,7 @@ export function Sidebar() {
             </p>
           </div>
           
-          <div className="space-y-4 p-6">
+          <div className="space-y-3 p-4">
             {availablePersons.length > 0 && (
               <div className="space-y-2">
                 <Label className="text-[10px] font-bold uppercase tracking-[0.2em]">Chọn từ danh sách có sẵn</Label>
@@ -271,23 +266,38 @@ export function Sidebar() {
               <div className="flex-1 h-px bg-foreground/20"></div>
             </div>
 
-            <div className="space-y-2">
-              <Label className="text-[10px] font-bold uppercase tracking-[0.2em]">Họ và Tên</Label>
-              <Input 
-                autoFocus={!selectedExistingPersonId && !availablePersons.length}
-                value={newRelativeName} 
-                onChange={e => { setNewRelativeName(e.target.value); if (e.target.value) setSelectedExistingPersonId(''); }}
-                placeholder="Nhập tên người mới"
-                className="rounded-none border-2 border-foreground focus:border-primary focus:ring-0 h-12 font-bold"
-              />
+            <div className="grid grid-cols-3 gap-4">
+              <div className={((isAddingRelative === 'child' || isAddingRelative === 'spouse') && !selectedExistingPersonId) ? "col-span-2 space-y-2" : "col-span-3 space-y-2"}>
+                <Label className="text-[10px] font-bold uppercase tracking-[0.2em]">Họ và Tên</Label>
+                <Input 
+                  autoFocus={!selectedExistingPersonId && !availablePersons.length}
+                  value={newRelativeName} 
+                  onChange={e => { setNewRelativeName(e.target.value); if (e.target.value) setSelectedExistingPersonId(''); }}
+                  placeholder="Nhập tên người mới"
+                />
+              </div>
+
+              {(isAddingRelative === 'child' || isAddingRelative === 'spouse') && !selectedExistingPersonId && (
+                <div className="col-span-1 space-y-2">
+                  <Label className="text-[10px] font-bold uppercase tracking-[0.2em]">Giới Tính</Label>
+                  <Select 
+                    options={[
+                      { value: 'male', label: 'Nam' },
+                      { value: 'female', label: 'Nữ' }
+                    ]}
+                    value={newRelativeGender}
+                    onChange={(val) => setNewRelativeGender(val as any)}
+                  />
+                </div>
+              )}
             </div>
           </div>
           
           <div className="border-t-2 border-foreground p-0 flex">
-            <Button variant="ghost" className="flex-1 rounded-none h-14 border-r-2 border-foreground font-bold uppercase tracking-widest hover:bg-foreground hover:text-background cursor-pointer" onClick={() => { setIsAddingRelative(null); setNewRelativeName(''); setSelectedExistingPersonId(''); }}>
+            <Button variant="ghost" className="flex-1 h-14 border-r-2" onClick={() => { setIsAddingRelative(null); setNewRelativeName(''); setSelectedExistingPersonId(''); }}>
               Hủy
             </Button>
-            <Button className="flex-1 rounded-none h-14 bg-primary hover:bg-foreground text-background font-bold uppercase tracking-widest cursor-pointer" onClick={submitAddRelative} disabled={!newRelativeName && !selectedExistingPersonId}>
+            <Button className="flex-1 h-14" onClick={submitAddRelative} disabled={!newRelativeName && !selectedExistingPersonId}>
               Ghi Nhận
             </Button>
           </div>
@@ -305,17 +315,17 @@ export function Sidebar() {
             </p>
           </div>
           
-          <div className="p-6">
+          <div className="p-4">
             <p className="text-sm font-medium leading-relaxed">
               Bạn có chắc chắn muốn xóa hồ sơ của <span className="font-bold">{person.full_name}</span> không? Các liên kết phả hệ liên quan có thể bị đứt gãy.
             </p>
           </div>
           
           <div className="border-t-2 border-foreground p-0 flex">
-            <Button variant="ghost" className="flex-1 rounded-none h-14 border-r-2 border-foreground font-bold uppercase tracking-widest hover:bg-foreground hover:text-background cursor-pointer" onClick={() => setIsDeleteDialogOpen(false)}>
+            <Button variant="ghost" className="flex-1 h-14 border-r-2" onClick={() => setIsDeleteDialogOpen(false)}>
               Giữ Lại
             </Button>
-            <Button variant="destructive" className="flex-1 rounded-none h-14 border-2 border-transparent hover:border-destructive font-bold uppercase tracking-widest cursor-pointer disabled:opacity-50" onClick={handleDelete} disabled={isDeleting}>
+            <Button variant="destructive" className="flex-1 h-14" onClick={handleDelete} disabled={isDeleting}>
               {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Chấp Nhận Xóa'}
             </Button>
           </div>

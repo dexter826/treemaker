@@ -3,7 +3,7 @@ import { Person } from '@/types';
 import { useStore } from '@/lib/store';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
-import { User, Heart } from 'lucide-react';
+import { User, Heart, Mars, Venus } from 'lucide-react';
 import { PersonCardActions } from '../parts/person-card-actions';
 
 export function PersonNode({ data }: { data: { person: Person } }) {
@@ -48,7 +48,19 @@ export function PersonNode({ data }: { data: { person: Person } }) {
       <Handle id="right" type="source" position={Position.Right} className="w-1 h-8 rounded-none border-0 bg-primary opacity-50" />
 
       <div className={cn("px-3 py-1 flex items-center justify-between border-b-2 text-[10px] uppercase font-bold tracking-widest", isSelected ? "border-primary bg-primary/5 text-primary" : "border-foreground bg-foreground/5 text-foreground")}>
-        <span>{person.gender === 'male' ? 'Nam' : person.gender === 'female' ? 'Nữ' : 'Khác'}</span>
+        <div className="flex items-center gap-1.5">
+          {person.gender === 'male' ? (
+            <>
+              <Mars className="w-3.5 h-3.5 text-male" />
+              <span>Nam</span>
+            </>
+          ) : (
+            <>
+              <Venus className="w-3.5 h-3.5 text-female" />
+              <span>Nữ</span>
+            </>
+          )}
+        </div>
         {person.spouse_id && <Heart className="w-3 h-3 text-primary" />}
       </div>
 

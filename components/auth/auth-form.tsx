@@ -61,7 +61,7 @@ export function AuthForm() {
               required 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="rounded-none border-2 border-foreground focus:border-primary focus:ring-0 focus-visible:ring-0 h-12 font-bold px-4 bg-transparent placeholder:text-foreground/30 transition-colors"
+              className="font-bold px-4 bg-transparent placeholder:text-foreground/30 transition-colors"
             />
           </div>
           
@@ -75,7 +75,7 @@ export function AuthForm() {
               required 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="rounded-none border-2 border-foreground focus:border-primary focus:ring-0 focus-visible:ring-0 h-12 font-bold px-4 bg-transparent placeholder:text-foreground/30 transition-colors"
+              className="font-bold px-4 bg-transparent placeholder:text-foreground/30 transition-colors"
             />
           </div>
 

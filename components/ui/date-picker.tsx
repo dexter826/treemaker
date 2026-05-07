@@ -193,7 +193,7 @@ export function DatePicker({
         <PopoverTrigger disabled={disabled} className="w-full">
           <div
             className={cn(
-              "flex h-10 w-full items-center justify-between border-2 border-foreground bg-background px-4 py-2 text-sm font-bold uppercase tracking-widest transition-all cursor-pointer",
+              "flex h-12 w-full items-center justify-between border-2 border-foreground bg-background px-4 py-2 text-sm font-bold uppercase tracking-widest transition-all cursor-pointer",
               "hover:bg-foreground hover:text-background disabled:opacity-50 disabled:cursor-not-allowed",
               open && "bg-foreground text-background",
               className
@@ -204,7 +204,7 @@ export function DatePicker({
           </div>
         </PopoverTrigger>
         <PopoverContent 
-          className="w-72 p-0 border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background z-[100]"
+          className="w-72 p-0"
           align="start"
         >
           {renderHeader()}

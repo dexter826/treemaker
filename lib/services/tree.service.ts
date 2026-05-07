@@ -50,7 +50,7 @@ export const treeService = {
       .insert({
         tree_id: tree.id,
         full_name: 'Khuyết Danh',
-        gender: 'other'
+        gender: 'male'
       });
 
     if (rootError) throw rootError;
