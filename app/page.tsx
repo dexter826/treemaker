@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { treeService } from '@/lib/services/tree.service';
+import { useStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Plus } from 'lucide-react';
 import Link from 'next/link';
@@ -16,6 +17,7 @@ export default function DashboardPage() {
   const [session, setSession] = useState<any>(null);
   const [trees, setTrees] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const setUserId = useStore(state => state.setUserId);
   
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [newTreeName, setNewTreeName] = useState('');
@@ -35,18 +37,20 @@ export default function DashboardPage() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      setUserId(session?.user?.id || null);
       if (session) fetchTrees(session.user.id);
       else setLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      setUserId(session?.user?.id || null);
       if (session) fetchTrees(session.user.id);
       else setLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [setUserId]);
 
   const handleCreateTreeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,7 +131,10 @@ export default function DashboardPage() {
               <p className="text-sm font-bold text-foreground">{session.user.email}</p>
             </div>
             <button 
-              onClick={() => supabase.auth.signOut()} 
+              onClick={async () => {
+                await supabase.auth.signOut();
+                setUserId(null);
+              }}
               className="text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground hover:text-primary transition-colors hover:underline underline-offset-4 cursor-pointer"
             >
               [ Đăng Xuất Hệ Thống ]

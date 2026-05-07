@@ -5,7 +5,6 @@ import { useStore } from '../../lib/store';
 import { FamilyTreeCanvas } from './family-tree-canvas';
 import { TreeToolbar } from './tree-toolbar';
 import { Sidebar } from './sidebar';
-import { supabase } from '../../lib/supabase';
 import { treeService } from '../../lib/services/tree.service';
 import { toast } from 'sonner';
 import { LoadingSpinner } from '../ui/loading-spinner';
@@ -15,6 +14,7 @@ export default function TreeClient({ treeId }: { treeId: string }) {
   const setPersons = useStore(state => state.setPersons);
   const setIsLoading = useStore(state => state.setIsLoading);
   const setIsReadOnly = useStore(state => state.setIsReadOnly);
+  const userId = useStore(state => state.userId);
   const isLoading = useStore(state => state.isLoading);
 
   useEffect(() => {
@@ -26,8 +26,11 @@ export default function TreeClient({ treeId }: { treeId: string }) {
         setCurrentTree(tree);
         setPersons(persons);
         
-        const { data: { session } } = await supabase.auth.getSession();
-        setIsReadOnly(session?.user?.id !== tree.owner_id);
+        if (userId !== tree.owner_id) {
+          setIsReadOnly(true);
+        } else {
+          setIsReadOnly(false);
+        }
 
       } catch (error: any) {
         toast.error('Lỗi truy xuất hệ thống: ' + error.message);
@@ -37,7 +40,7 @@ export default function TreeClient({ treeId }: { treeId: string }) {
     }
     
     loadTree();
-  }, [treeId, setCurrentTree, setPersons, setIsLoading, setIsReadOnly]);
+  }, [treeId, userId, setCurrentTree, setPersons, setIsLoading, setIsReadOnly]);
 
   if (isLoading) {
     return (

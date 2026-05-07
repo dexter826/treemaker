@@ -1,13 +1,14 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useStore } from '../../lib/store';
 import { PersonForm } from './person-form';
 import { Button } from '../ui/button';
-import { X, UserPlus, Trash2, Loader2 } from 'lucide-react';
+import { X, UserPlus, Trash2, Loader2, Plus } from 'lucide-react';
 import { ScrollArea } from '../ui/scroll-area';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogTitle, DialogHeader } from '../ui/dialog';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
+import { Select } from '../ui/select';
 import { personService } from '../../lib/services/person.service';
 
 export function Sidebar() {
@@ -22,6 +23,26 @@ export function Sidebar() {
 
   const [isAddingRelative, setIsAddingRelative] = useState<string | null>(null); // 'father', 'mother', 'spouse', 'child'
   const [newRelativeName, setNewRelativeName] = useState('');
+  const [selectedExistingPersonId, setSelectedExistingPersonId] = useState<string>('');
+
+  const person = persons.find(p => p.id === selectedPersonId);
+  const personId = person?.id;
+  const availablePersons = useMemo(() => {
+    if (!isAddingRelative || !personId) return [];
+    
+    return persons.filter(p => {
+      if (p.id === personId) return false;
+      
+      if (isAddingRelative === 'father' && (p.father_id || p.gender !== 'male')) return false;
+      if (isAddingRelative === 'mother' && (p.mother_id || p.gender !== 'female')) return false;
+      if (isAddingRelative === 'spouse' && p.spouse_id) return false;
+      if (isAddingRelative === 'child') {
+        if (p.father_id || p.mother_id) return false;
+      }
+      
+      return true;
+    });
+  }, [isAddingRelative, persons, personId]);
   
   // Dialog state for deleting
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -29,8 +50,6 @@ export function Sidebar() {
 
   if (!selectedPersonId) return null;
 
-  const person = persons.find(p => p.id === selectedPersonId);
-  
   if (!person || !currentTree) return null;
 
   const handleDelete = async () => {
@@ -55,42 +74,83 @@ export function Sidebar() {
     if (!isAddingRelative || isReadOnly) return;
     
     try {
-      const newPersonData: any = {
-        tree_id: currentTree.id,
-        full_name: newRelativeName || 'Khuyết Danh',
-        gender: isAddingRelative === 'father' ? 'male' : isAddingRelative === 'mother' ? 'female' : 'other'
-      };
+      if (selectedExistingPersonId) {
+        const existingPerson = persons.find(p => p.id === selectedExistingPersonId);
+        if (!existingPerson) return;
 
-      if (isAddingRelative === 'child') {
-        if (person.gender === 'male') newPersonData.father_id = person.id;
-        else if (person.gender === 'female') newPersonData.mother_id = person.id;
-        if (person.spouse_id) {
+        if (isAddingRelative === 'father') {
+          await personService.addFather(person.id, existingPerson.id);
+          updatePersonStore({ ...person, father_id: existingPerson.id });
+        } else if (isAddingRelative === 'mother') {
+          await personService.addMother(person.id, existingPerson.id);
+          updatePersonStore({ ...person, mother_id: existingPerson.id });
+        } else if (isAddingRelative === 'spouse') {
+          await personService.addSpouse(person.id, existingPerson.id);
+          updatePersonStore({ ...person, spouse_id: existingPerson.id });
+          updatePersonStore({ ...existingPerson, spouse_id: person.id });
+        } else if (isAddingRelative === 'child') {
+          if (person.gender === 'male') {
+            await personService.addFather(existingPerson.id, person.id);
+            updatePersonStore({ ...existingPerson, father_id: person.id });
+          }
+          if (person.gender === 'female') {
+            await personService.addMother(existingPerson.id, person.id);
+            updatePersonStore({ ...existingPerson, mother_id: person.id });
+          }
+          if (person.spouse_id) {
+            const spouse = persons.find(p => p.id === person.spouse_id);
+            if (spouse && spouse.gender === 'female') {
+              await personService.addMother(existingPerson.id, spouse.id);
+              updatePersonStore({ ...existingPerson, mother_id: spouse.id });
+            }
+            if (spouse && spouse.gender === 'male') {
+              await personService.addFather(existingPerson.id, spouse.id);
+              updatePersonStore({ ...existingPerson, father_id: spouse.id });
+            }
+          }
+        }
+
+        toast.success(`Đã liên kết ${relationshipMap[isAddingRelative]}!`);
+      } else {
+        const newPersonData: any = {
+          tree_id: currentTree.id,
+          full_name: newRelativeName || 'Khuyết Danh',
+          gender: isAddingRelative === 'father' ? 'male' : isAddingRelative === 'mother' ? 'female' : 'other'
+        };
+
+        if (isAddingRelative === 'child') {
+          if (person.gender === 'male') newPersonData.father_id = person.id;
+          else if (person.gender === 'female') newPersonData.mother_id = person.id;
+          if (person.spouse_id) {
             const spouse = persons.find(p => p.id === person.spouse_id);
             if (spouse && spouse.gender === 'female') newPersonData.mother_id = spouse.id;
             if (spouse && spouse.gender === 'male') newPersonData.father_id = spouse.id;
+          }
         }
+
+        const newPerson = await personService.create(newPersonData);
+        addPersonStore(newPerson);
+
+        if (isAddingRelative === 'father') {
+          await personService.addFather(person.id, newPerson.id);
+          updatePersonStore({ ...person, father_id: newPerson.id });
+        } else if (isAddingRelative === 'mother') {
+          await personService.addMother(person.id, newPerson.id);
+          updatePersonStore({ ...person, mother_id: newPerson.id });
+        } else if (isAddingRelative === 'spouse') {
+          await personService.addSpouse(person.id, newPerson.id);
+          updatePersonStore({ ...person, spouse_id: newPerson.id });
+          updatePersonStore({ ...newPerson, spouse_id: person.id });
+        }
+
+        setSelectedPersonId(newPerson.id);
+        toast.success(`Đã thêm ${isAddingRelative}!`);
       }
 
-      const newPerson = await personService.create(newPersonData);
-      
-      addPersonStore(newPerson);
-
-      if (isAddingRelative === 'father') {
-        await personService.addFather(person.id, newPerson.id);
-        updatePersonStore({ ...person, father_id: newPerson.id });
-      } else if (isAddingRelative === 'mother') {
-        await personService.addMother(person.id, newPerson.id);
-        updatePersonStore({ ...person, mother_id: newPerson.id });
-      } else if (isAddingRelative === 'spouse') {
-        await personService.addSpouse(person.id, newPerson.id);
-        updatePersonStore({ ...person, spouse_id: newPerson.id });
-        updatePersonStore({ ...newPerson, spouse_id: person.id });
-      }
-
-      toast.success(`Đã thêm ${isAddingRelative}!`);
       setIsAddingRelative(null);
       setNewRelativeName('');
-      setSelectedPersonId(newPerson.id);
+      setSelectedExistingPersonId('');
+      setSelectedPersonId(selectedExistingPersonId || person.id);
     } catch (err: any) {
       toast.error('Lỗi thêm người thân: ' + err.message);
     }
@@ -127,16 +187,16 @@ export function Sidebar() {
                 <h3 className="font-bold text-xs uppercase tracking-[0.2em] text-foreground bg-primary/10 inline-block px-2 py-1">Tác Vụ Mở Rộng</h3>
                 
                 <div className="grid grid-cols-2 gap-0 border-2 border-foreground">
-                  <Button variant="ghost" className="h-12 justify-start rounded-none border-r-2 border-b-2 border-foreground hover:bg-primary hover:text-primary-foreground font-bold text-[10px] uppercase tracking-widest cursor-pointer" onClick={() => setIsAddingRelative('father')} disabled={!!person.father_id}>
+                  <Button variant="ghost" className="h-12 justify-start rounded-none border-r-2 border-b-2 border-foreground hover:bg-primary hover:text-primary-foreground font-bold text-[10px] uppercase tracking-widest cursor-pointer" onClick={() => { setNewRelativeName(''); setSelectedExistingPersonId(''); setIsAddingRelative('father'); }} disabled={!!person.father_id}>
                     <UserPlus className="w-4 h-4 mr-2" /> Cha
                   </Button>
-                  <Button variant="ghost" className="h-12 justify-start rounded-none border-b-2 border-foreground hover:bg-primary hover:text-primary-foreground font-bold text-[10px] uppercase tracking-widest cursor-pointer" onClick={() => setIsAddingRelative('mother')} disabled={!!person.mother_id}>
+                  <Button variant="ghost" className="h-12 justify-start rounded-none border-b-2 border-foreground hover:bg-primary hover:text-primary-foreground font-bold text-[10px] uppercase tracking-widest cursor-pointer" onClick={() => { setNewRelativeName(''); setSelectedExistingPersonId(''); setIsAddingRelative('mother'); }} disabled={!!person.mother_id}>
                     <UserPlus className="w-4 h-4 mr-2" /> Mẹ
                   </Button>
-                  <Button variant="ghost" className="h-12 justify-start rounded-none border-r-2 border-foreground hover:bg-primary hover:text-primary-foreground font-bold text-[10px] uppercase tracking-widest cursor-pointer" onClick={() => setIsAddingRelative('spouse')} disabled={!!person.spouse_id}>
+                  <Button variant="ghost" className="h-12 justify-start rounded-none border-r-2 border-foreground hover:bg-primary hover:text-primary-foreground font-bold text-[10px] uppercase tracking-widest cursor-pointer" onClick={() => { setNewRelativeName(''); setSelectedExistingPersonId(''); setIsAddingRelative('spouse'); }} disabled={!!person.spouse_id}>
                     <UserPlus className="w-4 h-4 mr-2" /> Vợ/Chồng
                   </Button>
-                  <Button variant="ghost" className="h-12 justify-start rounded-none border-foreground hover:bg-primary hover:text-primary-foreground font-bold text-[10px] uppercase tracking-widest cursor-pointer" onClick={() => setIsAddingRelative('child')}>
+                  <Button variant="ghost" className="h-12 justify-start rounded-none border-foreground hover:bg-primary hover:text-primary-foreground font-bold text-[10px] uppercase tracking-widest cursor-pointer" onClick={() => { setNewRelativeName(''); setSelectedExistingPersonId(''); setIsAddingRelative('child'); }}>
                     <UserPlus className="w-4 h-4 mr-2" /> Con
                   </Button>
                 </div>
@@ -153,7 +213,7 @@ export function Sidebar() {
       </div>
 
       {/* Add Relative Dialog */}
-      <Dialog open={!!isAddingRelative} onOpenChange={(v) => !v && setIsAddingRelative(null)}>
+      <Dialog open={!!isAddingRelative} onOpenChange={(v) => { if (!v) { setIsAddingRelative(null); setNewRelativeName(''); setSelectedExistingPersonId(''); } }}>
         <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
           <div className="border-b-2 border-foreground bg-primary/5 p-6">
             <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest">
@@ -164,24 +224,42 @@ export function Sidebar() {
             </p>
           </div>
           
-          <div className="space-y-6 p-6">
+          <div className="space-y-4 p-6">
+            {availablePersons.length > 0 && (
+              <div className="space-y-2">
+                <Label className="text-[10px] font-bold uppercase tracking-[0.2em]">Chọn từ danh sách có sẵn</Label>
+                <Select
+                  options={[{ value: '', label: '-- Chọn người --' }, ...availablePersons.map(p => ({ value: p.id, label: p.full_name }))]}
+                  value={selectedExistingPersonId}
+                  onChange={(val) => { setSelectedExistingPersonId(val); if (val) setNewRelativeName(''); }}
+                  placeholder="-- Chọn người --"
+                />
+              </div>
+            )}
+            
+            <div className="flex items-center gap-2">
+              <div className="flex-1 h-px bg-foreground/20"></div>
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">hoặc tạo mới</span>
+              <div className="flex-1 h-px bg-foreground/20"></div>
+            </div>
+
             <div className="space-y-2">
               <Label className="text-[10px] font-bold uppercase tracking-[0.2em]">Họ và Tên</Label>
               <Input 
-                autoFocus
+                autoFocus={!selectedExistingPersonId && !availablePersons.length}
                 value={newRelativeName} 
-                onChange={e => setNewRelativeName(e.target.value)}
-                placeholder="Ví dụ: Nguyễn Văn A"
+                onChange={e => { setNewRelativeName(e.target.value); if (e.target.value) setSelectedExistingPersonId(''); }}
+                placeholder="Nhập tên người mới"
                 className="rounded-none border-2 border-foreground focus:border-primary focus:ring-0 h-12 font-bold"
               />
             </div>
           </div>
           
           <div className="border-t-2 border-foreground p-0 flex">
-            <Button variant="ghost" className="flex-1 rounded-none h-14 border-r-2 border-foreground font-bold uppercase tracking-widest hover:bg-foreground hover:text-background cursor-pointer" onClick={() => setIsAddingRelative(null)}>
+            <Button variant="ghost" className="flex-1 rounded-none h-14 border-r-2 border-foreground font-bold uppercase tracking-widest hover:bg-foreground hover:text-background cursor-pointer" onClick={() => { setIsAddingRelative(null); setNewRelativeName(''); setSelectedExistingPersonId(''); }}>
               Hủy
             </Button>
-            <Button className="flex-1 rounded-none h-14 bg-primary hover:bg-foreground text-background font-bold uppercase tracking-widest cursor-pointer" onClick={submitAddRelative}>
+            <Button className="flex-1 rounded-none h-14 bg-primary hover:bg-foreground text-background font-bold uppercase tracking-widest cursor-pointer" onClick={submitAddRelative} disabled={!newRelativeName && !selectedExistingPersonId}>
               Ghi Nhận
             </Button>
           </div>

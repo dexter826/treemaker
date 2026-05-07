@@ -3,12 +3,14 @@ import { create } from 'zustand';
 import { Person, FamilyTree } from '../types';
 
 interface AppState {
+  userId: string | null;
   currentTree: FamilyTree | null;
   persons: Person[];
   selectedPersonId: string | null;
   isReadOnly: boolean;
   isLoading: boolean;
   
+  setUserId: (userId: string | null) => void;
   setCurrentTree: (tree: FamilyTree | null) => void;
   setPersons: (persons: Person[]) => void;
   addPerson: (person: Person) => void;
@@ -20,12 +22,14 @@ interface AppState {
 }
 
 export const useStore = create<AppState>((set) => ({
+  userId: null,
   currentTree: null,
   persons: [],
   selectedPersonId: null,
   isReadOnly: false,
   isLoading: true,
   
+  setUserId: (userId) => set({ userId }),
   setCurrentTree: (tree) => set({ currentTree: tree }),
   setPersons: (persons) => set({ persons }),
   addPerson: (person) => set((state) => ({ persons: [...state.persons, person] })),
