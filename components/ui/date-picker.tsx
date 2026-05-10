@@ -230,7 +230,7 @@ export function DatePicker({
           <div className="p-2 border-t-2 border-foreground flex gap-2">
              <Button 
                type="button"
-               variant="outline"
+               variant="destructive"
                size="xs"
                className="flex-1"
                onClick={() => {

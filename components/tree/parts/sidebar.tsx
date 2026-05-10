@@ -218,7 +218,7 @@ export function Sidebar() {
                 <Button variant="ghost" className="justify-start text-xs" onClick={() => setIsAddingRelative('child')}><UserPlus className="w-4 h-4" /> Con</Button>
               </div>
               <div>
-                <Button className="w-full relative overflow-hidden" onClick={() => setIsDeleteDialogOpen(true)}>
+                <Button variant="destructive" className="w-full relative overflow-hidden" onClick={() => setIsDeleteDialogOpen(true)}>
                   Xóa hồ sơ
                 </Button>
               </div>

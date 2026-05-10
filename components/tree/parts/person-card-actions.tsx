@@ -78,6 +78,7 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
             </Button>
 
             <Button
+              variant="destructive"
               onClick={(e) => {
                 e.stopPropagation();
                 setIsConfirmOpen(true);

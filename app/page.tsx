@@ -152,8 +152,8 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-background relative selection:bg-primary/20">
-      <div className="max-w-5xl mx-auto px-4 py-12 lg:px-8 lg:py-16 flex flex-col">
-        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-4 border-foreground pb-8 mb-8">
+      <div className="max-w-5xl mx-auto px-4 py-8 lg:px-8 lg:py-10 flex flex-col">
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b-4 border-foreground pb-6 mb-6">
           <div className="space-y-2">
             <h2 className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Hồ Sơ Lưu Trữ</h2>
             <h1 className="text-4xl md:text-6xl font-black font-serif tracking-tight leading-none">
@@ -180,7 +180,7 @@ export default function DashboardPage() {
         </header>
 
         <main className="flex-1">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b-2 border-foreground/20 pb-4 mb-6 gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b-2 border-foreground/20 pb-3 mb-4 gap-4">
             <h3 className="text-lg font-bold tracking-wide text-foreground">Danh Sách Gia Phả</h3>
             <Button
               variant="ghost"
@@ -194,8 +194,8 @@ export default function DashboardPage() {
           </div>
 
           {trees.length === 0 ? (
-            <div className="py-16 text-center border-2 border-dashed border-foreground/20 bg-foreground/[0.02]">
-              <p className="text-muted-foreground font-medium text-sm mb-6">Chưa có dữ liệu gia phả</p>
+            <div className="py-12 text-center border-2 border-dashed border-foreground/20 bg-foreground/[0.02]">
+              <p className="text-muted-foreground font-medium text-sm mb-4">Chưa có dữ liệu gia phả</p>
               <Button
                 onClick={() => setIsCreateOpen(true)}
                 variant="outline"
@@ -205,26 +205,26 @@ export default function DashboardPage() {
               </Button>
             </div>
           ) : (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
               {trees.map((tree, idx) => (
                 <div
                   key={tree.id}
-                  className="group relative flex flex-col md:flex-row justify-between items-start md:items-center p-5 lg:p-6 border-2 border-foreground bg-background hover:bg-foreground/[0.02] transition-colors"
+                  className="group relative flex flex-col md:flex-row justify-between items-start md:items-center p-4 lg:p-5 border-2 border-foreground bg-background hover:bg-foreground/[0.02] transition-colors"
                 >
-                  <div className="absolute top-0 left-0 bg-foreground text-background text-xs font-semibold px-2 py-1 tracking-wide">
+                  <div className="absolute top-0 left-0 bg-foreground text-background text-[10px] font-bold px-2 py-0.5 tracking-wider">
                     ID-{String(idx + 1).padStart(3, '0')}
                   </div>
 
-                  <div className="flex-1 mt-3 md:mt-0 space-y-1">
-                    <h4 className="text-2xl font-serif font-bold text-foreground group-hover:text-primary transition-colors truncate max-w-xl">
+                  <div className="flex-1 mt-4 md:mt-0 space-y-1">
+                    <h4 className="text-xl font-serif font-bold text-foreground group-hover:text-primary transition-colors truncate max-w-xl">
                       {tree.name}
                     </h4>
-                    <p className="text-xs tracking-wide font-semibold text-muted-foreground">
+                    <p className="text-[11px] tracking-wide font-semibold text-muted-foreground">
                       Cập nhật cuối: {new Date(tree.updated_at).toLocaleDateString('vi-VN')}
                     </p>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-2 mt-4 md:mt-0 w-full md:w-auto">
+                  <div className="flex flex-wrap items-center gap-2 mt-3 md:mt-0 w-full md:w-auto">
                     <Button
                       variant="outline"
                       size="sm"
