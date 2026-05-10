@@ -92,9 +92,8 @@ export function TreeToolbar() {
                         setSearchOpen(false);
                         setSelectedPersonId(person.id);
                       }}
-                      className="rounded-none cursor-pointer aria-selected:bg-primary/10 aria-selected:text-primary font-semibold tracking-wide text-sm py-3"
+                      className="rounded-none cursor-pointer aria-selected:bg-primary aria-selected:text-primary-foreground font-semibold tracking-wide text-xs py-3"
                     >
-                      <Check className="mr-2 h-4 w-4 opacity-0" />
                       <div className="flex items-center gap-2 flex-1">
                         {person.gender === 'male' ? <Mars className="w-3.5 h-3.5 text-male" /> : <Venus className="w-3.5 h-3.5 text-female" />}
                         <span>{person.full_name}</span>

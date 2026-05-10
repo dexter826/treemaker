@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { ReactFlow, MiniMap, Controls, Background, BackgroundVariant, Node } from '@xyflow/react';
+import { ReactFlow, Controls, Background, BackgroundVariant, Node } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useStore } from '@/lib/store';
 import { PersonNode } from './person-node';
@@ -62,12 +62,6 @@ export function FamilyTreeCanvas() {
       >
         <Background variant={BackgroundVariant.Lines} color="var(--color-foreground)" gap={40} size={1} className="opacity-[0.05]" />
         <Controls showInteractive={false} className="bg-background border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--color-foreground)] overflow-hidden !fill-foreground" />
-        <MiniMap
-          nodeColor={(n) => (n.id === selectedPersonId ? 'var(--color-primary)' : 'var(--color-foreground)')}
-          maskColor="var(--color-background)"
-          className="bg-background border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--color-foreground)]"
-          style={{ backgroundColor: 'var(--color-background)', maskImage: 'none', opacity: 0.8 }}
-        />
       </ReactFlow>
 
       <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>

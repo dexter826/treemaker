@@ -66,14 +66,14 @@ export function Select({
         >
           <div className="flex flex-col max-h-[400px] overflow-hidden">
             {showSearch && (
-              <div className="p-2 border-b-2 border-foreground bg-primary/5 flex-shrink-0">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <div className="p-3 border-b-2 border-foreground bg-primary/5 flex-shrink-0">
+                <div className="relative flex items-center">
+                  <Search className="absolute left-3 h-4 w-4 text-foreground/70" />
                   <Input
                     placeholder="Tìm kiếm..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="h-9 pl-9 text-xs border-foreground/20 focus:border-foreground"
+                    className="h-10 pl-10 pr-4 text-xs border-foreground/30 focus:border-foreground bg-background"
                   />
                 </div>
               </div>

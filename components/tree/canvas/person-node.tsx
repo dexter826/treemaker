@@ -3,7 +3,7 @@ import { Person } from '@/types';
 import { useStore } from '@/lib/store';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
-import { User, Heart, Mars, Venus, Briefcase } from 'lucide-react';
+import { User, Mars, Venus, Briefcase } from 'lucide-react';
 import { PersonCardActions } from '../parts/person-card-actions';
 import { TREE_NODE_WIDTH, TREE_NODE_HEIGHT } from '../constants';
 
@@ -20,7 +20,6 @@ export function PersonNode({ data }: { data: { person: Person } }) {
 
   const isSelected = selectedPersonId === person.id;
   const isShowingActions = showCardActions === person.id;
-  const hasSpouse = relationships.some(r => r.person1_id === person.id || r.person2_id === person.id);
 
   const handleOpen = () => {
     // Nếu click vào Card khác khi đang mở Sidebar của người cũ, đóng Sidebar cũ
@@ -83,15 +82,6 @@ export function PersonNode({ data }: { data: { person: Person } }) {
             <User className={cn('h-12 w-12 opacity-20', isSelected ? 'text-primary' : 'text-foreground')} />
           </AvatarFallback>
         </Avatar>
-
-        {/* Floating Icons */}
-        <div className="absolute top-2 right-2 flex flex-col gap-1.5">
-          {hasSpouse && (
-            <div className="bg-background border-2 border-foreground p-1 shadow-[2px_2px_0px_0px_var(--color-foreground)]">
-              <Heart className="w-3 h-3 text-primary fill-primary" />
-            </div>
-          )}
-        </div>
       </div>
 
       {/* Info Area */}
