@@ -1,0 +1,172 @@
+"use client";
+
+import { useState, useRef, useEffect } from "react";
+import { useChat, UIMessage } from "@ai-sdk/react";
+import { MessageCircle, X, Send, Bot, User, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useStore } from "@/lib/store";
+import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "motion/react";
+import ReactMarkdown from "react-markdown";
+
+// Chatbot hỗ trợ tra cứu thông tin gia phả
+export function TreeChatbot() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [input, setInput] = useState("");
+  const persons = useStore((state) => state.persons);
+  const relationships = useStore((state) => state.relationships);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const { messages, sendMessage, status, error } = useChat<UIMessage>({
+    // @ts-ignore
+    initialMessages: [],
+  });
+
+  const isLoading = status === "streaming" || status === "submitted";
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages, isLoading]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+    
+    sendMessage(
+      {
+        role: "user",
+        parts: [{ type: "text", text: input }]
+      },
+      {
+        body: {
+          dataContext: {
+            persons: persons.map(p => ({
+              id: p.id,
+              name: p.full_name,
+              gender: p.gender,
+              father_id: p.father_id,
+              mother_id: p.mother_id,
+              birth_date: p.birth_date
+            })),
+            relationships: relationships
+          }
+        }
+      }
+    );
+    
+    setInput("");
+  };
+
+  return (
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            className="mb-4 w-80 sm:w-96 h-[500px] bg-background border-2 border-foreground shadow-[8px_8px_0px_0px_var(--color-foreground)] flex flex-col overflow-hidden"
+          >
+            <div className="p-4 border-b-2 border-foreground bg-primary text-primary-foreground flex items-center justify-between">
+              <div className="flex items-center gap-2 text-white">
+                <Bot className="w-5 h-5" />
+                <span className="font-serif font-black uppercase tracking-widest text-sm">Trợ Lý Gia Phả</span>
+              </div>
+            </div>
+
+            <div 
+              ref={scrollRef}
+              className="flex-1 overflow-y-auto p-4 space-y-4 bg-muted/5 scrollbar-thin"
+            >
+              {messages.length === 0 && !isLoading && (
+                <div className="text-center py-8">
+                  <Bot className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                  <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground px-4">
+                    Chào bạn! Tôi có thể giúp gì cho bạn về cây gia phả này?
+                  </p>
+                </div>
+              )}
+              {messages.map((m: UIMessage) => (
+                <div
+                  key={m.id}
+                  className={cn(
+                    "flex gap-3",
+                    m.role === "user" ? "flex-row-reverse" : "flex-row"
+                  )}
+                >
+                  <div className={cn(
+                    "w-8 h-8 flex items-center justify-center border-2 border-foreground shrink-0",
+                    m.role === "user" ? "bg-secondary" : "bg-primary"
+                  )}>
+                    {m.role === "user" ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4 text-white" />}
+                  </div>
+                  <div className={cn(
+                    "p-3 border-2 border-foreground text-sm font-medium leading-relaxed max-w-[80%]",
+                    m.role === "user" 
+                      ? "bg-background shadow-[4px_4px_0px_0px_var(--color-foreground)]" 
+                      : "bg-muted shadow-[4px_4px_0px_0px_var(--color-foreground)]"
+                  )}>
+                    <div className="prose prose-sm prose-neutral dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-muted prose-pre:border-2 prose-pre:border-foreground prose-pre:rounded-none">
+                      <ReactMarkdown>
+                        {m.parts
+                          .filter((part) => part.type === "text")
+                          .map((part) => part.text)
+                          .join("")}
+                      </ReactMarkdown>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {isLoading && (
+                <div className="flex gap-3">
+                  <div className="w-8 h-8 flex items-center justify-center border-2 border-foreground bg-primary shrink-0">
+                    <Loader2 className="w-4 h-4 text-white animate-spin" />
+                  </div>
+                  <div className="p-3 border-2 border-foreground bg-muted shadow-[4px_4px_0px_0px_var(--color-foreground)]">
+                    <span className="animate-pulse">Đang suy nghĩ...</span>
+                  </div>
+                </div>
+              )}
+              {error && (
+                <div className="p-2 bg-destructive/10 border-2 border-destructive text-destructive text-[10px] font-bold uppercase text-center">
+                  Lỗi kết nối API.
+                </div>
+              )}
+            </div>
+
+            <form onSubmit={handleSubmit} className="p-4 border-t-2 border-foreground bg-background">
+              <div className="flex gap-2">
+                <input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Hỏi về quan hệ, thành viên..."
+                  className="flex-1 bg-background border-2 border-foreground p-2 text-sm font-bold focus:outline-none focus:bg-muted transition-colors placeholder:text-muted-foreground/50"
+                />
+                <Button 
+                  type="submit" 
+                  disabled={isLoading || !input.trim()}
+                  className="rounded-none border-2 border-foreground shadow-[4px_4px_0px_0px_var(--color-foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all active:translate-x-[4px] active:translate-y-[4px]"
+                >
+                  <Send className="w-4 h-4" />
+                </Button>
+              </div>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <Button
+        size="lg"
+        onClick={() => setIsOpen(!isOpen)}
+        className={cn(
+          "h-14 w-14 rounded-none border-2 border-foreground shadow-[6px_6px_0px_0px_var(--color-foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_var(--color-foreground)] transition-all active:translate-x-[4px] active:translate-y-[4px] active:shadow-none",
+          isOpen ? "bg-destructive text-destructive-foreground" : "bg-primary text-primary-foreground"
+        )}
+      >
+        {isOpen ? <X className="w-6 h-6 text-white" /> : <MessageCircle className="w-6 h-6 text-white" />}
+      </Button>
+    </div>
+  );
+}

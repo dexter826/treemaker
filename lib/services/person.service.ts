@@ -102,7 +102,7 @@ export const personService = {
 
   async uploadAvatar(file: File): Promise<string> {
     const fileExt = file.name.split('.').pop();
-    const fileName = `${uuidv4()}.${fileExt}`;
+    const fileName = `${crypto.randomUUID()}.${fileExt}`;
     const filePath = `avatars/${fileName}`;
 
     const { error } = await supabase.storage.from('avatars').upload(filePath, file);
@@ -113,10 +113,3 @@ export const personService = {
   },
 
 };
-
-function uuidv4() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-}

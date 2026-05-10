@@ -11,6 +11,7 @@ import { ViewPersonModal } from './modals/view-person-modal';
 import { personService } from '../../lib/services/person.service';
 import { toast } from 'sonner';
 import { LoadingSpinner } from '../ui/loading-spinner';
+import { TreeChatbot } from './parts/tree-chatbot';
 
 export default function TreeClient({ treeId }: { treeId: string }) {
   const setCurrentTree = useStore((state) => state.setCurrentTree);
@@ -22,20 +23,6 @@ export default function TreeClient({ treeId }: { treeId: string }) {
   const setShowCardActions = useStore((state) => state.setShowCardActions);
   const isLoading = useStore((state) => state.isLoading);
   const setRelationships = useStore((state) => state.setRelationships);
-
-  useEffect(() => {
-    const handleOutsideClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      // Nếu click vào một vùng không thuộc Card (không có class liên quan đến node)
-      // và không phải đang tương tác bên trong menu hành động
-      if (!target.closest('.react-flow__node-personNode') && !target.closest('.person-card-actions')) {
-        setShowCardActions(null);
-      }
-    };
-
-    window.addEventListener('mousedown', handleOutsideClick);
-    return () => window.removeEventListener('mousedown', handleOutsideClick);
-  }, [setShowCardActions]);
 
   useEffect(() => {
     const loadTree = async () => {
@@ -89,6 +76,7 @@ export default function TreeClient({ treeId }: { treeId: string }) {
         <FamilyTreeCanvas />
         <Sidebar />
         <ViewPersonModal />
+        <TreeChatbot />
       </ReactFlowProvider>
     </div>
   );
