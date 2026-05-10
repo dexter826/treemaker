@@ -134,7 +134,7 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
         onClick={() => {
           if (!disabled) fileInputRef.current?.click();
         }}
-        className={`relative group w-24 h-24 border-2 border-foreground bg-muted overflow-hidden cursor-pointer transition-all hover:border-primary ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className={`relative group w-32 h-32 border-2 border-foreground bg-muted overflow-hidden cursor-pointer transition-all hover:border-primary shadow-[4px_4px_0px_0px_var(--color-foreground)] ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
         {displayUrl ? (
           <>
@@ -163,7 +163,7 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
 
       {showCropModal && srcForCrop && (
         <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
-          <div className="bg-background p-6 rounded-lg max-w-md w-full">
+          <div className="bg-background p-6 rounded-none max-w-md w-full">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-bold">Cắt Ảnh Đại Diện</h3>
               <button onClick={handleCropCancel} className="text-muted-foreground hover:text-foreground">
@@ -171,13 +171,12 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
               </button>
             </div>
 
-            <div className="relative w-full aspect-square bg-muted rounded-md overflow-hidden mb-4">
+            <div className="relative w-full aspect-square bg-muted rounded-none overflow-hidden mb-4">
               <Cropper
                 image={srcForCrop}
                 crop={crop}
                 zoom={zoom}
                 aspect={1}
-                cropShape="round"
                 showGrid={false}
                 onCropChange={setCrop}
                 onCropComplete={onCropComplete}

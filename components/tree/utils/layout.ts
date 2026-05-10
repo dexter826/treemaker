@@ -67,7 +67,7 @@ export const generateNodesAndEdges = (persons: Person[], relationships: Relation
         target: person.id,
         sourceHandle: 'bottom',
         targetHandle: 'top',
-        type: 'step',
+        type: 'familyEdge',
         style: { stroke: 'var(--color-foreground)', strokeWidth: 2 },
       });
     } else {
@@ -78,7 +78,7 @@ export const generateNodesAndEdges = (persons: Person[], relationships: Relation
           target: person.id,
           sourceHandle: 'bottom',
           targetHandle: 'top',
-          type: 'step',
+          type: 'familyEdge',
           style: { stroke: 'var(--color-foreground)', strokeWidth: 2 },
         });
       }
@@ -89,7 +89,7 @@ export const generateNodesAndEdges = (persons: Person[], relationships: Relation
           target: person.id,
           sourceHandle: 'bottom',
           targetHandle: 'top',
-          type: 'step',
+          type: 'familyEdge',
           style: { stroke: 'var(--color-foreground)', strokeWidth: 2 },
         });
       }

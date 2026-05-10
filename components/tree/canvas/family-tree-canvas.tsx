@@ -7,10 +7,15 @@ import { PersonNode } from './person-node';
 import { MarriageNode } from './marriage-node';
 import { useTreeFlow } from '../hooks/use-tree-flow';
 import { useTreeConnections } from '../hooks/use-tree-connections';
+import { FamilyEdge } from './family-edge';
 
 const nodeTypes = { 
   personNode: PersonNode,
   marriageNode: MarriageNode 
+};
+
+const edgeTypes = {
+  familyEdge: FamilyEdge
 };
 
 export function FamilyTreeCanvas() {
@@ -41,6 +46,7 @@ export function FamilyTreeCanvas() {
         onConnect={onConnect}
         onBeforeDelete={onBeforeDelete}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         deleteKeyCode={['Backspace', 'Delete']}
         nodesDraggable={false}
         fitView
