@@ -14,6 +14,7 @@ export interface Person {
   tree_id: string;
   full_name: string;
   gender: Gender;
+  sibling_order: number | null;
   birth_date: string | null;
   death_date: string | null;
   avatar_url: string | null;
@@ -22,14 +23,21 @@ export interface Person {
   address: string | null;
   father_id: string | null;
   mother_id: string | null;
-  spouse_id: string | null;
-  position_x: number | null;
-  position_y: number | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface Relationship {
+  id: string;
+  tree_id: string;
+  person1_id: string;
+  person2_id: string;
+  relationship_type: 'spouse';
+  created_at: string;
 }
 
 export interface TreeData {
   tree: FamilyTree;
   persons: Person[];
+  relationships: Relationship[];
 }

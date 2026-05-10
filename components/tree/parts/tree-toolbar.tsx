@@ -1,116 +1,86 @@
+import { useMemo, useState } from 'react';
+import Link from 'next/link';
 import { useStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
-import { Search, Share2, ArrowLeft, Check, UserPlus, Mars, Venus, LayoutGrid, Loader2 } from 'lucide-react';
-
-import Link from 'next/link';
+import { Search, Share2, ArrowLeft, Check, UserPlus, Mars, Venus } from 'lucide-react';
 import { toast } from 'sonner';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
-import { useState } from 'react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { personService } from '@/lib/services/person.service';
 import { Select } from '@/components/ui/select';
-import { generateNodesAndEdges, getLayoutedElements } from '../utils/layout';
+
+
+const normalizeSiblingOrder = (value: number): number => Math.max(0, Math.floor(value || 0));
 
 export function TreeToolbar() {
-  const currentTree = useStore(state => state.currentTree);
-  const persons = useStore(state => state.persons);
-  const setSelectedPersonId = useStore(state => state.setSelectedPersonId);
-  const updatePersonPositions = useStore(state => state.updatePersonPositions);
-  const isReadOnly = useStore(state => state.isReadOnly);
-  
-  
+  const currentTree = useStore((state) => state.currentTree);
+  const persons = useStore((state) => state.persons);
+  const setSelectedPersonId = useStore((state) => state.setSelectedPersonId);
+  const isReadOnly = useStore((state) => state.isReadOnly);
+  const addPerson = useStore((state) => state.addPerson);
+  const relationships = useStore((state) => state.relationships);
+
   const [searchOpen, setSearchOpen] = useState(false);
   const [isAddPersonOpen, setIsAddPersonOpen] = useState(false);
   const [newPersonName, setNewPersonName] = useState('');
   const [newPersonGender, setNewPersonGender] = useState<'male' | 'female'>('male');
+  const [newPersonSiblingOrder, setNewPersonSiblingOrder] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLayouting, setIsLayouting] = useState(false);
-  const addPerson = useStore(state => state.addPerson);
+
 
   if (!currentTree) return null;
 
-  const handleAutoLayout = async () => {
-    if (isLayouting) return;
-    setIsLayouting(true);
-    
-    try {
-      const { nodes: initialNodes, edges: initialEdges } = generateNodesAndEdges(persons);
-      const { nodes: layoutedNodes } = getLayoutedElements(initialNodes, initialEdges);
-      
-      const updates = layoutedNodes.map(node => ({
-        id: node.id,
-        x: node.position.x,
-        y: node.position.y
-      }));
 
-      updatePersonPositions(updates);
-
-      await personService.updatePositions(updates.map(u => ({
-        id: u.id,
-        position_x: u.x,
-        position_y: u.y
-      })));
-
-      toast.success('Đã tự động sắp xếp và lưu vị trí!');
-    } catch (err: any) {
-      toast.error('Lỗi khi sắp xếp: ' + err.message);
-    } finally {
-      setIsLayouting(false);
-    }
-  };
 
   const handleShare = () => {
     const url = `${window.location.origin}/share/${currentTree.share_token}`;
     navigator.clipboard.writeText(url);
-    toast.success('Đã sao chép khóa chia sẻ!');
-  };
-
-  const focusPerson = (id: string) => {
-    setSearchOpen(false);
-    setSelectedPersonId(id);
+    toast.success('Đã sao chép liên kết chia sẻ.');
   };
 
   const handleAddPerson = async () => {
     if (!newPersonName.trim() || isSubmitting) return;
+
     setIsSubmitting(true);
     try {
       const newPerson = await personService.create({
         tree_id: currentTree.id,
         full_name: newPersonName.trim() || 'Khuyết Danh',
-        gender: newPersonGender
+        gender: newPersonGender,
+        sibling_order: normalizeSiblingOrder(newPersonSiblingOrder),
       });
       addPerson(newPerson);
       setSelectedPersonId(newPerson.id);
       setIsAddPersonOpen(false);
       setNewPersonName('');
-      toast.success('Đã thêm hồ sơ mới!');
-    } catch (err: any) {
-      toast.error('Lỗi: ' + err.message);
+      setNewPersonSiblingOrder(0);
+      toast.success('Đã thêm hồ sơ mới.');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Lỗi khi thêm hồ sơ.';
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="absolute top-6 left-6 z-10 flex flex-col md:flex-row items-start md:items-center gap-4">
-      {/* Title Block */}
+    <div className="absolute top-4 left-4 z-10 flex flex-col md:flex-row items-start md:items-center gap-3">
       <div className="bg-background border-2 border-foreground flex items-stretch shadow-[4px_4px_0px_0px_var(--color-foreground)]">
-        <Link href="/" className="flex items-center justify-center border-r-2 border-foreground hover:bg-foreground hover:text-background transition-colors w-12 cursor-pointer">
+        <Link href="/" className="flex items-center justify-center border-r-2 border-foreground hover:bg-foreground hover:text-background transition-colors w-12 cursor-pointer" aria-label="Quay lại trang chính">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="px-4 py-2 flex flex-col justify-center">
-          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Hồ Sơ Hiện Tại</span>
-          <h1 className="font-serif font-black text-lg uppercase tracking-tight max-w-[200px] truncate">{currentTree.name}</h1>
+          <span className="text-xs font-semibold tracking-wide text-muted-foreground">Hồ sơ hiện tại</span>
+          <h1 className="font-serif font-black text-lg tracking-tight max-w-[220px] truncate">{currentTree.name}</h1>
         </div>
       </div>
 
-      {/* Action Block */}
       <div className="bg-background border-2 border-foreground flex items-center shadow-[4px_4px_0px_0px_var(--color-foreground)]">
         <Popover open={searchOpen} onOpenChange={setSearchOpen}>
-          <PopoverTrigger className="h-12 w-12 rounded-none border-r-2 border-foreground hover:bg-foreground hover:text-background flex items-center justify-center transition-colors cursor-pointer">
+          <PopoverTrigger className="h-12 w-12 rounded-none border-r-2 border-foreground hover:bg-foreground hover:text-background flex items-center justify-center transition-colors cursor-pointer" aria-label="Tìm kiếm cá nhân">
             <Search className="w-5 h-5" />
           </PopoverTrigger>
           <PopoverContent className="w-[280px] p-0 border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--color-foreground)]" align="start">
@@ -123,16 +93,15 @@ export function TreeToolbar() {
                     <CommandItem
                       key={person.id}
                       value={person.full_name}
-                      onSelect={() => focusPerson(person.id)}
-                      className="rounded-none cursor-pointer aria-selected:bg-primary/10 aria-selected:text-primary font-bold uppercase tracking-widest text-xs py-3"
+                      onSelect={() => {
+                        setSearchOpen(false);
+                        setSelectedPersonId(person.id);
+                      }}
+                      className="rounded-none cursor-pointer aria-selected:bg-primary/10 aria-selected:text-primary font-semibold tracking-wide text-sm py-3"
                     >
                       <Check className="mr-2 h-4 w-4 opacity-0" />
                       <div className="flex items-center gap-2 flex-1">
-                        {person.gender === 'male' ? (
-                          <Mars className="w-3.5 h-3.5 text-male" />
-                        ) : (
-                          <Venus className="w-3.5 h-3.5 text-female" />
-                        )}
+                        {person.gender === 'male' ? <Mars className="w-3.5 h-3.5 text-male" /> : <Venus className="w-3.5 h-3.5 text-female" />}
                         <span>{person.full_name}</span>
                       </div>
                     </CommandItem>
@@ -145,34 +114,11 @@ export function TreeToolbar() {
 
         {!isReadOnly && (
           <>
-            <Button 
-              variant="ghost" 
-              className="h-12 px-4 border-r-2 border-foreground" 
-              onClick={handleAutoLayout}
-              disabled={isLayouting}
-            >
-              {isLayouting ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <LayoutGrid className="w-4 h-4" />
-              )}
-              <span className="ml-2 hidden sm:inline">Sắp xếp</span>
-            </Button>
-
-            <Button 
-              variant="ghost" 
-              className="h-12 px-4 border-r-2 border-foreground" 
-              onClick={handleShare}
-            >
+            <Button variant="ghost" className="h-12 px-4 border-y-0 border-l-0 border-r-2 border-foreground" onClick={handleShare}>
               <Share2 className="w-4 h-4" />
               <span className="ml-2 hidden sm:inline">Chia sẻ</span>
             </Button>
-
-            <Button 
-              variant="ghost" 
-              className="h-12 px-4" 
-              onClick={() => setIsAddPersonOpen(true)}
-            >
+            <Button variant="ghost" className="h-12 px-4 border-y-0 border-l-0" onClick={() => setIsAddPersonOpen(true)}>
               <UserPlus className="w-4 h-4" />
               <span className="ml-2 hidden sm:inline">Thêm người</span>
             </Button>
@@ -180,47 +126,46 @@ export function TreeToolbar() {
         )}
       </div>
 
-      <Dialog open={isAddPersonOpen} onOpenChange={(v) => { if (!v) { setIsAddPersonOpen(false); setNewPersonName(''); } }}>
+      <Dialog open={isAddPersonOpen} onOpenChange={(v) => !v && setIsAddPersonOpen(false)}>
         <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
           <div className="border-b-2 border-foreground bg-primary/5 p-6">
-            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest">
-              Thêm Hồ Sơ Mới
-            </DialogTitle>
-            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mt-2">
-              Vào cây: {currentTree.name}
-            </p>
+            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest">Thêm Hồ Sơ Mới</DialogTitle>
+            <p className="text-xs font-semibold text-muted-foreground tracking-[0.16em] mt-2">Vào cây: {currentTree.name}</p>
           </div>
-          
+
           <div className="space-y-4 p-6">
             <div className="grid grid-cols-3 gap-4">
               <div className="col-span-2 space-y-2">
-                <Label className="text-[10px] font-bold uppercase tracking-[0.2em]">Họ và Tên</Label>
-                <Input 
-                  autoFocus
-                  value={newPersonName} 
-                  onChange={e => setNewPersonName(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && handleAddPerson()}
-                  placeholder="Nhập tên người mới"
-                  className="font-bold"
-                />
+                <Label className="text-xs font-semibold tracking-[0.16em]">Họ và Tên</Label>
+                <Input autoFocus value={newPersonName} onChange={(e) => setNewPersonName(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAddPerson()} placeholder="Nhập tên người mới" className="font-semibold" />
               </div>
-
               <div className="col-span-1 space-y-2">
-                <Label className="text-[10px] font-bold uppercase tracking-[0.2em]">Giới Tính</Label>
-                <Select 
+                <Label className="text-xs font-semibold tracking-[0.16em]">Giới Tính</Label>
+                <Select
                   options={[
                     { value: 'male', label: 'Nam' },
-                    { value: 'female', label: 'Nữ' }
+                    { value: 'female', label: 'Nữ' },
                   ]}
                   value={newPersonGender}
-                  onChange={(val: string) => setNewPersonGender(val as any)}
+                  onChange={(val: string) => setNewPersonGender(val as 'male' | 'female')}
                 />
               </div>
             </div>
+            <div className="space-y-2">
+              <Label className="text-xs font-semibold tracking-[0.16em]">Thứ Tự Sinh</Label>
+              <Input
+                type="number"
+                min={0}
+                step={1}
+                value={newPersonSiblingOrder}
+                onChange={(e) => setNewPersonSiblingOrder(normalizeSiblingOrder(Number(e.target.value)))}
+                className="font-semibold"
+              />
+            </div>
           </div>
-          
+
           <div className="border-t-2 border-foreground p-0 flex">
-            <Button variant="ghost" className="flex-1 h-14 border-r-2" onClick={() => { setIsAddPersonOpen(false); setNewPersonName(''); }}>
+            <Button variant="ghost" className="flex-1 h-14 border-r-2" onClick={() => setIsAddPersonOpen(false)}>
               Hủy
             </Button>
             <Button className="flex-1 h-14" onClick={handleAddPerson} disabled={!newPersonName.trim() || isSubmitting}>

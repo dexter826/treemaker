@@ -2,6 +2,22 @@ import { supabase } from '../supabase';
 import { FamilyTree, Person } from '../../types';
 import { personService } from './person.service';
 
+const mapTreeError = (error: unknown): Error => {
+  const raw = error as { message?: string };
+  return error instanceof Error ? error : new Error(String(raw?.message ?? 'Đã xảy ra lỗi cây gia phả.'));
+};
+
+const isFamilyTree = (value: unknown): value is FamilyTree => {
+  if (!value || typeof value !== 'object') return false;
+  const candidate = value as Partial<FamilyTree>;
+  return (
+    typeof candidate.id === 'string' &&
+    typeof candidate.owner_id === 'string' &&
+    typeof candidate.name === 'string' &&
+    typeof candidate.share_token === 'string'
+  );
+};
+
 export const treeService = {
   async getAllByUser(userId: string): Promise<FamilyTree[]> {
     const { data, error } = await supabase
@@ -10,52 +26,37 @@ export const treeService = {
       .eq('owner_id', userId)
       .order('created_at', { ascending: false });
 
-    if (error) throw error;
-    return data || [];
+    if (error) throw mapTreeError(error);
+    return data ?? [];
   },
 
   async getById(treeId: string): Promise<FamilyTree> {
-    const { data, error } = await supabase
-      .from('family_trees')
-      .select('*')
-      .eq('id', treeId)
-      .single();
+    const { data, error } = await supabase.from('family_trees').select('*').eq('id', treeId).single();
 
-    if (error) throw error;
+    if (error) throw mapTreeError(error);
     return data;
   },
 
   async getByShareToken(token: string): Promise<string | null> {
-    const { data, error } = await supabase
-      .from('family_trees')
-      .select('id')
-      .eq('share_token', token)
-      .single();
+    const { data, error } = await supabase.from('family_trees').select('id').eq('share_token', token).single();
 
-    if (error || !data) return null;
+    if (error || !data) {
+      return null;
+    }
     return data.id;
   },
 
   async create(userId: string, name: string): Promise<FamilyTree> {
-    const { data: tree, error: treeError } = await supabase
-      .from('family_trees')
-      .insert({ owner_id: userId, name: name.trim() })
-      .select()
-      .single();
+    const { data, error } = await supabase.rpc('create_tree_with_root', {
+      p_owner_id: userId,
+      p_name: name,
+    });
 
-    if (treeError) throw treeError;
-
-    const { error: rootError } = await supabase
-      .from('persons')
-      .insert({
-        tree_id: tree.id,
-        full_name: 'Khuyết Danh',
-        gender: 'male'
-      });
-
-    if (rootError) throw rootError;
-
-    return tree;
+    if (error) throw mapTreeError(error);
+    if (!isFamilyTree(data)) {
+      throw new Error('Dữ liệu cây gia phả trả về không hợp lệ.');
+    }
+    return data;
   },
 
   async update(treeId: string, updates: Partial<FamilyTree>): Promise<FamilyTree> {
@@ -66,24 +67,12 @@ export const treeService = {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) throw mapTreeError(error);
     return data;
   },
 
   async delete(treeId: string): Promise<void> {
-    const { error } = await supabase
-      .from('family_trees')
-      .delete()
-      .eq('id', treeId);
-
-    if (error) throw error;
+    const { error } = await supabase.from('family_trees').delete().eq('id', treeId);
+    if (error) throw mapTreeError(error);
   },
-
-  async loadWithPersons(treeId: string): Promise<{ tree: FamilyTree; persons: Person[] }> {
-    const [tree, persons] = await Promise.all([
-      this.getById(treeId),
-      personService.getAllByTree(treeId)
-    ]);
-    return { tree, persons };
-  }
 };

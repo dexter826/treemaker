@@ -1,16 +1,9 @@
-import { useEffect, useCallback } from 'react';
-import { 
-  useNodesState, 
-  useEdgesState, 
-  useReactFlow, 
-  Node, 
-  Edge 
-} from '@xyflow/react';
-import { Person } from '@/types';
+import { useEffect } from 'react';
+import { useNodesState, useEdgesState, useReactFlow, Node, Edge } from '@xyflow/react';
+import { Person, Relationship } from '@/types';
 import { generateNodesAndEdges, getLayoutedElements } from '../utils/layout';
 
-// Quản lý hiển thị và tự động sắp xếp sơ đồ cây.
-export function useTreeFlow(persons: Person[], selectedPersonId: string | null) {
+export function useTreeFlow(persons: Person[], relationships: Relationship[], selectedPersonId: string | null) {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const { fitView } = useReactFlow();
@@ -22,34 +15,24 @@ export function useTreeFlow(persons: Person[], selectedPersonId: string | null) 
       return;
     }
 
-    const { nodes: initialNodes, edges: initialEdges } = generateNodesAndEdges(persons);
-
-    const styledEdges = initialEdges.map(edge => ({
-      ...edge,
-      type: 'step',
-      style: {
-        stroke: 'var(--color-foreground)',
-        strokeWidth: 2,
-        strokeDasharray: '4 4'
-      }
-    }));
-
-    setNodes(initialNodes);
-    setEdges(styledEdges);
+    const { nodes: initialNodes, edges: initialEdges } = generateNodesAndEdges(persons, relationships);
+    const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(initialNodes, initialEdges);
+    
+    setNodes(layoutedNodes);
+    setEdges(layoutedEdges);
 
     const timer = setTimeout(() => {
-      fitView({ padding: 0.2, duration: 800 });
-    }, 50);
+      fitView({ padding: 0.1, duration: 800 });
+    }, 100);
 
     return () => clearTimeout(timer);
-  }, [persons.length, setNodes, setEdges, fitView]); 
+  }, [persons, relationships, setNodes, setEdges, fitView]);
 
   useEffect(() => {
-    if (selectedPersonId) {
-      const node = nodes.find(n => n.id === selectedPersonId);
-      if (node) {
-        fitView({ nodes: [node], duration: 800, padding: 2, maxZoom: 1.2 });
-      }
+    if (!selectedPersonId) return;
+    const node = nodes.find((n) => n.id === selectedPersonId);
+    if (node) {
+      fitView({ nodes: [node], duration: 800, padding: 2, maxZoom: 1.2 });
     }
   }, [selectedPersonId, nodes, fitView]);
 
@@ -59,6 +42,6 @@ export function useTreeFlow(persons: Person[], selectedPersonId: string | null) 
     onNodesChange,
     onEdgesChange,
     setEdges,
-    fitView
+    fitView,
   };
 }

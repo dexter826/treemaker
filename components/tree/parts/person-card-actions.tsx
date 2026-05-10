@@ -1,4 +1,5 @@
-"use client"
+﻿"use client";
+
 import { useStore } from '@/lib/store';
 import { Person } from '@/types';
 import { Button } from '@/components/ui/button';
@@ -17,37 +18,21 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
   const setSelectedPersonId = useStore((state) => state.setSelectedPersonId);
   const setViewPersonId = useStore((state) => state.setViewPersonId);
   const isReadOnly = useStore((state) => state.isReadOnly);
-
   const removePerson = useStore((state) => state.removePerson);
+
   const [isDeleting, setIsDeleting] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-
-  const handleEdit = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setSelectedPersonId(person.id);
-    onClose();
-  };
-
-  const handleView = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setViewPersonId(person.id);
-    onClose();
-  };
-
-  const handleDeleteClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsConfirmOpen(true);
-  };
 
   const confirmDelete = async () => {
     setIsDeleting(true);
     try {
       await personService.delete(person.id);
       removePerson(person.id);
-      toast.success('Đã xóa hồ sơ');
+      toast.success('Đã xóa hồ sơ.');
       onClose();
-    } catch (error: any) {
-      toast.error('Lỗi: ' + error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Lỗi khi xóa hồ sơ.';
+      toast.error(message);
     } finally {
       setIsDeleting(false);
       setIsConfirmOpen(false);
@@ -55,15 +40,19 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
   };
 
   return (
-    <div 
+    <div
       className="absolute inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur-sm"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
       <div className="flex gap-4">
-        <Button 
-          onClick={handleView}
+        <Button
+          onClick={(e) => {
+            e.stopPropagation();
+            setViewPersonId(person.id);
+            onClose();
+          }}
           size="icon"
           title="Xem chi tiết"
           className="h-12 w-12 rounded-none border-2 border-foreground bg-background text-foreground hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all cursor-pointer shadow-[4px_4px_0px_0px_var(--color-foreground)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
@@ -73,17 +62,24 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
 
         {!isReadOnly && (
           <>
-            <Button 
-              onClick={handleEdit}
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedPersonId(person.id);
+                onClose();
+              }}
               size="icon"
               title="Chỉnh sửa"
               className="h-12 w-12 rounded-none border-2 border-foreground bg-background text-foreground hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all cursor-pointer shadow-[4px_4px_0px_0px_var(--color-foreground)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
             >
               <Pencil className="w-5 h-5" />
             </Button>
-            
-            <Button 
-              onClick={handleDeleteClick}
+
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsConfirmOpen(true);
+              }}
               size="icon"
               title="Xóa hồ sơ"
               className="h-12 w-12 rounded-none border-2 border-foreground bg-background text-foreground hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all cursor-pointer shadow-[4px_4px_0px_0px_var(--color-foreground)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
@@ -95,27 +91,22 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
       </div>
 
       <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
-        <DialogContent 
-          className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md"
-          onClick={(e) => e.stopPropagation()}
-        >
+        <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md" onClick={(e) => e.stopPropagation()}>
           <div className="border-b-2 border-foreground bg-destructive/10 p-6">
-            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest text-destructive">
-              Xác Nhận Xóa
-            </DialogTitle>
+            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest text-destructive">Xác Nhận Xóa</DialogTitle>
           </div>
-          
+
           <div className="p-6">
             <p className="text-sm font-medium leading-relaxed">
               Bạn có chắc chắn muốn xóa hồ sơ của <span className="font-bold">{person.full_name}</span> không?
             </p>
           </div>
-          
+
           <div className="border-t-2 border-foreground p-0 flex">
-            <Button variant="ghost" className="flex-1 rounded-none h-14 border-r-2 border-foreground font-bold uppercase tracking-widest hover:bg-foreground hover:text-background cursor-pointer" onClick={() => setIsConfirmOpen(false)}>
+            <Button variant="ghost" className="flex-1 rounded-none h-14 border-r-2 border-foreground font-semibold tracking-wide hover:bg-foreground hover:text-background cursor-pointer" onClick={() => setIsConfirmOpen(false)}>
               Hủy
             </Button>
-            <Button variant="destructive" className="flex-1 rounded-none h-14 border-2 border-transparent hover:border-destructive font-bold uppercase tracking-widest cursor-pointer" onClick={confirmDelete} disabled={isDeleting}>
+            <Button variant="destructive" className="flex-1 rounded-none h-14 border-2 border-transparent hover:border-destructive font-semibold tracking-wide cursor-pointer" onClick={confirmDelete} disabled={isDeleting}>
               {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Xóa'}
             </Button>
           </div>
