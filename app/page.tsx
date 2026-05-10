@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { FamilyTree } from '@/types';
+import { Logo } from '@/components/ui/logo';
 
 export default function DashboardPage() {
   const [session, setSession] = useState<Session | null>(null);
@@ -115,8 +116,13 @@ export default function DashboardPage() {
 
   if (!session) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4 lg:p-8 relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none opacity-5">
+      <div className="min-h-screen flex flex-col bg-background relative overflow-hidden">
+        {/* Header Landing Page */}
+        <header className="absolute top-0 left-0 w-full p-6 lg:px-10 z-50 flex items-center">
+          <Logo width={150} height={100} className="mix-blend-multiply dark:mix-blend-screen hover:opacity-100" />
+        </header>
+
+        <div className="absolute inset-0 pointer-events-none opacity-5 z-0">
           <div
             className="w-full h-full"
             style={{
@@ -127,23 +133,25 @@ export default function DashboardPage() {
           />
         </div>
 
-        <div className="w-full max-w-6xl flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16 z-10">
-          <div className="flex-1 text-left space-y-6 lg:pl-10">
-            <div className="inline-block border-2 border-foreground px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-foreground bg-primary/5">
-              Gia Phả Số
+        <div className="flex-1 flex items-center justify-center p-4 lg:p-8 mt-16 lg:mt-0">
+          <div className="w-full max-w-6xl flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16 z-10">
+            <div className="flex-1 text-left space-y-6 lg:pl-10">
+              <div className="inline-block border-2 border-foreground px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-foreground bg-primary/5">
+                TreeMaker
+              </div>
+              <h1 className="text-5xl lg:text-7xl font-black font-serif leading-[0.9] tracking-tight text-foreground">
+                <span className="block">Khám Phá</span>
+                <span className="block text-primary italic font-light">&</span>
+                <span className="block">Lưu Giữ</span>
+              </h1>
+              <p className="text-muted-foreground text-base max-w-md leading-relaxed font-medium">
+                Nền tảng quản lý gia phả trực quan, bảo toàn mối quan hệ qua nhiều thế hệ với dữ liệu nhất quán và an toàn.
+              </p>
             </div>
-            <h1 className="text-5xl lg:text-7xl font-black font-serif leading-[0.9] tracking-tight text-foreground">
-              <span className="block">Khám Phá</span>
-              <span className="block text-primary italic font-light">&</span>
-              <span className="block">Lưu Giữ</span>
-            </h1>
-            <p className="text-muted-foreground text-base max-w-md leading-relaxed font-medium">
-              Nền tảng quản lý gia phả trực quan, bảo toàn mối quan hệ qua nhiều thế hệ với dữ liệu nhất quán và an toàn.
-            </p>
-          </div>
 
-          <div className="w-full lg:w-[420px]">
-            <AuthForm />
+            <div className="w-full lg:w-[420px]">
+              <AuthForm />
+            </div>
           </div>
         </div>
       </div>
@@ -153,12 +161,20 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-background relative selection:bg-primary/20">
       <div className="max-w-5xl mx-auto px-4 py-8 lg:px-8 lg:py-10 flex flex-col">
-        <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b-4 border-foreground pb-6 mb-6">
-          <div className="space-y-2">
-            <h2 className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Hồ Sơ Lưu Trữ</h2>
-            <h1 className="text-4xl md:text-6xl font-black font-serif tracking-tight leading-none">
-              Cây <span className="text-primary italic font-light">Gia Phả</span>
-            </h1>
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-4 border-foreground pb-6 mb-6">
+          <div className="flex flex-col md:flex-row md:items-end gap-6">
+            <div className="hidden md:block pb-1 pr-6 border-r-4 border-foreground/10">
+              <Logo width={120} height={80} className="mix-blend-multiply dark:mix-blend-screen hover:opacity-100" />
+            </div>
+            <div className="md:hidden block mb-2">
+              <Logo width={100} height={65} className="mix-blend-multiply dark:mix-blend-screen hover:opacity-100" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Hồ Sơ Lưu Trữ</h2>
+              <h1 className="text-4xl md:text-6xl font-black font-serif tracking-tight leading-none">
+                Cây <span className="text-primary italic font-light">Gia Phả</span>
+              </h1>
+            </div>
           </div>
 
           <div className="text-left md:text-right flex flex-col md:items-end gap-3">
@@ -319,7 +335,7 @@ export default function DashboardPage() {
           </div>
           <div className="p-6">
             <p className="text-sm font-medium leading-relaxed">
-              Bạn có chắc chắn muốn xóa toàn bộ gia phả <span className="font-bold">"{treeToDelete?.name}"</span> không?
+              Bạn có chắc chắn muốn xóa toàn bộ gia phả <span className="font-bold">&ldquo;{treeToDelete?.name}&rdquo;</span> không?
               Mọi dữ liệu về thành viên và mối quan hệ sẽ bị xóa vĩnh viễn.
             </p>
           </div>

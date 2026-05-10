@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Person } from '@/types';
 import { useStore } from '@/lib/store';
 import { Input } from '@/components/ui/input';
@@ -21,13 +21,9 @@ const normalizeSiblingOrder = (value: number | null | undefined): number => {
 export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly: boolean }) {
   const persons = useStore((state) => state.persons);
   const updatePerson = useStore((state) => state.updatePerson);
-  const [formData, setFormData] = useState<Person>(person);
+const [formData, setFormData] = useState<Person>(person);
   const [selectedAvatarFile, setSelectedAvatarFile] = useState<File | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-
-  useEffect(() => {
-    setFormData(person);
-  }, [person]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     if (e.target.name === 'sibling_order') {

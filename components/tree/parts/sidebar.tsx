@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { useStore } from '@/lib/store';
 import { Person } from '@/types';
 import { PersonForm } from '../forms/person-form';
@@ -43,11 +43,11 @@ export function Sidebar() {
   const personId = person?.id;
 
   // Helper to check if someone is a spouse
-  const getSpouseId = (pId: string) => {
+  const getSpouseId = useCallback((pId: string) => {
     const rel = relationships.find(r => r.person1_id === pId || r.person2_id === pId);
     if (!rel) return null;
     return rel.person1_id === pId ? rel.person2_id : rel.person1_id;
-  };
+  }, [relationships]);
 
   const availablePersons = useMemo(() => {
     if (!isAddingRelative || !personId || !person) return [];
@@ -68,7 +68,7 @@ export function Sidebar() {
       }
       return true;
     });
-  }, [isAddingRelative, personId, persons, person, relationships]);
+  }, [isAddingRelative, personId, persons, person, getSpouseId]);
 
   const childParents = useMemo(() => {
     if (isAddingRelative !== 'child' || !person) return { fatherId: null as string | null, motherId: null as string | null };
@@ -82,7 +82,7 @@ export function Sidebar() {
       if (spouse?.gender === 'female') motherId = spouse.id;
     }
     return { fatherId, motherId };
-  }, [isAddingRelative, person, persons, relationships]);
+  }, [isAddingRelative, person, persons, getSpouseId]);
 
   const hasSiblingOrderConflict = useMemo(() => {
     if (isAddingRelative !== 'child' || selectedExistingPersonId || !currentTree) return false;

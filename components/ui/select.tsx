@@ -36,16 +36,16 @@ export function Select({
     )
   }, [options, searchTerm])
 
-  // Reset search when opening/closing
-  React.useEffect(() => {
-    if (!open) {
+  const handleOpenChange = (isOpen: boolean) => {
+    if (!isOpen) {
       setSearchTerm("")
     }
-  }, [open])
+    setOpen(isOpen)
+  }
 
   return (
     <div className="relative w-full">
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover open={open} onOpenChange={handleOpenChange}>
         <PopoverTrigger disabled={disabled} className="w-full">
           <div
             className={cn(

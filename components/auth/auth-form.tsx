@@ -12,6 +12,7 @@ export function AuthForm() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,6 +20,11 @@ export function AuthForm() {
 
     try {
       if (isSignUp) {
+        if (password !== confirmPassword) {
+          toast.error('Mật khẩu xác nhận không khớp.');
+          setLoading(false);
+          return;
+        }
         const { error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
         toast.success('Đăng ký thành công. Hãy kiểm tra email để xác minh.');
@@ -73,6 +79,21 @@ export function AuthForm() {
               className="font-semibold px-4 bg-transparent"
             />
           </div>
+
+          {isSignUp && (
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword" className="text-xs tracking-wide font-semibold text-foreground">Xác nhận mật khẩu</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                placeholder="••••••••"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="font-semibold px-4 bg-transparent"
+              />
+            </div>
+          )}
 
           <Button className="mt-2 h-14 w-full" type="submit" disabled={loading}>
             {loading && <Loader2 className="h-4 w-4 animate-spin" />}

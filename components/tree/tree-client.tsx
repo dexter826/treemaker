@@ -58,6 +58,7 @@ export default function TreeClient({ treeId }: { treeId: string }) {
     setSelectedPersonId,
     setViewPersonId,
     setShowCardActions,
+    setRelationships,
   ]);
 
   if (isLoading) {

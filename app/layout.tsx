@@ -12,8 +12,20 @@ const cormorantGaramond = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: 'Family Tree Maker | Xây dựng cây gia phả trực tuyến',
+  metadataBase: new URL('https://treemaker.app'),
+  title: 'TreeMaker | Xây dựng cây gia phả trực tuyến',
   description: 'Nền tảng hiện đại để lưu giữ và kết nối các thế hệ trong gia đình bạn.',
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
+  openGraph: {
+    images: ['/og-image.png'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: ['/og-image.png'],
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
