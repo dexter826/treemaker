@@ -1,10 +1,9 @@
-﻿"use client";
+"use client";
 
 import { useState, useRef, useCallback } from 'react';
-import ReactCrop, { Crop, PixelCrop, PercentCrop, centerCrop, makeAspectCrop } from 'react-image-crop';
-import 'react-image-crop/dist/ReactCrop.css';
+import Cropper from 'react-easy-crop';
 import { Button } from '@/components/ui/button';
-import { Upload, X, User, Crop as CropIcon } from 'lucide-react';
+import { Upload, X, User } from 'lucide-react';
 import { toast } from 'sonner';
 import Image from 'next/image';
 
@@ -14,40 +13,39 @@ interface AvatarUploadProps {
   disabled?: boolean;
 }
 
-function centerAspectCrop(mediaWidth: number, mediaHeight: number) {
-  return centerCrop(makeAspectCrop({ unit: '%', width: 90 }, 1, mediaWidth, mediaHeight), mediaWidth, mediaHeight);
-}
+const createImage = (url: string): Promise<HTMLImageElement> =>
+  new Promise((resolve, reject) => {
+    const image = new globalThis.Image();
+    image.addEventListener('load', () => resolve(image));
+    image.addEventListener('error', (error) => reject(error));
+    image.setAttribute('crossOrigin', 'anonymous');
+    image.src = url;
+  });
 
-function getCroppedImg(image: HTMLImageElement, crop: PixelCrop | PercentCrop): Promise<File> {
+async function getCroppedImg(
+  imageSrc: string,
+  pixelCrop: { x: number; y: number; width: number; height: number }
+): Promise<File> {
+  const image = await createImage(imageSrc);
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
 
   if (!ctx) throw new Error('No 2d context');
 
-  const naturalWidth = image.naturalWidth;
-  const naturalHeight = image.naturalHeight;
+  canvas.width = pixelCrop.width;
+  canvas.height = pixelCrop.height;
 
-  let cropX: number;
-  let cropY: number;
-  let cropWidth: number;
-  let cropHeight: number;
-
-  if (crop.unit === '%') {
-    cropX = (crop.x / 100) * naturalWidth;
-    cropY = (crop.y / 100) * naturalHeight;
-    cropWidth = (crop.width / 100) * naturalWidth;
-    cropHeight = (crop.height / 100) * naturalHeight;
-  } else {
-    cropX = crop.x;
-    cropY = crop.y;
-    cropWidth = crop.width;
-    cropHeight = crop.height;
-  }
-
-  canvas.width = cropWidth;
-  canvas.height = cropHeight;
-
-  ctx.drawImage(image, cropX, cropY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+  ctx.drawImage(
+    image,
+    pixelCrop.x,
+    pixelCrop.y,
+    pixelCrop.width,
+    pixelCrop.height,
+    0,
+    0,
+    pixelCrop.width,
+    pixelCrop.height
+  );
 
   return new Promise((resolve) => {
     canvas.toBlob((blob) => {
@@ -62,11 +60,12 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showCropModal, setShowCropModal] = useState(false);
   const [srcForCrop, setSrcForCrop] = useState<string | null>(null);
-  const [crop, setCrop] = useState<Crop>();
-  const [completedCrop, setCompletedCrop] = useState<PixelCrop | undefined>();
-  const [cropImageElement, setCropImageElement] = useState<HTMLImageElement | null>(null);
+  
+  // State cho việc crop
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [completedCrop, setCompletedCrop] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
 
-  const imgRef = useRef<HTMLImageElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,18 +85,19 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
     const objectUrl = URL.createObjectURL(file);
     setSrcForCrop(objectUrl);
     setShowCropModal(true);
+    setZoom(1);
+    setCrop({ x: 0, y: 0 });
   };
 
-  const handleCropComplete = useCallback((_: Crop, percentageCrop: PercentCrop) => {
-    setCompletedCrop(percentageCrop as unknown as PixelCrop);
+  const onCropComplete = useCallback((_: any, pixelCrop: { x: number; y: number; width: number; height: number }) => {
+    setCompletedCrop(pixelCrop);
   }, []);
 
   const handleCropConfirm = async () => {
-    const sourceImage = cropImageElement ?? imgRef.current;
-    if (!sourceImage || !completedCrop) return;
+    if (!srcForCrop || !completedCrop) return;
 
     try {
-      const croppedFile = await getCroppedImg(sourceImage, completedCrop);
+      const croppedFile = await getCroppedImg(srcForCrop, completedCrop);
       const preview = URL.createObjectURL(croppedFile);
 
       setPreviewUrl(preview);
@@ -153,7 +153,7 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
         )}
 
         {displayUrl && !disabled && (
-          <button onClick={clearImage} className="absolute top-1 right-1 bg-foreground text-background p-1 hover:bg-primary transition-colors">
+          <button onClick={clearImage} className="absolute top-1 right-1 bg-foreground text-background p-1 hover:bg-primary transition-colors z-10">
             <X className="h-3 w-3" />
           </button>
         )}
@@ -163,7 +163,7 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
 
       {showCropModal && srcForCrop && (
         <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
-          <div className="bg-background p-4 rounded-lg max-w-md w-full">
+          <div className="bg-background p-6 rounded-lg max-w-md w-full">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-bold">Cắt Ảnh Đại Diện</h3>
               <button onClick={handleCropCancel} className="text-muted-foreground hover:text-foreground">
@@ -171,31 +171,45 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
               </button>
             </div>
 
-            <ReactCrop crop={crop} onChange={(_, percentCrop) => setCrop(percentCrop)} onComplete={handleCropComplete} aspect={1} circularCrop>
-              <Image
-                ref={imgRef as unknown as React.Ref<HTMLImageElement>}
-                src={srcForCrop}
-                alt="Crop preview"
-                width={600}
-                height={600}
-                unoptimized
-                className="max-h-[50vh] w-auto"
-                onLoad={(e) => {
-                  const image = e.currentTarget as HTMLImageElement;
-                  setCropImageElement(image);
-                  setCrop(centerAspectCrop(image.naturalWidth, image.naturalHeight));
-                }}
+            <div className="relative w-full aspect-square bg-muted rounded-md overflow-hidden mb-4">
+              <Cropper
+                image={srcForCrop}
+                crop={crop}
+                zoom={zoom}
+                aspect={1}
+                cropShape="round"
+                showGrid={false}
+                onCropChange={setCrop}
+                onCropComplete={onCropComplete}
+                onZoomChange={setZoom}
               />
-            </ReactCrop>
+            </div>
 
-            <div className="flex gap-2 mt-4">
-              <Button variant="outline" onClick={handleCropCancel} className="flex-1">
-                Hủy
-              </Button>
-              <Button onClick={handleCropConfirm} className="flex-1">
-                <CropIcon className="h-4 w-4 mr-2" />
-                Xác Nhận
-              </Button>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex justify-between text-xs font-medium">
+                  <span>Zoom</span>
+                  <span>{Math.round(zoom * 100)}%</span>
+                </div>
+                <input
+                  type="range"
+                  min={1}
+                  max={3}
+                  step={0.1}
+                  value={zoom}
+                  onChange={(e) => setZoom(Number(e.target.value))}
+                  className="w-full h-1.5 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
+                />
+              </div>
+
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={handleCropCancel} className="flex-1">
+                  Hủy
+                </Button>
+                <Button onClick={handleCropConfirm} className="flex-1 font-bold" disabled={!completedCrop}>
+                  Xác Nhận
+                </Button>
+              </div>
             </div>
           </div>
         </div>

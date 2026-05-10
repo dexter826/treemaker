@@ -152,9 +152,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-background relative selection:bg-primary/20">
-      <div className="h-2 w-full bg-primary" />
-
-      <div className="max-w-5xl mx-auto px-4 py-8 lg:px-8 lg:py-16 flex flex-col min-h-screen">
+      <div className="max-w-5xl mx-auto px-4 py-12 lg:px-8 lg:py-16 flex flex-col">
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-4 border-foreground pb-8 mb-8">
           <div className="space-y-2">
             <h2 className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Hồ Sơ Lưu Trữ</h2>
@@ -224,33 +222,57 @@ export default function DashboardPage() {
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-3 mt-4 md:mt-0 w-full md:w-auto">
-                    <button
+                  <div className="flex flex-wrap items-center gap-2 mt-4 md:mt-0 w-full md:w-auto">
+                    <Button
+                      variant="outline"
+                      size="sm"
                       onClick={() => {
                         const url = `${window.location.origin}/share/${tree.share_token}`;
                         navigator.clipboard.writeText(url);
                         toast.success('Đã sao chép liên kết chia sẻ.');
                       }}
-                      className="text-xs font-semibold tracking-wide text-muted-foreground hover:text-primary underline-offset-4 hover:underline py-2 cursor-pointer"
+                      className="h-9 px-3 gap-2 text-xs bg-transparent hover:bg-primary/10 hover:text-primary hover:border-primary transition-colors font-medium"
                     >
-                      Sao Chép Khóa
-                    </button>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="size-3.5"
+                      >
+                        <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                      </svg>
+                      Sao Chép
+                    </Button>
 
-                    <button
+                    <Button
+                      variant="outline"
+                      size="sm"
                       onClick={() => {
                         setTreeToDelete(tree);
                         setIsDeleteOpen(true);
                       }}
-                      className="p-2 text-muted-foreground hover:text-destructive transition-colors cursor-pointer"
+                      className="h-9 px-3 gap-2 bg-transparent hover:text-destructive hover:border-destructive hover:bg-destructive/10 transition-colors text-xs font-medium"
                       title="Xóa gia phả"
                     >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                      <Trash2 className="size-4" />
+                      Xóa
+                    </Button>
 
                     <Link href={`/tree/${tree.id}`} className="flex-1 md:flex-none">
-                      <Button className="w-full md:w-auto rounded-none border-2 border-foreground bg-transparent text-foreground hover:bg-primary hover:border-primary hover:text-primary-foreground font-semibold h-10 px-5 gap-2 transition-all cursor-pointer">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full md:w-auto h-9 gap-2 bg-transparent hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all"
+                      >
                         Truy Cập
-                        <ArrowRight className="w-4 h-4" />
+                        <ArrowRight className="size-4" />
                       </Button>
                     </Link>
                   </div>
@@ -260,9 +282,7 @@ export default function DashboardPage() {
           )}
         </main>
 
-        <footer className="mt-16 pt-6 border-t-2 border-foreground/10 text-center flex flex-col justify-center items-center gap-2 text-xs font-semibold tracking-wide text-muted-foreground">
-          <p>© {new Date().getFullYear()} Nền tảng lưu trữ gia phả</p>
-        </footer>
+
       </div>
 
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>

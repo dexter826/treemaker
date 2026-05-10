@@ -162,7 +162,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
       </div>
 
       {!isReadOnly && (
-        <Button className="w-full relative overflow-hidden" onClick={handleSave} disabled={isSaving || JSON.stringify(formData) === JSON.stringify(person)}>
+        <Button className="w-full relative overflow-hidden" onClick={handleSave} disabled={isSaving || (JSON.stringify(formData) === JSON.stringify(person) && !selectedAvatarFile)}>
           {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {isSaving ? 'Đang lưu...' : 'Ghi nhận thay đổi'}
         </Button>
