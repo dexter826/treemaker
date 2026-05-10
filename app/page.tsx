@@ -15,12 +15,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { FamilyTree } from '@/types';
-import { Logo } from '@/components/ui/logo';
+import { SplashScreen } from '@/components/ui/splash-screen';
+import { motion, AnimatePresence } from 'framer-motion';
+
 
 export default function DashboardPage() {
   const [session, setSession] = useState<Session | null>(null);
   const [trees, setTrees] = useState<FamilyTree[]>([]);
   const [loading, setLoading] = useState(true);
+  const [minLoadingFinished, setMinLoadingFinished] = useState(false);
   const setUserId = useStore((state) => state.setUserId);
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -66,7 +69,14 @@ export default function DashboardPage() {
       }
     });
 
-    return () => subscription.unsubscribe();
+    const timer = setTimeout(() => {
+      setMinLoadingFinished(true);
+    }, 1600);
+
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(timer);
+    };
   }, [setUserId]);
 
   const handleCreateTreeSubmit = async (e: React.FormEvent) => {
@@ -106,258 +116,253 @@ export default function DashboardPage() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <LoadingSpinner size="lg" text="Đang tải..." />
-      </div>
-    );
-  }
-
-  if (!session) {
-    return (
-      <div className="min-h-screen flex flex-col bg-background relative overflow-hidden">
-        {/* Header Landing Page */}
-        <header className="absolute top-0 left-0 w-full p-6 lg:px-10 z-50 flex items-center">
-          <Logo width={150} height={100} className="mix-blend-multiply dark:mix-blend-screen hover:opacity-100" />
-        </header>
-
-        <div className="absolute inset-0 pointer-events-none opacity-5 z-0">
-          <div
-            className="w-full h-full"
-            style={{
-              backgroundImage:
-                'linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)',
-              backgroundSize: '4rem 4rem',
-            }}
-          />
-        </div>
-
-        <div className="flex-1 flex items-center justify-center p-4 lg:p-8 mt-16 lg:mt-0">
-          <div className="w-full max-w-6xl flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16 z-10">
-            <div className="flex-1 text-left space-y-6 lg:pl-10">
-              <div className="inline-block border-2 border-foreground px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-foreground bg-primary/5">
-                TreeMaker
-              </div>
-              <h1 className="text-5xl lg:text-7xl font-black font-serif leading-[0.9] tracking-tight text-foreground">
-                <span className="block">Khám Phá</span>
-                <span className="block text-primary italic font-light">&</span>
-                <span className="block">Lưu Giữ</span>
-              </h1>
-              <p className="text-muted-foreground text-base max-w-md leading-relaxed font-medium">
-                Nền tảng quản lý gia phả trực quan, bảo toàn mối quan hệ qua nhiều thế hệ với dữ liệu nhất quán và an toàn.
-              </p>
-            </div>
-
-            <div className="w-full lg:w-[420px]">
-              <AuthForm />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const showSplash = loading || !minLoadingFinished;
 
   return (
-    <div className="min-h-screen bg-background relative selection:bg-primary/20">
-      <div className="max-w-5xl mx-auto px-4 py-8 lg:px-8 lg:py-10 flex flex-col">
-        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-4 border-foreground pb-6 mb-6">
-          <div className="flex flex-col md:flex-row md:items-end gap-6">
-            <div className="hidden md:block pb-1 pr-6 border-r-4 border-foreground/10">
-              <Logo width={120} height={80} className="mix-blend-multiply dark:mix-blend-screen hover:opacity-100" />
-            </div>
-            <div className="md:hidden block mb-2">
-              <Logo width={100} height={65} className="mix-blend-multiply dark:mix-blend-screen hover:opacity-100" />
-            </div>
-            <div className="space-y-2">
-              <h2 className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Hồ Sơ Lưu Trữ</h2>
-              <h1 className="text-4xl md:text-6xl font-black font-serif tracking-tight leading-none">
-                Cây <span className="text-primary italic font-light">Gia Phả</span>
-              </h1>
-            </div>
-          </div>
+    <>
+      <SplashScreen isVisible={showSplash} />
+      <AnimatePresence mode="wait">
+        {!showSplash && (
+          <motion.div
+            key="content"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="min-h-screen"
+          >
+            {!session ? (
+              <div className="min-h-screen flex flex-col bg-background relative overflow-hidden">
+                {/* Header Landing Page */}
+                <header className="absolute top-0 left-0 w-full p-6 lg:px-10 z-50 flex items-center">
+                </header>
 
-          <div className="text-left md:text-right flex flex-col md:items-end gap-3">
-            <div className="bg-primary/5 border-2 border-foreground px-4 py-2">
-              <p className="text-xs font-semibold tracking-[0.16em] text-muted-foreground mb-1">Tài Khoản</p>
-              <p className="text-sm font-semibold text-foreground break-all">{session.user.email}</p>
-            </div>
-            <Button
-              variant="link"
-              className="h-auto px-0 text-xs"
-              onClick={async () => {
-                await supabase.auth.signOut();
-                setUserId(null);
-              }}
-            >
-              Đăng xuất
-            </Button>
-          </div>
-        </header>
+                <div className="absolute inset-0 pointer-events-none opacity-5 z-0">
+                  <div
+                    className="w-full h-full"
+                    style={{
+                      backgroundImage:
+                        'linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)',
+                      backgroundSize: '4rem 4rem',
+                    }}
+                  />
+                </div>
 
-        <main className="flex-1">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b-2 border-foreground/20 pb-3 mb-4 gap-4">
-            <h3 className="text-lg font-bold tracking-wide text-foreground">Danh Sách Gia Phả</h3>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsCreateOpen(true)}
-              className="w-fit"
-            >
-              <span>Tạo Cây Mới</span>
-              <Plus className="w-4 h-4" />
-            </Button>
-          </div>
+                <div className="flex-1 flex items-center justify-center p-4 lg:p-8 mt-16 lg:mt-0">
+                  <div className="w-full max-w-6xl flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16 z-10">
+                    <div className="flex-1 text-left space-y-6 lg:pl-10">
+                      <h1 className="text-5xl lg:text-7xl font-black font-serif leading-[0.9] tracking-tight text-foreground">
+                        <span className="block">Khám Phá</span>
+                        <span className="block text-primary italic font-light">&</span>
+                        <span className="block">Lưu Giữ</span>
+                      </h1>
+                      <p className="text-muted-foreground text-base max-w-md leading-relaxed font-medium">
+                        Nền tảng quản lý gia phả trực quan, bảo toàn mối quan hệ qua nhiều thế hệ với dữ liệu nhất quán và an toàn.
+                      </p>
+                    </div>
 
-          {trees.length === 0 ? (
-            <div className="py-12 text-center border-2 border-dashed border-foreground/20 bg-foreground/[0.02]">
-              <p className="text-muted-foreground font-medium text-sm mb-4">Chưa có dữ liệu gia phả</p>
-              <Button
-                onClick={() => setIsCreateOpen(true)}
-                variant="outline"
-                size="sm"
-              >
-                Tạo Gia Phả Đầu Tiên
-              </Button>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-3">
-              {trees.map((tree, idx) => (
-                <div
-                  key={tree.id}
-                  className="group relative flex flex-col md:flex-row justify-between items-start md:items-center p-4 lg:p-5 border-2 border-foreground bg-background hover:bg-foreground/[0.02] transition-colors"
-                >
-                  <div className="absolute top-0 left-0 bg-foreground text-background text-[10px] font-bold px-2 py-0.5 tracking-wider">
-                    ID-{String(idx + 1).padStart(3, '0')}
-                  </div>
-
-                  <div className="flex-1 mt-4 md:mt-0 space-y-1">
-                    <h4 className="text-xl font-serif font-bold text-foreground group-hover:text-primary transition-colors truncate max-w-xl">
-                      {tree.name}
-                    </h4>
-                    <p className="text-[11px] tracking-wide font-semibold text-muted-foreground">
-                      Cập nhật cuối: {new Date(tree.updated_at).toLocaleDateString('vi-VN')}
-                    </p>
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-2 mt-3 md:mt-0 w-full md:w-auto">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        const url = `${window.location.origin}/share/${tree.share_token}`;
-                        navigator.clipboard.writeText(url);
-                        toast.success('Đã sao chép liên kết chia sẻ.');
-                      }}
-                      className="h-9 text-xs"
-                    >
-                      <Copy className="size-3.5" />
-                      Sao Chép
-                    </Button>
-
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => {
-                        setTreeToDelete(tree);
-                        setIsDeleteOpen(true);
-                      }}
-                      className="h-9 text-xs"
-                      title="Xóa gia phả"
-                    >
-                      <Trash2 className="size-4" />
-                      Xóa
-                    </Button>
-
-                    <Link href={`/tree/${tree.id}`} className="flex-1 md:flex-none">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="w-full md:w-auto h-9"
-                      >
-                        Mở
-                        <ArrowRight className="size-4" />
-                      </Button>
-                    </Link>
+                    <div className="w-full lg:w-[420px]">
+                      <AuthForm />
+                    </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </main>
-
-
-      </div>
-
-      <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
-          <form onSubmit={handleCreateTreeSubmit}>
-            <div className="border-b-2 border-foreground bg-primary/5 p-6">
-              <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest">Tạo Cây Gia Phả</DialogTitle>
-              <p className="text-xs font-semibold text-muted-foreground tracking-[0.16em] mt-2">Khởi tạo hệ thống lưu trữ mới</p>
-            </div>
-
-            <div className="space-y-4 p-6">
-              <div className="space-y-2">
-                <Label className="text-xs font-semibold tracking-[0.16em]">Tên Gia Phả</Label>
-                <Input
-                  autoFocus
-                  required
-                  value={newTreeName}
-                  onChange={(e) => setNewTreeName(e.target.value)}
-                  placeholder="Ví dụ: Gia tộc họ Nguyễn"
-                  className="rounded-none border-2 border-foreground focus:border-primary focus:ring-0 h-12 font-semibold"
-                />
               </div>
-            </div>
+            ) : (
+              <div className="min-h-screen bg-background relative selection:bg-primary/20">
+                <div className="max-w-5xl mx-auto px-4 py-8 lg:px-8 lg:py-10 flex flex-col">
+                  <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-4 border-foreground pb-6 mb-6">
+                    <div className="flex flex-col md:flex-row md:items-end gap-6">
+                      <div className="space-y-2">
+                        <h2 className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Hồ Sơ Lưu Trữ</h2>
+                        <h1 className="text-4xl md:text-6xl font-black font-serif tracking-tight leading-none">
+                          Cây <span className="text-primary italic font-light">Gia Phả</span>
+                        </h1>
+                      </div>
+                    </div>
 
-            <div className="border-t-2 border-foreground p-0 flex">
-              <Button
-                type="button"
-                variant="ghost"
-                className="flex-1 h-14 border-r-2 border-foreground"
-                onClick={() => setIsCreateOpen(false)}
-              >
-                Hủy
-              </Button>
-              <Button type="submit" disabled={creating} className="flex-1 h-14">
-                {creating ? <LoadingSpinner size="sm" className="text-background" /> : 'Tạo'}
-              </Button>
-            </div>
-          </form>
-        </DialogContent>
-      </Dialog>
-      <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-        <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
-          <div className="border-b-2 border-foreground bg-destructive/10 p-6">
-            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest text-destructive">Xóa Gia Phả</DialogTitle>
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.16em] mt-2">Hành động này không thể hoàn tác</p>
-          </div>
-          <div className="p-6">
-            <p className="text-sm font-medium leading-relaxed">
-              Bạn có chắc chắn muốn xóa toàn bộ gia phả <span className="font-bold">&ldquo;{treeToDelete?.name}&rdquo;</span> không?
-              Mọi dữ liệu về thành viên và mối quan hệ sẽ bị xóa vĩnh viễn.
-            </p>
-          </div>
-          <div className="border-t-2 border-foreground p-0 flex">
-            <Button
-              variant="ghost"
-              className="flex-1 h-14 border-r-2 border-foreground"
-              onClick={() => setIsDeleteOpen(false)}
-            >
-              Hủy
-            </Button>
-            <Button
-              variant="destructive"
-              className="flex-1 h-14"
-              onClick={handleDeleteTree}
-              disabled={deleting}
-            >
-              {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Xóa'}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </div>
+                    <div className="text-left md:text-right flex flex-col md:items-end gap-3">
+                      <div className="bg-primary/5 border-2 border-foreground px-4 py-2">
+                        <p className="text-xs font-semibold tracking-[0.16em] text-muted-foreground mb-1">Tài Khoản</p>
+                        <p className="text-sm font-semibold text-foreground break-all">{session.user.email}</p>
+                      </div>
+                      <Button
+                        variant="link"
+                        className="h-auto px-0 text-xs"
+                        onClick={async () => {
+                          await supabase.auth.signOut();
+                          setUserId(null);
+                        }}
+                      >
+                        Đăng xuất
+                      </Button>
+                    </div>
+                  </header>
+
+                  <main className="flex-1">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b-2 border-foreground/20 pb-3 mb-4 gap-4">
+                      <h3 className="text-lg font-bold tracking-wide text-foreground">Danh Sách Gia Phả</h3>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setIsCreateOpen(true)}
+                        className="w-fit"
+                      >
+                        <span>Tạo Cây Mới</span>
+                        <Plus className="w-4 h-4" />
+                      </Button>
+                    </div>
+
+                    {trees.length === 0 ? (
+                      <div className="py-12 text-center border-2 border-dashed border-foreground/20 bg-foreground/[0.02]">
+                        <p className="text-muted-foreground font-medium text-sm mb-4">Chưa có dữ liệu gia phả</p>
+                        <Button
+                          onClick={() => setIsCreateOpen(true)}
+                          variant="outline"
+                          size="sm"
+                        >
+                          Tạo Gia Phả Đầu Tiên
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col gap-3">
+                        {trees.map((tree, idx) => (
+                          <div
+                            key={tree.id}
+                            className="group relative flex flex-col md:flex-row justify-between items-start md:items-center p-4 lg:p-5 border-2 border-foreground bg-background hover:bg-foreground/[0.02] transition-colors"
+                          >
+                            <div className="absolute top-0 left-0 bg-foreground text-background text-[10px] font-bold px-2 py-0.5 tracking-wider">
+                              ID-{String(idx + 1).padStart(3, '0')}
+                            </div>
+
+                            <div className="flex-1 mt-4 md:mt-0 space-y-1">
+                              <h4 className="text-xl font-serif font-bold text-foreground group-hover:text-primary transition-colors truncate max-w-xl">
+                                {tree.name}
+                              </h4>
+                              <p className="text-[11px] tracking-wide font-semibold text-muted-foreground">
+                                Cập nhật cuối: {new Date(tree.updated_at).toLocaleDateString('vi-VN')}
+                              </p>
+                            </div>
+
+                            <div className="flex flex-wrap items-center gap-2 mt-3 md:mt-0 w-full md:w-auto">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  const url = `${window.location.origin}/share/${tree.share_token}`;
+                                  navigator.clipboard.writeText(url);
+                                  toast.success('Đã sao chép liên kết chia sẻ.');
+                                }}
+                                className="h-9 text-xs"
+                              >
+                                <Copy className="size-3.5" />
+                                Sao Chép
+                              </Button>
+
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => {
+                                  setTreeToDelete(tree);
+                                  setIsDeleteOpen(true);
+                                }}
+                                className="h-9 text-xs"
+                                title="Xóa gia phả"
+                              >
+                                <Trash2 className="size-4" />
+                                Xóa
+                              </Button>
+
+                              <Link href={`/tree/${tree.id}`} className="flex-1 md:flex-none">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  className="w-full md:w-auto h-9"
+                                >
+                                  Mở
+                                  <ArrowRight className="size-4" />
+                                </Button>
+                              </Link>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </main>
+                </div>
+
+                <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+                  <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
+                    <form onSubmit={handleCreateTreeSubmit}>
+                      <div className="border-b-2 border-foreground bg-primary/5 p-6">
+                        <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest">Tạo Cây Gia Phả</DialogTitle>
+                        <p className="text-xs font-semibold text-muted-foreground tracking-[0.16em] mt-2">Khởi tạo hệ thống lưu trữ mới</p>
+                      </div>
+
+                      <div className="space-y-4 p-6">
+                        <div className="space-y-2">
+                          <Label className="text-xs font-semibold tracking-[0.16em]">Tên Gia Phả</Label>
+                          <Input
+                            autoFocus
+                            required
+                            value={newTreeName}
+                            onChange={(e) => setNewTreeName(e.target.value)}
+                            placeholder="Ví dụ: Gia tộc họ Nguyễn"
+                            className="rounded-none border-2 border-foreground focus:border-primary focus:ring-0 h-12 font-semibold"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="border-t-2 border-foreground p-0 flex">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          className="flex-1 h-14 border-r-2 border-foreground"
+                          onClick={() => setIsCreateOpen(false)}
+                        >
+                          Hủy
+                        </Button>
+                        <Button type="submit" disabled={creating} className="flex-1 h-14">
+                          {creating ? <LoadingSpinner size="sm" className="text-background" /> : 'Tạo'}
+                        </Button>
+                      </div>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+                <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+                  <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
+                    <div className="border-b-2 border-foreground bg-destructive/10 p-6">
+                      <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest text-destructive">Xóa Gia Phả</DialogTitle>
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.16em] mt-2">Hành động này không thể hoàn tác</p>
+                    </div>
+                    <div className="p-6">
+                      <p className="text-sm font-medium leading-relaxed">
+                        Bạn có chắc chắn muốn xóa toàn bộ gia phả <span className="font-bold">&ldquo;{treeToDelete?.name}&rdquo;</span> không?
+                        Mọi dữ liệu về thành viên và mối quan hệ sẽ bị xóa vĩnh viễn.
+                      </p>
+                    </div>
+                    <div className="border-t-2 border-foreground p-0 flex">
+                      <Button
+                        variant="ghost"
+                        className="flex-1 h-14 border-r-2 border-foreground"
+                        onClick={() => setIsDeleteOpen(false)}
+                      >
+                        Hủy
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        className="flex-1 h-14"
+                        onClick={handleDeleteTree}
+                        disabled={deleting}
+                      >
+                        {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Xóa'}
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
