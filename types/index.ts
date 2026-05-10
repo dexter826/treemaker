@@ -23,6 +23,7 @@ export interface Person {
   address: string | null;
   father_id: string | null;
   mother_id: string | null;
+  nickname: string | null;
   created_at: string;
   updated_at: string;
 }

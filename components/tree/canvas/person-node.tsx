@@ -89,6 +89,7 @@ export function PersonNode({ data }: { data: { person: Person } }) {
         <div className="flex flex-col flex-1 p-2.5 justify-center min-w-0">
           <h3 className={cn('font-serif font-bold text-base leading-tight truncate', isSelected ? 'text-primary' : 'text-foreground')} title={person.full_name}>
             {person.full_name}
+            {person.nickname && <span className="ml-1 opacity-70 font-normal text-sm">({person.nickname})</span>}
           </h3>
           
           {(person.occupation || person.bio) && (

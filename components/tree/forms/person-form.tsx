@@ -68,6 +68,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
 
       const data = await personService.update(person.id, {
         full_name: formData.full_name,
+        nickname: formData.nickname,
         gender: formData.gender,
         birth_date: formData.birth_date || null,
         death_date: formData.death_date || null,
@@ -114,6 +115,11 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
               onChange={(val) => setFormData({ ...formData, gender: val as 'male' | 'female' })}
               disabled={isReadOnly}
             />
+          </div>
+
+          <div className="col-span-3 space-y-1">
+            <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Tên gọi khác (Nickname)</Label>
+            <Input name="nickname" value={formData.nickname || ''} onChange={handleChange} readOnly={isReadOnly} placeholder="Ví dụ: Bé Tí, Tèo..." className="font-semibold" />
           </div>
         </div>
       </div>
