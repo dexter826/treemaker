@@ -60,7 +60,7 @@ export function TreeChatbot() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+    <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end">
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -147,7 +147,7 @@ export function TreeChatbot() {
                 <Button 
                   type="submit" 
                   disabled={isLoading || !input.trim()}
-                  className="rounded-none border-2 border-foreground shadow-[4px_4px_0px_0px_var(--color-foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all active:translate-x-[4px] active:translate-y-[4px]"
+                  effect="raised"
                 >
                   <Send className="w-4 h-4" />
                 </Button>
@@ -159,10 +159,11 @@ export function TreeChatbot() {
 
       <Button
         size="lg"
+        effect="raised"
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "h-14 w-14 rounded-none border-2 border-foreground shadow-[6px_6px_0px_0px_var(--color-foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_var(--color-foreground)] transition-all active:translate-x-[4px] active:translate-y-[4px] active:shadow-none",
-          isOpen ? "bg-destructive text-destructive-foreground" : "bg-primary text-primary-foreground"
+          "h-14 w-14",
+          isOpen && "border-destructive bg-destructive text-destructive-foreground"
         )}
       >
         {isOpen ? <X className="w-6 h-6 text-white" /> : <MessageCircle className="w-6 h-6 text-white" />}

@@ -153,9 +153,9 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
         )}
 
         {displayUrl && !disabled && (
-          <button onClick={clearImage} className="absolute top-1 right-1 bg-foreground text-background p-1 hover:bg-primary transition-colors z-10">
+          <Button variant="ghost" size="icon-xs" onClick={clearImage} className="absolute top-1 right-1 z-10 bg-foreground text-background hover:border-primary hover:bg-primary">
             <X className="h-3 w-3" />
-          </button>
+          </Button>
         )}
       </div>
 
@@ -166,9 +166,9 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
           <div className="bg-background p-6 rounded-none max-w-md w-full">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-bold">Cắt Ảnh Đại Diện</h3>
-              <button onClick={handleCropCancel} className="text-muted-foreground hover:text-foreground">
+              <Button variant="ghost" size="icon-sm" onClick={handleCropCancel}>
                 <X className="h-5 w-5" />
-              </button>
+              </Button>
             </div>
 
             <div className="relative w-full aspect-square bg-muted rounded-none overflow-hidden mb-4">
@@ -205,7 +205,7 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
                 <Button variant="outline" onClick={handleCropCancel} className="flex-1">
                   Hủy
                 </Button>
-                <Button onClick={handleCropConfirm} className="flex-1 font-bold" disabled={!completedCrop}>
+                <Button onClick={handleCropConfirm} className="flex-1" disabled={!completedCrop}>
                   Xác Nhận
                 </Button>
               </div>

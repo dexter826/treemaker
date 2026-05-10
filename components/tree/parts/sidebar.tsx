@@ -209,17 +209,17 @@ export function Sidebar() {
             <div className="mt-4 border-t-2 border-foreground pt-4 space-y-4">
               <h3 className="font-bold text-xs uppercase tracking-[0.16em] text-foreground bg-primary/10 inline-block px-2 py-1">Tác Vụ Mở Rộng</h3>
               <div className="grid grid-cols-2 gap-0 border-2 border-foreground">
-                <Button variant="ghost" className="justify-start text-xs" onClick={() => setIsAddingRelative('father')} disabled={!!person.father_id}><UserPlus className="w-4 h-4 mr-2" /> Cha</Button>
-                <Button variant="ghost" className="justify-start text-xs" onClick={() => setIsAddingRelative('mother')} disabled={!!person.mother_id}><UserPlus className="w-4 h-4 mr-2" /> Mẹ</Button>
+                <Button variant="ghost" className="justify-start text-xs" onClick={() => setIsAddingRelative('father')} disabled={!!person.father_id}><UserPlus className="w-4 h-4" /> Cha</Button>
+                <Button variant="ghost" className="justify-start text-xs" onClick={() => setIsAddingRelative('mother')} disabled={!!person.mother_id}><UserPlus className="w-4 h-4" /> Mẹ</Button>
                 <Button variant="ghost" className="justify-start text-xs" onClick={() => {
                   setIsAddingRelative('spouse');
                   setNewRelativeGender(person.gender === 'male' ? 'female' : 'male');
-                }} disabled={!!getSpouseId(person.id)}><UserPlus className="w-4 h-4 mr-2" /> Vợ/Chồng</Button>
-                <Button variant="ghost" className="justify-start text-xs" onClick={() => setIsAddingRelative('child')}><UserPlus className="w-4 h-4 mr-2" /> Con</Button>
+                }} disabled={!!getSpouseId(person.id)}><UserPlus className="w-4 h-4" /> Vợ/Chồng</Button>
+                <Button variant="ghost" className="justify-start text-xs" onClick={() => setIsAddingRelative('child')}><UserPlus className="w-4 h-4" /> Con</Button>
               </div>
-              <div className="pt-4">
-                <Button variant="destructive" className="w-full text-xs" onClick={() => setIsDeleteDialogOpen(true)}>
-                  <Trash2 className="w-4 h-4 mr-2" /> Xóa Hồ Sơ Này
+              <div>
+                <Button className="w-full relative overflow-hidden" onClick={() => setIsDeleteDialogOpen(true)}>
+                  Xóa Hồ Sơ Này
                 </Button>
               </div>
             </div>
@@ -238,7 +238,7 @@ export function Sidebar() {
           </SheetContent>
         </Sheet>
       ) : (
-        <div className="w-[400px] h-full bg-background border-l-2 border-foreground flex flex-col z-10 absolute right-0 top-0 overflow-hidden">
+        <div className="w-[400px] h-full bg-background border-l-2 border-foreground flex flex-col z-50 absolute right-0 top-0 overflow-hidden">
           {panelContent}
         </div>
       )}
@@ -319,7 +319,7 @@ export function Sidebar() {
           </div>
 
           <div className="border-t-2 border-foreground p-0 flex">
-            <Button variant="ghost" className="flex-1 h-14 border-r-2" onClick={resetRelativeState}>Hủy</Button>
+            <Button variant="ghost" className="flex-1 h-14 border-r-2 border-foreground" onClick={resetRelativeState}>Hủy</Button>
             <Button className="flex-1 h-14" onClick={submitAddRelative} disabled={(!newRelativeName && !selectedExistingPersonId) || hasSiblingOrderConflict}>Ghi Nhận</Button>
           </div>
         </DialogContent>
@@ -335,7 +335,7 @@ export function Sidebar() {
             <p className="text-sm font-medium leading-relaxed">Bạn có chắc chắn muốn xóa hồ sơ của <span className="font-bold">{person.full_name}</span> không?</p>
           </div>
           <div className="border-t-2 border-foreground p-0 flex">
-            <Button variant="ghost" className="flex-1 h-14 border-r-2" onClick={() => setIsDeleteDialogOpen(false)}>Giữ Lại</Button>
+            <Button variant="ghost" className="flex-1 h-14 border-r-2 border-foreground" onClick={() => setIsDeleteDialogOpen(false)}>Giữ Lại</Button>
             <Button variant="destructive" className="flex-1 h-14" onClick={handleDelete} disabled={isDeleting}>
               {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Chấp Nhận Xóa'}
             </Button>

@@ -74,8 +74,8 @@ export function FamilyTreeCanvas() {
             <p className="text-sm font-medium leading-relaxed">Bạn có chắc chắn muốn xóa kết nối này không? Các thông tin quan hệ gia đình liên quan sẽ bị loại bỏ khỏi hồ sơ.</p>
           </div>
           <div className="border-t-2 border-foreground p-0 flex">
-            <Button variant="ghost" className="flex-1 rounded-none h-14 border-r-2 border-foreground font-bold uppercase tracking-widest hover:bg-foreground hover:text-background cursor-pointer" onClick={() => setIsConfirmOpen(false)}>Giữ Lại</Button>
-            <Button variant="destructive" className="flex-1 rounded-none h-14 border-2 border-transparent hover:border-destructive font-bold uppercase tracking-widest cursor-pointer" onClick={confirmDelete}>Chấp Nhận Xóa</Button>
+            <Button variant="ghost" className="flex-1 h-14 border-r-2 border-foreground" onClick={() => setIsConfirmOpen(false)}>Giữ Lại</Button>
+            <Button variant="destructive" className="flex-1 h-14" onClick={confirmDelete}>Chấp Nhận Xóa</Button>
           </div>
         </DialogContent>
       </Dialog>

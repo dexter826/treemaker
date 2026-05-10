@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { treeService } from '@/lib/services/tree.service';
 import { useStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Plus, Trash2, Loader2 } from 'lucide-react';
+import { ArrowRight, Copy, Plus, Trash2, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { AuthForm } from '@/components/auth/auth-form';
@@ -166,30 +166,31 @@ export default function DashboardPage() {
               <p className="text-xs font-semibold tracking-[0.16em] text-muted-foreground mb-1">Tài Khoản</p>
               <p className="text-sm font-semibold text-foreground break-all">{session.user.email}</p>
             </div>
-            <button
+            <Button
+              variant="link"
+              className="h-auto px-0 text-xs"
               onClick={async () => {
                 await supabase.auth.signOut();
                 setUserId(null);
               }}
-              className="text-xs font-semibold tracking-wide text-muted-foreground hover:text-primary transition-colors hover:underline underline-offset-4 cursor-pointer"
             >
               Đăng Xuất Hệ Thống
-            </button>
+            </Button>
           </div>
         </header>
 
         <main className="flex-1">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b-2 border-foreground/20 pb-4 mb-6 gap-4">
             <h3 className="text-lg font-bold tracking-wide text-foreground">Danh Sách Gia Phả</h3>
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => setIsCreateOpen(true)}
-              className="group flex items-center gap-3 text-sm font-semibold tracking-wide hover:text-primary transition-colors cursor-pointer w-fit"
+              className="w-fit"
             >
               <span>Tạo Cây Mới</span>
-              <div className="w-8 h-8 rounded-full border-2 border-current flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all">
-                <Plus className="w-4 h-4" />
-              </div>
-            </button>
+              <Plus className="w-4 h-4" />
+            </Button>
           </div>
 
           {trees.length === 0 ? (
@@ -197,7 +198,8 @@ export default function DashboardPage() {
               <p className="text-muted-foreground font-medium text-sm mb-6">Chưa có hồ sơ nào được ghi nhận</p>
               <Button
                 onClick={() => setIsCreateOpen(true)}
-                className="rounded-none border-2 border-foreground bg-transparent text-foreground hover:bg-foreground hover:text-background font-semibold h-10 px-6 cursor-pointer inline-flex items-center"
+                variant="outline"
+                size="sm"
               >
                 Tạo Gia Phả Đầu Tiên
               </Button>
@@ -231,34 +233,20 @@ export default function DashboardPage() {
                         navigator.clipboard.writeText(url);
                         toast.success('Đã sao chép liên kết chia sẻ.');
                       }}
-                      className="h-9 px-3 gap-2 text-xs bg-transparent hover:bg-primary/10 hover:text-primary hover:border-primary transition-colors font-medium"
+                      className="h-9 text-xs"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="size-3.5"
-                      >
-                        <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
-                        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
-                      </svg>
+                      <Copy className="size-3.5" />
                       Sao Chép
                     </Button>
 
                     <Button
-                      variant="outline"
+                      variant="destructive"
                       size="sm"
                       onClick={() => {
                         setTreeToDelete(tree);
                         setIsDeleteOpen(true);
                       }}
-                      className="h-9 px-3 gap-2 bg-transparent hover:text-destructive hover:border-destructive hover:bg-destructive/10 transition-colors text-xs font-medium"
+                      className="h-9 text-xs"
                       title="Xóa gia phả"
                     >
                       <Trash2 className="size-4" />
@@ -269,7 +257,7 @@ export default function DashboardPage() {
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="w-full md:w-auto h-9 gap-2 bg-transparent hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all"
+                        className="w-full md:w-auto h-9"
                       >
                         Truy Cập
                         <ArrowRight className="size-4" />
@@ -311,12 +299,12 @@ export default function DashboardPage() {
               <Button
                 type="button"
                 variant="ghost"
-                className="flex-1 rounded-none h-14 border-r-2 border-foreground font-semibold hover:bg-foreground hover:text-background cursor-pointer"
+                className="flex-1 h-14 border-r-2 border-foreground"
                 onClick={() => setIsCreateOpen(false)}
               >
                 Hủy
               </Button>
-              <Button type="submit" disabled={creating} className="flex-1 rounded-none h-14 bg-primary hover:bg-foreground text-background font-semibold cursor-pointer">
+              <Button type="submit" disabled={creating} className="flex-1 h-14">
                 {creating ? <LoadingSpinner size="sm" className="text-background" /> : 'Ghi Nhận'}
               </Button>
             </div>
@@ -338,14 +326,14 @@ export default function DashboardPage() {
           <div className="border-t-2 border-foreground p-0 flex">
             <Button
               variant="ghost"
-              className="flex-1 rounded-none h-14 border-r-2 border-foreground font-semibold hover:bg-foreground hover:text-background cursor-pointer"
+              className="flex-1 h-14 border-r-2 border-foreground"
               onClick={() => setIsDeleteOpen(false)}
             >
               Hủy
             </Button>
             <Button
               variant="destructive"
-              className="flex-1 rounded-none h-14 bg-destructive hover:bg-foreground text-background font-semibold cursor-pointer"
+              className="flex-1 h-14"
               onClick={handleDeleteTree}
               disabled={deleting}
             >

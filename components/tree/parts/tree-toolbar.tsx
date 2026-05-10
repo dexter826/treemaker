@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useStore } from '@/lib/store';
-import { Button } from '@/components/ui/button';
-import { Search, Share2, ArrowLeft, Check, UserPlus, Mars, Venus } from 'lucide-react';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Search, Share2, ArrowLeft, UserPlus, Mars, Venus } from 'lucide-react';
 import { toast } from 'sonner';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
@@ -13,15 +13,12 @@ import { personService } from '@/lib/services/person.service';
 import { Select } from '@/components/ui/select';
 
 
-const normalizeSiblingOrder = (value: number): number => Math.max(0, Math.floor(value || 0));
-
 export function TreeToolbar() {
   const currentTree = useStore((state) => state.currentTree);
   const persons = useStore((state) => state.persons);
   const setSelectedPersonId = useStore((state) => state.setSelectedPersonId);
   const isReadOnly = useStore((state) => state.isReadOnly);
   const addPerson = useStore((state) => state.addPerson);
-  const relationships = useStore((state) => state.relationships);
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [isAddPersonOpen, setIsAddPersonOpen] = useState(false);
@@ -64,7 +61,7 @@ export function TreeToolbar() {
   return (
     <div className="absolute top-4 left-4 z-10 flex flex-col md:flex-row items-start md:items-center gap-3">
       <div className="bg-background border-2 border-foreground flex items-stretch shadow-[4px_4px_0px_0px_var(--color-foreground)]">
-        <Link href="/" className="flex items-center justify-center border-r-2 border-foreground hover:bg-foreground hover:text-background transition-colors w-12 cursor-pointer" aria-label="Quay lại trang chính">
+        <Link href="/" className={buttonVariants({ variant: 'ghost', className: 'w-12 h-auto px-0 self-stretch rounded-none border-y-0 border-l-0 border-r-2 border-r-foreground' })} aria-label="Quay lại trang chính">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="px-4 py-2 flex flex-col justify-center">
@@ -75,7 +72,7 @@ export function TreeToolbar() {
 
       <div className="bg-background border-2 border-foreground flex items-center shadow-[4px_4px_0px_0px_var(--color-foreground)]">
         <Popover open={searchOpen} onOpenChange={setSearchOpen}>
-          <PopoverTrigger className="h-12 w-12 rounded-none border-r-2 border-foreground hover:bg-foreground hover:text-background flex items-center justify-center transition-colors cursor-pointer" aria-label="Tìm kiếm cá nhân">
+          <PopoverTrigger className={buttonVariants({ variant: 'ghost', size: 'icon', className: 'h-12 w-12 border-y-0 border-l-0 border-r-2 border-r-foreground' })} aria-label="Tìm kiếm cá nhân">
             <Search className="w-5 h-5" />
           </PopoverTrigger>
           <PopoverContent className="w-[280px] p-0 border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--color-foreground)]" align="start">
@@ -108,13 +105,13 @@ export function TreeToolbar() {
 
         {!isReadOnly && (
           <>
-            <Button variant="ghost" className="h-12 px-4 border-y-0 border-l-0 border-r-2 border-foreground" onClick={handleShare}>
+            <Button variant="ghost" className="h-12 border-y-0 border-l-0 border-r-2 border-r-foreground" onClick={handleShare}>
               <Share2 className="w-4 h-4" />
-              <span className="ml-2 hidden sm:inline">Chia sẻ</span>
+              <span className="hidden sm:inline">Chia sẻ</span>
             </Button>
-            <Button variant="ghost" className="h-12 px-4 border-y-0 border-l-0" onClick={() => setIsAddPersonOpen(true)}>
+            <Button variant="ghost" className="h-12 border-y-0 border-l-0 border-r-0" onClick={() => setIsAddPersonOpen(true)}>
               <UserPlus className="w-4 h-4" />
-              <span className="ml-2 hidden sm:inline">Thêm người</span>
+              <span className="hidden sm:inline">Thêm người</span>
             </Button>
           </>
         )}
@@ -148,7 +145,7 @@ export function TreeToolbar() {
           </div>
 
           <div className="border-t-2 border-foreground p-0 flex">
-            <Button variant="ghost" className="flex-1 h-14 border-r-2" onClick={() => setIsAddPersonOpen(false)}>
+            <Button variant="ghost" className="flex-1 h-14 border-r-2 border-foreground" onClick={() => setIsAddPersonOpen(false)}>
               Hủy
             </Button>
             <Button className="flex-1 h-14" onClick={handleAddPerson} disabled={!newPersonName.trim() || isSubmitting}>

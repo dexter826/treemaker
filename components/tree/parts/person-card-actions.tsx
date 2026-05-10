@@ -54,8 +54,9 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
             onClose();
           }}
           size="icon"
+          effect="raised"
           title="Xem chi tiết"
-          className="h-12 w-12 rounded-none border-2 border-foreground bg-background text-foreground hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all cursor-pointer shadow-[4px_4px_0px_0px_var(--color-foreground)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
+          className="h-12 w-12"
         >
           <Eye className="w-5 h-5" />
         </Button>
@@ -69,8 +70,9 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
                 onClose();
               }}
               size="icon"
+              effect="raised"
               title="Chỉnh sửa"
-              className="h-12 w-12 rounded-none border-2 border-foreground bg-background text-foreground hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all cursor-pointer shadow-[4px_4px_0px_0px_var(--color-foreground)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
+              className="h-12 w-12"
             >
               <Pencil className="w-5 h-5" />
             </Button>
@@ -81,8 +83,9 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
                 setIsConfirmOpen(true);
               }}
               size="icon"
+              effect="raised"
               title="Xóa hồ sơ"
-              className="h-12 w-12 rounded-none border-2 border-foreground bg-background text-foreground hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all cursor-pointer shadow-[4px_4px_0px_0px_var(--color-foreground)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
+              className="h-12 w-12"
             >
               <Trash2 className="w-5 h-5" />
             </Button>
@@ -103,10 +106,10 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
           </div>
 
           <div className="border-t-2 border-foreground p-0 flex">
-            <Button variant="ghost" className="flex-1 rounded-none h-14 border-r-2 border-foreground font-semibold tracking-wide hover:bg-foreground hover:text-background cursor-pointer" onClick={() => setIsConfirmOpen(false)}>
+            <Button variant="ghost" className="flex-1 h-14 border-r-2 border-foreground" onClick={() => setIsConfirmOpen(false)}>
               Hủy
             </Button>
-            <Button variant="destructive" className="flex-1 rounded-none h-14 border-2 border-transparent hover:border-destructive font-semibold tracking-wide cursor-pointer" onClick={confirmDelete} disabled={isDeleting}>
+            <Button variant="destructive" className="flex-1 h-14" onClick={confirmDelete} disabled={isDeleting}>
               {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Xóa'}
             </Button>
           </div>

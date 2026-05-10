@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Popover, PopoverContent, PopoverTrigger } from "./popover"
+import { buttonVariants } from "./button"
 import { cn } from "@/lib/utils"
 import { ChevronDown, Check, Search } from "lucide-react"
 import { ScrollArea } from "./scroll-area"
@@ -48,8 +49,8 @@ export function Select({
         <PopoverTrigger disabled={disabled} className="w-full">
           <div
             className={cn(
-              "flex h-12 w-full items-center justify-between border-2 border-foreground bg-background px-4 py-2 text-sm font-bold uppercase tracking-wide transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-              "hover:bg-foreground hover:text-background disabled:opacity-50 disabled:cursor-not-allowed",
+              buttonVariants({ variant: 'outline', size: 'default' }),
+              "w-full justify-between",
               open && "bg-foreground text-background",
               className,
             )}
@@ -87,7 +88,7 @@ export function Select({
                       key={option.value}
                       type="button"
                       className={cn(
-                        "flex items-center justify-between px-4 py-3 text-xs font-bold uppercase tracking-wide text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                        "flex items-center justify-between border-2 border-transparent px-4 py-3 text-left text-xs font-bold uppercase tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                         "hover:bg-primary hover:text-primary-foreground",
                         value === option.value && "bg-primary/10 text-primary",
                       )}

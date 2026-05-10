@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
@@ -66,6 +66,7 @@ export function AuthForm() {
             <Input
               id="password"
               type="password"
+              placeholder="••••••••"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -73,15 +74,15 @@ export function AuthForm() {
             />
           </div>
 
-          <Button className="w-full rounded-none h-14 text-sm font-semibold border-2 border-primary bg-primary text-primary-foreground hover:bg-background hover:text-primary transition-all duration-300 cursor-pointer mt-2" type="submit" disabled={loading}>
-            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          <Button className="mt-2 h-14 w-full" type="submit" disabled={loading}>
+            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
             {isSignUp ? 'Xác Nhận Đăng Ký' : 'Xác Nhận Truy Cập'}
           </Button>
 
           <div className="pt-5 border-t-2 border-foreground/10 text-center">
-            <button type="button" onClick={() => setIsSignUp(!isSignUp)} className="text-xs tracking-wide font-semibold text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-2 cursor-pointer">
+            <Button type="button" variant="link" className="h-auto px-0 text-xs" onClick={() => setIsSignUp(!isSignUp)}>
               {isSignUp ? 'Đã có tài khoản? Đăng nhập' : 'Chưa có tài khoản? Tạo mới'}
-            </button>
+            </Button>
           </div>
         </form>
       </div>
