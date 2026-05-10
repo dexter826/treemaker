@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from 'react';
 import type { Session } from '@supabase/supabase-js';
@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { treeService } from '@/lib/services/tree.service';
 import { useStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Plus } from 'lucide-react';
+import { ArrowRight, Plus, Trash2, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { AuthForm } from '@/components/auth/auth-form';
@@ -25,6 +25,10 @@ export default function DashboardPage() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [newTreeName, setNewTreeName] = useState('');
   const [creating, setCreating] = useState(false);
+
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [treeToDelete, setTreeToDelete] = useState<FamilyTree | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchTrees = async (userId: string) => {
     try {
@@ -80,6 +84,24 @@ export default function DashboardPage() {
       toast.error(message);
     } finally {
       setCreating(false);
+    }
+  };
+
+  const handleDeleteTree = async () => {
+    if (!session?.user?.id || !treeToDelete) return;
+
+    setDeleting(true);
+    try {
+      await treeService.delete(treeToDelete.id);
+      await fetchTrees(session.user.id);
+      toast.success(`Đã xóa gia phả "${treeToDelete.name}".`);
+      setIsDeleteOpen(false);
+      setTreeToDelete(null);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Xóa thất bại.';
+      toast.error(message);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -214,6 +236,17 @@ export default function DashboardPage() {
                       Sao Chép Khóa
                     </button>
 
+                    <button
+                      onClick={() => {
+                        setTreeToDelete(tree);
+                        setIsDeleteOpen(true);
+                      }}
+                      className="p-2 text-muted-foreground hover:text-destructive transition-colors cursor-pointer"
+                      title="Xóa gia phả"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+
                     <Link href={`/tree/${tree.id}`} className="flex-1 md:flex-none">
                       <Button className="w-full md:w-auto rounded-none border-2 border-foreground bg-transparent text-foreground hover:bg-primary hover:border-primary hover:text-primary-foreground font-semibold h-10 px-5 gap-2 transition-all cursor-pointer">
                         Truy Cập
@@ -268,6 +301,37 @@ export default function DashboardPage() {
               </Button>
             </div>
           </form>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+        <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
+          <div className="border-b-2 border-foreground bg-destructive/10 p-6">
+            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest text-destructive">Xác Nhận Xóa</DialogTitle>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.16em] mt-2">Hành động này không thể hoàn tác</p>
+          </div>
+          <div className="p-6">
+            <p className="text-sm font-medium leading-relaxed">
+              Bạn có chắc chắn muốn xóa toàn bộ gia phả <span className="font-bold">"{treeToDelete?.name}"</span> không?
+              Mọi dữ liệu về thành viên và mối quan hệ sẽ bị xóa vĩnh viễn.
+            </p>
+          </div>
+          <div className="border-t-2 border-foreground p-0 flex">
+            <Button
+              variant="ghost"
+              className="flex-1 rounded-none h-14 border-r-2 border-foreground font-semibold hover:bg-foreground hover:text-background cursor-pointer"
+              onClick={() => setIsDeleteOpen(false)}
+            >
+              Hủy
+            </Button>
+            <Button
+              variant="destructive"
+              className="flex-1 rounded-none h-14 bg-destructive hover:bg-foreground text-background font-semibold cursor-pointer"
+              onClick={handleDeleteTree}
+              disabled={deleting}
+            >
+              {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Chấp Nhận Xóa'}
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

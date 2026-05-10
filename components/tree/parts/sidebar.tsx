@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useStore } from '@/lib/store';
+import { Person } from '@/types';
 import { PersonForm } from '../forms/person-form';
 import { Button } from '@/components/ui/button';
 import { X, UserPlus, Trash2, Loader2, PanelRightOpen } from 'lucide-react';
@@ -119,12 +120,12 @@ export function Sidebar() {
     }
   };
 
-  const linkChildToParents = async (childId: string) => {
+  const linkChildToParents = async (childId: string, personObj?: Person) => {
     const { fatherId, motherId } = childParents;
     if (fatherId) await personService.linkRelation('father', childId, fatherId);
     if (motherId) await personService.linkRelation('mother', childId, motherId);
 
-    const child = persons.find((p) => p.id === childId);
+    const child = personObj || persons.find((p) => p.id === childId);
     if (child) {
       updatePersonStore({ ...child, father_id: fatherId, mother_id: motherId });
     }
@@ -163,7 +164,7 @@ export function Sidebar() {
         addPersonStore(newPerson);
 
         if (isAddingRelative === 'child') {
-          await linkChildToParents(newPerson.id);
+          await linkChildToParents(newPerson.id, newPerson);
         } else {
           const rel = await personService.linkRelation(isAddingRelative, person.id, newPerson.id);
           if (isAddingRelative === 'spouse' && rel) addRelationship(rel);
