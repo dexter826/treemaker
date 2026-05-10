@@ -49,17 +49,7 @@ export default function TreeClient({ treeId }: { treeId: string }) {
     };
 
     loadTree();
-  }, [
-    treeId,
-    setCurrentTree,
-    setPersons,
-    setIsLoading,
-    setIsReadOnly,
-    setSelectedPersonId,
-    setViewPersonId,
-    setShowCardActions,
-    setRelationships,
-  ]);
+  }, [treeId]);
 
   if (isLoading) {
     return (

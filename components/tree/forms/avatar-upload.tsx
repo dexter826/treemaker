@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import Cropper from 'react-easy-crop';
 import { Button } from '@/components/ui/button';
 import { Upload, X, User } from 'lucide-react';
@@ -67,6 +67,14 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
   const [completedCrop, setCompletedCrop] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const blobUrlsRef = useRef<Set<string>>(new Set());
+
+  useEffect(() => {
+    return () => {
+      blobUrlsRef.current.forEach(url => URL.revokeObjectURL(url));
+      blobUrlsRef.current.clear();
+    };
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -83,6 +91,7 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
     }
 
     const objectUrl = URL.createObjectURL(file);
+    blobUrlsRef.current.add(objectUrl);
     setSrcForCrop(objectUrl);
     setShowCropModal(true);
     setZoom(1);
@@ -99,6 +108,12 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
     try {
       const croppedFile = await getCroppedImg(srcForCrop, completedCrop);
       const preview = URL.createObjectURL(croppedFile);
+      blobUrlsRef.current.add(preview);
+
+      if (previewUrl && blobUrlsRef.current.has(previewUrl)) {
+        URL.revokeObjectURL(previewUrl);
+        blobUrlsRef.current.delete(previewUrl);
+      }
 
       setPreviewUrl(preview);
       onFileSelect(croppedFile);
@@ -110,6 +125,10 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
   };
 
   const handleCropCancel = () => {
+    if (srcForCrop && blobUrlsRef.current.has(srcForCrop)) {
+      URL.revokeObjectURL(srcForCrop);
+      blobUrlsRef.current.delete(srcForCrop);
+    }
     setShowCropModal(false);
     setSrcForCrop(null);
     if (fileInputRef.current) {
@@ -119,6 +138,10 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
 
   const clearImage = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (previewUrl && blobUrlsRef.current.has(previewUrl)) {
+      URL.revokeObjectURL(previewUrl);
+      blobUrlsRef.current.delete(previewUrl);
+    }
     setPreviewUrl(null);
     onFileSelect(null);
     if (fileInputRef.current) {

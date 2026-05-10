@@ -17,6 +17,7 @@ import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { FamilyTree } from '@/types';
 import { SplashScreen } from '@/components/ui/splash-screen';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ANIMATION_DURATION } from '@/components/tree/constants';
 
 
 export default function DashboardPage() {
@@ -71,7 +72,7 @@ export default function DashboardPage() {
 
     const timer = setTimeout(() => {
       setMinLoadingFinished(true);
-    }, 1600);
+    }, ANIMATION_DURATION.SPLASH_SCREEN);
 
     return () => {
       subscription.unsubscribe();
@@ -127,7 +128,7 @@ export default function DashboardPage() {
             key="content"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            transition={{ duration: ANIMATION_DURATION.FADE / 1000, delay: 0.2 }}
             className="min-h-screen"
           >
             {!session ? (

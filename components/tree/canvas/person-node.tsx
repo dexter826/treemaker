@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { User, Mars, Venus, Briefcase } from 'lucide-react';
 import { PersonCardActions } from '../parts/person-card-actions';
 import { TREE_NODE_WIDTH, TREE_NODE_HEIGHT } from '../constants';
+import { motion } from 'framer-motion';
 
 export function PersonNode({ data }: { data: { person: Person } }) {
   const { person } = data;
@@ -37,7 +38,7 @@ export function PersonNode({ data }: { data: { person: Person } }) {
   };
 
   return (
-    <div
+    <motion.div
       role="button"
       tabIndex={0}
       style={{ width: TREE_NODE_WIDTH, height: TREE_NODE_HEIGHT }}
@@ -48,6 +49,9 @@ export function PersonNode({ data }: { data: { person: Person } }) {
           ? 'border-primary scale-[1.02] shadow-[6px_6px_0px_0px_var(--color-primary)]'
           : 'border-foreground hover:shadow-[6px_6px_0px_0px_var(--color-foreground)]',
       )}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3, delay: Math.random() * 0.2 }}
       onClick={handleOpen}
     >
       <Handle 
@@ -115,7 +119,7 @@ export function PersonNode({ data }: { data: { person: Person } }) {
       </div>
 
       {isShowingActions && !isReadOnly && <PersonCardActions person={person} onClose={() => setShowCardActions(null)} />}
-    </div>
+    </motion.div>
   );
 }
 

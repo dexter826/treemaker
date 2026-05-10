@@ -9,3 +9,11 @@ export const LAYOUT_CONFIG = {
   marginx: 50,
   marginy: 50,
 };
+
+// Animation durations (milliseconds)
+export const ANIMATION_DURATION = {
+  FADE: 300,
+  TRANSITION: 200,
+  CANVAS_FIT_VIEW: 800,
+  SPLASH_SCREEN: 1600,
+} as const;

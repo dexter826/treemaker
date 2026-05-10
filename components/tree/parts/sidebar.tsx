@@ -1,4 +1,5 @@
 import { useMemo, useState, useCallback } from 'react';
+import { motion } from 'framer-motion';
 import { useStore } from '@/lib/store';
 import { Person } from '@/types';
 import { PersonForm } from '../forms/person-form';
@@ -42,7 +43,7 @@ export function Sidebar() {
   const person = persons.find((p) => p.id === selectedPersonId);
   const personId = person?.id;
 
-  // Helper to check if someone is a spouse
+  // Lay spouse tu relationships
   const getSpouseId = useCallback((pId: string) => {
     const rel = relationships.find(r => r.person1_id === pId || r.person2_id === pId);
     if (!rel) return null;

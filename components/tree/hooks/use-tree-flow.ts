@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNodesState, useEdgesState, useReactFlow, Node, Edge } from '@xyflow/react';
 import { Person, Relationship } from '@/types';
 import { generateNodesAndEdges, getLayoutedElements } from '../utils/layout';
+import { ANIMATION_DURATION } from '../constants';
 
 export function useTreeFlow(persons: Person[], relationships: Relationship[], selectedPersonId: string | null) {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
@@ -22,7 +23,7 @@ export function useTreeFlow(persons: Person[], relationships: Relationship[], se
     setEdges(layoutedEdges);
 
     const timer = setTimeout(() => {
-      fitView({ padding: 0.1, duration: 800 });
+      fitView({ padding: 0.1, duration: ANIMATION_DURATION.CANVAS_FIT_VIEW });
     }, 100);
 
     return () => clearTimeout(timer);
@@ -32,7 +33,7 @@ export function useTreeFlow(persons: Person[], relationships: Relationship[], se
     if (!selectedPersonId) return;
     const node = nodes.find((n) => n.id === selectedPersonId);
     if (node) {
-      fitView({ nodes: [node], duration: 800, padding: 2, maxZoom: 1.2 });
+      fitView({ nodes: [node], duration: ANIMATION_DURATION.CANVAS_FIT_VIEW, padding: 2, maxZoom: 1.2 });
     }
   }, [selectedPersonId, nodes, fitView]);
 

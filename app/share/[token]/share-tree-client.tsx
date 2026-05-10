@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import TreeClient from '../../../components/tree/tree-client';
 import { treeService } from '../../../lib/services/tree.service';
 import { LoadingSpinner } from '../../../components/ui/loading-spinner';
@@ -30,13 +31,30 @@ export function ShareTreeClient({ token }: { token: string }) {
 
 
 
-  if (!treeId) {
-    return (
-      <div className="w-full h-screen flex items-center justify-center bg-background">
-        <LoadingSpinner size="lg" text="Đang tải..." />
-      </div>
-    );
-  }
-
-  return <TreeClient treeId={treeId} />;
+  return (
+    <AnimatePresence mode="wait">
+      {!treeId ? (
+        <motion.div
+          key="loading"
+          className="w-full h-screen flex items-center justify-center bg-background"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <LoadingSpinner size="lg" text="Đang tải..." />
+        </motion.div>
+      ) : (
+        <motion.div
+          key="tree"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <TreeClient treeId={treeId} />
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 }

@@ -2,6 +2,7 @@
 import './globals.css';
 import { Inter, Cormorant_Garamond } from 'next/font/google';
 import { Toaster } from '@/components/ui/sonner';
+import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { cn } from '@/lib/utils';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
@@ -32,7 +33,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="vi" className={cn('font-sans', inter.variable, cormorantGaramond.variable)}>
       <body className="min-h-screen bg-background text-foreground font-sans antialiased" suppressHydrationWarning>
-        {children}
+        <ErrorBoundary>
+          {children}
+        </ErrorBoundary>
         <Toaster position="top-center" theme="light" closeButton />
       </body>
     </html>

@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useCallback } from 'react';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useStore } from '@/lib/store';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -28,13 +29,13 @@ export function TreeToolbar() {
 
   if (!currentTree) return null;
 
-  const handleShare = () => {
+  const handleShare = useCallback(() => {
     const url = `${window.location.origin}/share/${currentTree.share_token}`;
     navigator.clipboard.writeText(url);
     toast.success('Đã sao chép liên kết chia sẻ.');
-  };
+  }, [currentTree.share_token]);
 
-  const handleAddPerson = async () => {
+  const handleAddPerson = useCallback(async () => {
     if (!newPersonName.trim() || isSubmitting) return;
 
     setIsSubmitting(true);
@@ -56,10 +57,15 @@ export function TreeToolbar() {
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [currentTree.id, addPerson, setSelectedPersonId]);
 
   return (
-    <div className="absolute top-4 left-4 z-10 flex flex-col md:flex-row items-start md:items-center gap-3">
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: 0.1 }}
+      className="absolute top-4 left-4 z-10 flex flex-col md:flex-row items-start md:items-center gap-3"
+    >
       <div className="bg-background border-2 border-foreground flex items-stretch shadow-[4px_4px_0px_0px_var(--color-foreground)]">
         <Link href="/" className={buttonVariants({ variant: 'ghost', className: 'w-12 h-auto px-0 self-stretch rounded-none border-y-0 border-l-0 border-r-2 border-r-foreground' })} aria-label="Quay lại trang chính">
           <ArrowLeft className="w-5 h-5" />
@@ -154,6 +160,6 @@ export function TreeToolbar() {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </motion.div>
   );
 }
