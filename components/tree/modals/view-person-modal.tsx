@@ -20,7 +20,7 @@ export function ViewPersonModal() {
 
         <div className="p-4 space-y-3">
           <InfoRow label="Giới tính" value={person.gender === 'male' ? 'Nam' : 'Nữ'} />
-          {person.nickname && <InfoRow label="Tên gọi khác" value={person.nickname} />}
+          <InfoRow label="Tên gọi khác" value={person.nickname || '—'} />
           <InfoRow label="Năm sinh" value={person.birth_date ? new Date(person.birth_date).getFullYear().toString() : '—'} />
           {person.death_date && <InfoRow label="Năm mất" value={new Date(person.death_date).getFullYear().toString()} />}
           <InfoRow label="Địa chỉ" value={person.address || '—'} />

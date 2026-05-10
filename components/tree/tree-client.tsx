@@ -24,6 +24,20 @@ export default function TreeClient({ treeId }: { treeId: string }) {
   const setRelationships = useStore((state) => state.setRelationships);
 
   useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      // Nếu click vào một vùng không thuộc Card (không có class liên quan đến node)
+      // và không phải đang tương tác bên trong menu hành động
+      if (!target.closest('.react-flow__node-personNode') && !target.closest('.person-card-actions')) {
+        setShowCardActions(null);
+      }
+    };
+
+    window.addEventListener('mousedown', handleOutsideClick);
+    return () => window.removeEventListener('mousedown', handleOutsideClick);
+  }, [setShowCardActions]);
+
+  useEffect(() => {
     const loadTree = async () => {
       setIsLoading(true);
       setSelectedPersonId(null);

@@ -41,12 +41,12 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
 
   return (
     <div
-      className="absolute inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur-sm"
+      className="absolute inset-0 z-50 flex items-center justify-center bg-background/90 backdrop-blur-sm person-card-actions"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-3">
         <Button
           onClick={(e) => {
             e.stopPropagation();

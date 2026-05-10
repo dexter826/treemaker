@@ -34,7 +34,7 @@ export function DatePicker({
             if (view === 'days') setCurrentMonth(subMonths(currentMonth, 1))
             else if (view === 'years') setCurrentMonth(subMonths(currentMonth, 120))
           }}
-          className="p-1 hover:bg-foreground hover:text-background transition-colors"
+          className="p-1 hover:bg-foreground hover:text-background transition-colors cursor-pointer"
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
@@ -44,8 +44,10 @@ export function DatePicker({
             type="button"
             onClick={() => setView(view === 'months' ? 'days' : 'months')}
             className={cn(
-              "font-bold text-sm px-2 py-1 hover:bg-foreground/10 transition-colors rounded capitalize",
-              view === 'months' && "bg-primary text-primary-foreground"
+              "font-bold text-sm px-2 py-1 transition-colors rounded capitalize cursor-pointer",
+              view === 'months' 
+                ? "bg-primary text-primary-foreground" 
+                : "hover:bg-foreground/10"
             )}
           >
             {format(currentMonth, 'MMMM', { locale: vi })}
@@ -54,8 +56,10 @@ export function DatePicker({
             type="button"
             onClick={() => setView(view === 'years' ? 'days' : 'years')}
             className={cn(
-              "font-bold text-sm px-2 py-1 hover:bg-foreground/10 transition-colors rounded",
-              view === 'years' && "bg-primary text-primary-foreground"
+              "font-bold text-sm px-2 py-1 transition-colors rounded cursor-pointer",
+              view === 'years' 
+                ? "bg-primary text-primary-foreground" 
+                : "hover:bg-foreground/10"
             )}
           >
             {format(currentMonth, 'yyyy')}
@@ -68,7 +72,7 @@ export function DatePicker({
             if (view === 'days') setCurrentMonth(addMonths(currentMonth, 1))
             else if (view === 'years') setCurrentMonth(addMonths(currentMonth, 120))
           }}
-          className="p-1 hover:bg-foreground hover:text-background transition-colors"
+          className="p-1 hover:bg-foreground hover:text-background transition-colors cursor-pointer"
         >
           <ChevronRight className="h-4 w-4" />
         </button>
@@ -80,22 +84,27 @@ export function DatePicker({
     const months = Array.from({ length: 12 }, (_, i) => i)
     return (
       <div className="grid grid-cols-3 gap-2 p-2 h-[282px] bg-background">
-        {months.map((m) => (
-          <button
-            key={m}
-            type="button"
-            onClick={() => {
-              setCurrentMonth(setMonth(currentMonth, m))
-              setView('days')
-            }}
-            className={cn(
-              "flex items-center justify-center text-xs font-bold uppercase tracking-widest border border-foreground/10 hover:bg-primary/10",
-              getMonth(currentMonth) === m && "bg-primary text-primary-foreground"
-            )}
-          >
-            Th. {m + 1}
-          </button>
-        ))}
+        {months.map((m) => {
+          const isSelected = getMonth(currentMonth) === m
+          return (
+            <button
+              key={m}
+              type="button"
+              onClick={() => {
+                setCurrentMonth(setMonth(currentMonth, m))
+                setView('days')
+              }}
+              className={cn(
+                "flex items-center justify-center text-xs font-bold uppercase tracking-widest border border-foreground/10 transition-colors cursor-pointer",
+                isSelected 
+                  ? "bg-primary text-primary-foreground" 
+                  : "hover:bg-primary/10"
+              )}
+            >
+              Th. {m + 1}
+            </button>
+          )
+        })}
       </div>
     )
   }
@@ -106,22 +115,27 @@ export function DatePicker({
     const years = Array.from({ length: 12 }, (_, i) => startYear + i)
     return (
       <div className="grid grid-cols-3 gap-2 p-2 h-[282px] bg-background">
-        {years.map((y) => (
-          <button
-            key={y}
-            type="button"
-            onClick={() => {
-              setCurrentMonth(setYear(currentMonth, y))
-              setView('months')
-            }}
-            className={cn(
-              "flex items-center justify-center text-xs font-bold border border-foreground/10 hover:bg-primary/10",
-              currentYear === y && "bg-primary text-primary-foreground"
-            )}
-          >
-            {y}
-          </button>
-        ))}
+        {years.map((y) => {
+          const isSelected = currentYear === y
+          return (
+            <button
+              key={y}
+              type="button"
+              onClick={() => {
+                setCurrentMonth(setYear(currentMonth, y))
+                setView('months')
+              }}
+              className={cn(
+                "flex items-center justify-center text-xs font-bold border border-foreground/10 transition-colors cursor-pointer",
+                isSelected 
+                  ? "bg-primary text-primary-foreground" 
+                  : "hover:bg-primary/10"
+              )}
+            >
+              {y}
+            </button>
+          )
+        })}
       </div>
     )
   }
@@ -164,7 +178,7 @@ export function DatePicker({
             className={cn(
               "h-10 w-full flex items-center justify-center text-xs font-medium transition-all border-r border-b border-foreground/5 last:border-r-0",
               !isCurrentMonth && "text-muted-foreground/20",
-              isSelected ? "bg-primary text-primary-foreground font-bold" : "hover:bg-primary/10",
+              isSelected ? "bg-primary text-primary-foreground font-bold cursor-default" : "hover:bg-primary/10 cursor-pointer",
               isSameDay(day, new Date()) && !isSelected && "text-primary font-bold ring-1 ring-inset ring-primary/30"
             )}
             onClick={() => {
@@ -219,7 +233,7 @@ export function DatePicker({
           <div className="p-2 border-t-2 border-foreground flex gap-2">
              <button 
                type="button"
-               className="flex-1 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors border border-foreground"
+               className="flex-1 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors border border-foreground cursor-pointer"
                onClick={() => {
                   onChange(null)
                   setOpen(false)
@@ -229,7 +243,7 @@ export function DatePicker({
              </button>
              <button 
                type="button"
-               className="flex-1 py-2 text-[10px] font-bold uppercase tracking-widest bg-primary text-primary-foreground hover:bg-foreground transition-colors"
+               className="flex-1 py-2 text-[10px] font-bold uppercase tracking-widest bg-primary text-primary-foreground hover:bg-foreground hover:text-background transition-colors cursor-pointer"
                onClick={() => {
                   onChange(format(new Date(), "yyyy-MM-dd"))
                   setOpen(false)

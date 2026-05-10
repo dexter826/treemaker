@@ -14,6 +14,7 @@ export function Select({
   disabled,
   className,
   placeholder = "Chọn một tùy chọn",
+  showSearch = false,
 }: {
   options: { value: string; label: string }[]
   value: string
@@ -21,6 +22,7 @@ export function Select({
   disabled?: boolean
   className?: string
   placeholder?: string
+  showSearch?: boolean
 }) {
   const [open, setOpen] = React.useState(false)
   const [searchTerm, setSearchTerm] = React.useState("")
@@ -63,17 +65,19 @@ export function Select({
           sideOffset={2}
         >
           <div className="flex flex-col max-h-[400px] overflow-hidden">
-            <div className="p-2 border-b-2 border-foreground bg-primary/5 flex-shrink-0">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-                <Input
-                  placeholder="Tìm kiếm..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="h-9 pl-9 text-xs border-foreground/20 focus:border-foreground"
-                />
+            {showSearch && (
+              <div className="p-2 border-b-2 border-foreground bg-primary/5 flex-shrink-0">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                  <Input
+                    placeholder="Tìm kiếm..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="h-9 pl-9 text-xs border-foreground/20 focus:border-foreground"
+                  />
+                </div>
               </div>
-            </div>
+            )}
             
             <ScrollArea className="flex-1 overflow-y-auto">
               <div className="flex flex-col py-1">

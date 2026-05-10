@@ -16,11 +16,18 @@ export function PersonNode({ data }: { data: { person: Person } }) {
   const setViewPersonId = useStore((state) => state.setViewPersonId);
   const relationships = useStore((state) => state.relationships);
 
+  const setSelectedPersonId = useStore((state) => state.setSelectedPersonId);
+
   const isSelected = selectedPersonId === person.id;
   const isShowingActions = showCardActions === person.id;
   const hasSpouse = relationships.some(r => r.person1_id === person.id || r.person2_id === person.id);
 
   const handleOpen = () => {
+    // Nếu click vào Card khác khi đang mở Sidebar của người cũ, đóng Sidebar cũ
+    if (!isSelected && selectedPersonId) {
+      setSelectedPersonId(null);
+    }
+
     if (isShowingActions) {
       setShowCardActions(null);
     } else if (isReadOnly) {
@@ -93,11 +100,9 @@ export function PersonNode({ data }: { data: { person: Person } }) {
           {person.full_name}
         </h3>
 
-        {person.nickname && (
-          <span className="text-[10px] font-bold text-primary/80 uppercase tracking-wide mt-0.5">
-            {person.nickname}
-          </span>
-        )}
+        <span className="text-[10px] font-bold text-primary/80 uppercase tracking-wide mt-0.5">
+          {person.nickname || '—'}
+        </span>
         
         <div className="mt-1.5 flex items-center justify-between text-[10px] font-bold text-muted-foreground/80 uppercase tracking-wider">
           <div className="flex items-center gap-2">

@@ -27,6 +27,7 @@ export function FamilyTreeCanvas() {
 
   const { nodes, edges, onNodesChange, onEdgesChange, setEdges } = useTreeFlow(persons, relationships, selectedPersonId);
   const { onConnect, onBeforeDelete, confirmDelete, isConfirmOpen, setIsConfirmOpen } = useTreeConnections(persons, isReadOnly, updatePerson, setEdges);
+  const setShowCardActions = useStore((state) => state.setShowCardActions);
 
   return (
     <div className="w-full h-full relative bg-background">
@@ -45,6 +46,11 @@ export function FamilyTreeCanvas() {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         onBeforeDelete={onBeforeDelete}
+        onPaneClick={() => setShowCardActions(null)}
+        onNodeClick={(_, node) => {
+          // Chỉ đóng nếu click vào node không phải personNode hoặc logic đã xử lý trong PersonNode
+          if (node.type !== 'personNode') setShowCardActions(null);
+        }}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         deleteKeyCode={['Backspace', 'Delete']}

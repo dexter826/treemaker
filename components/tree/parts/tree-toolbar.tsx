@@ -27,13 +27,9 @@ export function TreeToolbar() {
   const [isAddPersonOpen, setIsAddPersonOpen] = useState(false);
   const [newPersonName, setNewPersonName] = useState('');
   const [newPersonGender, setNewPersonGender] = useState<'male' | 'female'>('male');
-  const [newPersonSiblingOrder, setNewPersonSiblingOrder] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-
   if (!currentTree) return null;
-
-
 
   const handleShare = () => {
     const url = `${window.location.origin}/share/${currentTree.share_token}`;
@@ -50,13 +46,12 @@ export function TreeToolbar() {
         tree_id: currentTree.id,
         full_name: newPersonName.trim() || 'Khuyết Danh',
         gender: newPersonGender,
-        sibling_order: normalizeSiblingOrder(newPersonSiblingOrder),
+        sibling_order: 0, // Mặc định là 0 khi tạo từ Toolbar
       });
       addPerson(newPerson);
       setSelectedPersonId(newPerson.id);
       setIsAddPersonOpen(false);
       setNewPersonName('');
-      setNewPersonSiblingOrder(0);
       toast.success('Đã thêm hồ sơ mới.');
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Lỗi khi thêm hồ sơ.';
@@ -150,17 +145,6 @@ export function TreeToolbar() {
                   onChange={(val: string) => setNewPersonGender(val as 'male' | 'female')}
                 />
               </div>
-            </div>
-            <div className="space-y-2">
-              <Label className="text-xs font-semibold tracking-[0.16em]">Thứ Tự Sinh</Label>
-              <Input
-                type="number"
-                min={0}
-                step={1}
-                value={newPersonSiblingOrder}
-                onChange={(e) => setNewPersonSiblingOrder(normalizeSiblingOrder(Number(e.target.value)))}
-                className="font-semibold"
-              />
             </div>
           </div>
 

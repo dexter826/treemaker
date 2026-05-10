@@ -262,6 +262,7 @@ export function Sidebar() {
                     if (val) setNewRelativeName('');
                   }}
                   placeholder="-- Chọn người --"
+                  showSearch={true}
                 />
               </div>
             )}
