@@ -194,7 +194,7 @@ export function Sidebar() {
     <>
       <div className="flex items-center justify-between p-6 border-b-2 border-foreground bg-primary/5">
         <div>
-          <h2 className="font-serif font-black text-xl uppercase tracking-widest">{isReadOnly ? 'Hồ Sơ' : 'Cập Nhật Hồ Sơ'}</h2>
+          <h2 className="font-serif font-black text-xl uppercase tracking-widest">{isReadOnly ? 'Thông tin' : 'Cập nhật'}</h2>
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.16em] mt-1">ID: {person.id.split('-')[0]}</p>
         </div>
         <Button variant="ghost" size="icon" onClick={() => setSelectedPersonId(null)} aria-label="Đóng hồ sơ">
@@ -207,7 +207,7 @@ export function Sidebar() {
           <PersonForm key={person.id} person={person} isReadOnly={isReadOnly} />
           {!isReadOnly && (
             <div className="mt-4 border-t-2 border-foreground pt-4 space-y-4">
-              <h3 className="font-bold text-xs uppercase tracking-[0.16em] text-foreground bg-primary/10 inline-block px-2 py-1">Tác Vụ Mở Rộng</h3>
+              <h3 className="font-bold text-xs uppercase tracking-[0.16em] text-foreground bg-primary/10 inline-block px-2 py-1">Thêm người thân</h3>
               <div className="grid grid-cols-2 gap-0 border-2 border-foreground">
                 <Button variant="ghost" className="justify-start text-xs" onClick={() => setIsAddingRelative('father')} disabled={!!person.father_id}><UserPlus className="w-4 h-4" /> Cha</Button>
                 <Button variant="ghost" className="justify-start text-xs" onClick={() => setIsAddingRelative('mother')} disabled={!!person.mother_id}><UserPlus className="w-4 h-4" /> Mẹ</Button>
@@ -219,7 +219,7 @@ export function Sidebar() {
               </div>
               <div>
                 <Button className="w-full relative overflow-hidden" onClick={() => setIsDeleteDialogOpen(true)}>
-                  Xóa Hồ Sơ Này
+                  Xóa hồ sơ
                 </Button>
               </div>
             </div>
@@ -246,7 +246,7 @@ export function Sidebar() {
       <Dialog open={!!isAddingRelative} onOpenChange={(v) => !v && resetRelativeState()}>
         <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
           <div className="border-b-2 border-foreground bg-primary/5 p-6">
-            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest">Định Danh {isAddingRelative ? relationshipMap[isAddingRelative] : ''}</DialogTitle>
+            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest">Thêm {isAddingRelative ? relationshipMap[isAddingRelative] : ''}</DialogTitle>
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.16em] mt-2">Liên kết với: {person.full_name}</p>
           </div>
 
@@ -320,7 +320,7 @@ export function Sidebar() {
 
           <div className="border-t-2 border-foreground p-0 flex">
             <Button variant="ghost" className="flex-1 h-14 border-r-2 border-foreground" onClick={resetRelativeState}>Hủy</Button>
-            <Button className="flex-1 h-14" onClick={submitAddRelative} disabled={(!newRelativeName && !selectedExistingPersonId) || hasSiblingOrderConflict}>Ghi Nhận</Button>
+            <Button className="flex-1 h-14" onClick={submitAddRelative} disabled={(!newRelativeName && !selectedExistingPersonId) || hasSiblingOrderConflict}>Lưu</Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -328,16 +328,16 @@ export function Sidebar() {
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
           <div className="border-b-2 border-foreground bg-destructive/10 p-6">
-            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest text-destructive">Xác Nhận Xóa</DialogTitle>
+            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest text-destructive">Xóa hồ sơ</DialogTitle>
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.16em] mt-2">Hành động này không thể hoàn tác</p>
           </div>
           <div className="p-4">
             <p className="text-sm font-medium leading-relaxed">Bạn có chắc chắn muốn xóa hồ sơ của <span className="font-bold">{person.full_name}</span> không?</p>
           </div>
           <div className="border-t-2 border-foreground p-0 flex">
-            <Button variant="ghost" className="flex-1 h-14 border-r-2 border-foreground" onClick={() => setIsDeleteDialogOpen(false)}>Giữ Lại</Button>
+            <Button variant="ghost" className="flex-1 h-14 border-r-2 border-foreground" onClick={() => setIsDeleteDialogOpen(false)}>Hủy</Button>
             <Button variant="destructive" className="flex-1 h-14" onClick={handleDelete} disabled={isDeleting}>
-              {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Chấp Nhận Xóa'}
+              {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Xóa'}
             </Button>
           </div>
         </DialogContent>

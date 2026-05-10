@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useStore } from '@/lib/store';
 import { Person } from '@/types';
@@ -96,7 +96,7 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
       <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
         <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md" onClick={(e) => e.stopPropagation()}>
           <div className="border-b-2 border-foreground bg-destructive/10 p-6">
-            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest text-destructive">Xác Nhận Xóa</DialogTitle>
+            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest text-destructive">Xóa hồ sơ</DialogTitle>
           </div>
 
           <div className="p-6">

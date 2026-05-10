@@ -81,7 +81,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
 
       updatePerson(data);
       setSelectedAvatarFile(null);
-      toast.success('Hồ sơ đã được cập nhật.');
+      toast.success('Đã cập nhật.');
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Lỗi khi cập nhật hồ sơ.';
       toast.error(message);
@@ -164,7 +164,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
       {!isReadOnly && (
         <Button className="w-full relative overflow-hidden" onClick={handleSave} disabled={isSaving || (JSON.stringify(formData) === JSON.stringify(person) && !selectedAvatarFile)}>
           {isSaving && <Loader2 className="h-4 w-4 animate-spin" />}
-          {isSaving ? 'Đang lưu...' : 'Ghi nhận thay đổi'}
+          {isSaving ? 'Đang lưu...' : 'Lưu thay đổi'}
         </Button>
       )}
     </div>

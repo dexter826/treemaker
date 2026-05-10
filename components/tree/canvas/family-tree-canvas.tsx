@@ -67,15 +67,15 @@ export function FamilyTreeCanvas() {
       <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
         <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
           <div className="border-b-2 border-foreground bg-destructive/10 p-6">
-            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest text-destructive">Xác Nhận Xóa Kết Nối</DialogTitle>
+            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest text-destructive">Xóa kết nối</DialogTitle>
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.16em] mt-2">Hành động này không thể hoàn tác</p>
           </div>
           <div className="p-6">
             <p className="text-sm font-medium leading-relaxed">Bạn có chắc chắn muốn xóa kết nối này không? Các thông tin quan hệ gia đình liên quan sẽ bị loại bỏ khỏi hồ sơ.</p>
           </div>
           <div className="border-t-2 border-foreground p-0 flex">
-            <Button variant="ghost" className="flex-1 h-14 border-r-2 border-foreground" onClick={() => setIsConfirmOpen(false)}>Giữ Lại</Button>
-            <Button variant="destructive" className="flex-1 h-14" onClick={confirmDelete}>Chấp Nhận Xóa</Button>
+            <Button variant="ghost" className="flex-1 h-14 border-r-2 border-foreground" onClick={() => setIsConfirmOpen(false)}>Hủy</Button>
+            <Button variant="destructive" className="flex-1 h-14" onClick={confirmDelete}>Xóa</Button>
           </div>
         </DialogContent>
       </Dialog>

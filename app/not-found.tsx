@@ -1,4 +1,4 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
 export default function NotFound() {
@@ -8,7 +8,7 @@ export default function NotFound() {
         <h1 className="text-3xl font-black uppercase tracking-wide">Không tìm thấy trang</h1>
         <p className="text-sm text-muted-foreground">Liên kết có thể đã thay đổi hoặc không còn tồn tại.</p>
         <Link href="/" className="inline-block">
-          <Button>Quay về trang chủ</Button>
+          <Button>Trang chủ</Button>
         </Link>
       </div>
     </div>

@@ -35,7 +35,7 @@ export default function DashboardPage() {
       const data = await treeService.getAllByUser(userId);
       setTrees(data);
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Lỗi truy xuất hệ thống.';
+      const message = error instanceof Error ? error.message : 'Lỗi tải dữ liệu.';
       toast.error(message);
     } finally {
       setLoading(false);
@@ -76,11 +76,11 @@ export default function DashboardPage() {
     try {
       await treeService.create(session.user.id, newTreeName);
       await fetchTrees(session.user.id);
-      toast.success('Hồ sơ gia phả đã được khởi tạo.');
+      toast.success('Đã tạo gia phả.');
       setIsCreateOpen(false);
       setNewTreeName('');
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Thao tác thất bại.';
+      const message = error instanceof Error ? error.message : 'Lỗi, vui lòng thử lại.';
       toast.error(message);
     } finally {
       setCreating(false);
@@ -108,7 +108,7 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <LoadingSpinner size="lg" text="Đang truy xuất hệ thống..." />
+        <LoadingSpinner size="lg" text="Đang tải..." />
       </div>
     );
   }
@@ -130,7 +130,7 @@ export default function DashboardPage() {
         <div className="w-full max-w-6xl flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16 z-10">
           <div className="flex-1 text-left space-y-6 lg:pl-10">
             <div className="inline-block border-2 border-foreground px-4 py-1.5 text-xs font-semibold tracking-[0.2em] text-foreground bg-primary/5">
-              Hệ Thống Lưu Trữ Số
+              Gia Phả Số
             </div>
             <h1 className="text-5xl lg:text-7xl font-black font-serif leading-[0.9] tracking-tight text-foreground">
               <span className="block">Khám Phá</span>
@@ -174,7 +174,7 @@ export default function DashboardPage() {
                 setUserId(null);
               }}
             >
-              Đăng Xuất Hệ Thống
+              Đăng xuất
             </Button>
           </div>
         </header>
@@ -195,7 +195,7 @@ export default function DashboardPage() {
 
           {trees.length === 0 ? (
             <div className="py-16 text-center border-2 border-dashed border-foreground/20 bg-foreground/[0.02]">
-              <p className="text-muted-foreground font-medium text-sm mb-6">Chưa có hồ sơ nào được ghi nhận</p>
+              <p className="text-muted-foreground font-medium text-sm mb-6">Chưa có dữ liệu gia phả</p>
               <Button
                 onClick={() => setIsCreateOpen(true)}
                 variant="outline"
@@ -259,7 +259,7 @@ export default function DashboardPage() {
                         size="sm" 
                         className="w-full md:w-auto h-9"
                       >
-                        Truy Cập
+                        Mở
                         <ArrowRight className="size-4" />
                       </Button>
                     </Link>
@@ -283,7 +283,7 @@ export default function DashboardPage() {
 
             <div className="space-y-4 p-6">
               <div className="space-y-2">
-                <Label className="text-xs font-semibold tracking-[0.16em]">Định Danh / Tên Gia Phả</Label>
+                <Label className="text-xs font-semibold tracking-[0.16em]">Tên Gia Phả</Label>
                 <Input
                   autoFocus
                   required
@@ -305,7 +305,7 @@ export default function DashboardPage() {
                 Hủy
               </Button>
               <Button type="submit" disabled={creating} className="flex-1 h-14">
-                {creating ? <LoadingSpinner size="sm" className="text-background" /> : 'Ghi Nhận'}
+                {creating ? <LoadingSpinner size="sm" className="text-background" /> : 'Tạo'}
               </Button>
             </div>
           </form>
@@ -314,7 +314,7 @@ export default function DashboardPage() {
       <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
         <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
           <div className="border-b-2 border-foreground bg-destructive/10 p-6">
-            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest text-destructive">Xác Nhận Xóa</DialogTitle>
+            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest text-destructive">Xóa Gia Phả</DialogTitle>
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.16em] mt-2">Hành động này không thể hoàn tác</p>
           </div>
           <div className="p-6">
@@ -337,7 +337,7 @@ export default function DashboardPage() {
               onClick={handleDeleteTree}
               disabled={deleting}
             >
-              {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Chấp Nhận Xóa'}
+              {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Xóa'}
             </Button>
           </div>
         </DialogContent>

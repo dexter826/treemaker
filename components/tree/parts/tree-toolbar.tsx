@@ -65,7 +65,7 @@ export function TreeToolbar() {
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div className="px-4 py-2 flex flex-col justify-center">
-          <span className="text-xs font-semibold tracking-wide text-muted-foreground">Hồ sơ hiện tại</span>
+          <span className="text-xs font-semibold tracking-wide text-muted-foreground">Gia phả đang xem</span>
           <h1 className="font-serif font-black text-lg tracking-tight max-w-[220px] truncate">{currentTree.name}</h1>
         </div>
       </div>
@@ -120,7 +120,7 @@ export function TreeToolbar() {
       <Dialog open={isAddPersonOpen} onOpenChange={(v) => !v && setIsAddPersonOpen(false)}>
         <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
           <div className="border-b-2 border-foreground bg-primary/5 p-6">
-            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest">Thêm Hồ Sơ Mới</DialogTitle>
+            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest">Thêm Người Mới</DialogTitle>
             <p className="text-xs font-semibold text-muted-foreground tracking-[0.16em] mt-2">Vào cây: {currentTree.name}</p>
           </div>
 
@@ -149,7 +149,7 @@ export function TreeToolbar() {
               Hủy
             </Button>
             <Button className="flex-1 h-14" onClick={handleAddPerson} disabled={!newPersonName.trim() || isSubmitting}>
-              {isSubmitting ? 'Đang thêm...' : 'Ghi Nhận'}
+              {isSubmitting ? 'Đang thêm...' : 'Thêm'}
             </Button>
           </div>
         </DialogContent>

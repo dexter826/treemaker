@@ -73,7 +73,7 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      toast.error('Vui lòng chọn tệp hình ảnh.');
+      toast.error('Hãy chọn một ảnh.');
       return;
     }
 
@@ -165,7 +165,7 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
         <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
           <div className="bg-background p-6 rounded-none max-w-md w-full">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold">Cắt Ảnh Đại Diện</h3>
+              <h3 className="font-bold">Cắt ảnh</h3>
               <Button variant="ghost" size="icon-sm" onClick={handleCropCancel}>
                 <X className="h-5 w-5" />
               </Button>
@@ -206,7 +206,7 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
                   Hủy
                 </Button>
                 <Button onClick={handleCropConfirm} className="flex-1" disabled={!completedCrop}>
-                  Xác Nhận
+                  Lưu
                 </Button>
               </div>
             </div>

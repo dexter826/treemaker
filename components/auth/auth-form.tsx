@@ -21,14 +21,14 @@ export function AuthForm() {
       if (isSignUp) {
         const { error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
-        toast.success('Đăng ký thành công. Vui lòng kiểm tra email nếu hệ thống yêu cầu xác minh.');
+        toast.success('Đăng ký thành công. Hãy kiểm tra email để xác minh.');
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         toast.success('Đăng nhập thành công.');
       }
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Lỗi xác thực tài khoản.';
+      const message = error instanceof Error ? error.message : 'Lỗi xác thực.';
       toast.error(message);
     } finally {
       setLoading(false);
@@ -49,7 +49,7 @@ export function AuthForm() {
 
         <form onSubmit={handleAuth} className="space-y-5">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-xs tracking-wide font-semibold text-foreground">Địa chỉ Email</Label>
+            <Label htmlFor="email" className="text-xs tracking-wide font-semibold text-foreground">Email</Label>
             <Input
               id="email"
               type="email"
@@ -76,7 +76,7 @@ export function AuthForm() {
 
           <Button className="mt-2 h-14 w-full" type="submit" disabled={loading}>
             {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-            {isSignUp ? 'Xác Nhận Đăng Ký' : 'Xác Nhận Truy Cập'}
+            {isSignUp ? 'Đăng ký' : 'Đăng nhập'}
           </Button>
 
           <div className="pt-5 border-t-2 border-foreground/10 text-center">
