@@ -1,37 +1,51 @@
 "use client"
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Loader2, Eye, EyeOff } from 'lucide-react';
+import { authSchema, AuthFormValues } from '@/lib/validations/auth';
 
 export function AuthForm() {
   const [loading, setLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<AuthFormValues>({
+    resolver: zodResolver(authSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+  });
+
+  const handleAuth = async (data: AuthFormValues) => {
     setLoading(true);
 
     try {
       if (isSignUp) {
-        if (password !== confirmPassword) {
-          toast.error('Mật khẩu xác nhận không khớp.');
-          setLoading(false);
-          return;
-        }
-        const { error } = await supabase.auth.signUp({ email, password });
+        const { error } = await supabase.auth.signUp({ 
+          email: data.email, 
+          password: data.password 
+        });
         if (error) throw error;
         toast.success('Đăng ký thành công. Hãy kiểm tra email để xác minh.');
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { error } = await supabase.auth.signInWithPassword({ 
+          email: data.email, 
+          password: data.password 
+        });
         if (error) throw error;
         toast.success('Đăng nhập thành công.');
       }
@@ -41,6 +55,11 @@ export function AuthForm() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const toggleMode = () => {
+    setIsSignUp(!isSignUp);
+    reset();
   };
 
   return (
@@ -55,18 +74,18 @@ export function AuthForm() {
           <p className="text-xs font-semibold text-muted-foreground tracking-wide">Hệ thống lưu trữ gia phả</p>
         </div>
 
-        <form onSubmit={handleAuth} className="space-y-5">
+        <form onSubmit={handleSubmit(handleAuth)} className="space-y-5">
           <div className="space-y-2">
             <Label htmlFor="email" className="text-xs tracking-wide font-semibold text-foreground">Email</Label>
             <Input
               id="email"
               type="email"
               placeholder="name@example.com"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              {...register('email')}
+              error={!!errors.email}
               className="font-semibold px-4 bg-transparent"
             />
+            {errors.email && <p className="text-[10px] text-destructive font-bold uppercase">{errors.email.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -76,9 +95,8 @@ export function AuthForm() {
                 id="password"
                 type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                {...register('password')}
+                error={!!errors.password}
                 className="font-semibold pl-4 pr-10 bg-transparent"
               />
               <button
@@ -90,6 +108,7 @@ export function AuthForm() {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
+            {errors.password && <p className="text-[10px] text-destructive font-bold uppercase">{errors.password.message}</p>}
           </div>
 
           {isSignUp && (
@@ -100,9 +119,8 @@ export function AuthForm() {
                   id="confirmPassword"
                   type={showConfirmPassword ? 'text' : 'password'}
                   placeholder="••••••••"
-                  required
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  {...register('confirmPassword')}
+                  error={!!errors.confirmPassword}
                   className="font-semibold pl-4 pr-10 bg-transparent"
                 />
                 <button
@@ -114,6 +132,7 @@ export function AuthForm() {
                   {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
+              {errors.confirmPassword && <p className="text-[10px] text-destructive font-bold uppercase">{errors.confirmPassword.message}</p>}
             </div>
           )}
 
@@ -123,7 +142,7 @@ export function AuthForm() {
           </Button>
 
           <div className="pt-5 border-t-2 border-foreground/10 text-center">
-            <Button type="button" variant="link" className="h-auto px-0 text-xs" onClick={() => setIsSignUp(!isSignUp)}>
+            <Button type="button" variant="link" className="h-auto px-0 text-xs" onClick={toggleMode}>
               {isSignUp ? 'Đã có tài khoản? Đăng nhập' : 'Chưa có tài khoản? Tạo mới'}
             </Button>
           </div>

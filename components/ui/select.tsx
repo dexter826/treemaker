@@ -16,6 +16,7 @@ export function Select({
   className,
   placeholder = "Chọn một tùy chọn",
   showSearch = false,
+  error = false,
 }: {
   options: { value: string; label: React.ReactNode; searchText?: string }[]
   value: string
@@ -24,6 +25,7 @@ export function Select({
   className?: string
   placeholder?: string
   showSearch?: boolean
+  error?: boolean
 }) {
   const [open, setOpen] = React.useState(false)
   const [searchTerm, setSearchTerm] = React.useState("")
@@ -53,6 +55,7 @@ export function Select({
               buttonVariants({ variant: 'outline', size: 'default' }),
               "w-full justify-between",
               open && "bg-foreground text-background",
+              error && "border-destructive ring-destructive",
               className,
             )}
           >

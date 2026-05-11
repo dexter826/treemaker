@@ -11,6 +11,7 @@ interface AvatarUploadProps {
   currentUrl: string | null;
   onFileSelect: (file: File | null) => void;
   disabled?: boolean;
+  error?: string;
 }
 
 const createImage = (url: string): Promise<HTMLImageElement> =>
@@ -56,10 +57,11 @@ async function getCroppedImg(
   });
 }
 
-export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploadProps) {
+export function AvatarUpload({ currentUrl, onFileSelect, disabled, error }: AvatarUploadProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showCropModal, setShowCropModal] = useState(false);
   const [srcForCrop, setSrcForCrop] = useState<string | null>(null);
+  const [isCleared, setIsCleared] = useState(false);
   
   // State cho việc crop
   const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -97,6 +99,7 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
     setShowCropModal(true);
     setZoom(1);
     setCrop({ x: 0, y: 0 });
+    setIsCleared(false);
   };
 
   const onCropComplete = useCallback((_: any, pixelCrop: { x: number; y: number; width: number; height: number }) => {
@@ -119,6 +122,7 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
       setPreviewUrl(preview);
       onFileSelect(croppedFile);
       setShowCropModal(false);
+      setIsCleared(false);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Lỗi xử lý ảnh.';
       toast.error(message);
@@ -144,13 +148,14 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
       blobUrlsRef.current.delete(previewUrl);
     }
     setPreviewUrl(null);
+    setIsCleared(true);
     onFileSelect(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
 
-  const displayUrl = previewUrl || currentUrl || null;
+  const displayUrl = previewUrl || (!isCleared ? currentUrl : null);
 
   return (
     <div className="space-y-2 flex flex-col items-center">
@@ -158,7 +163,7 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
         onClick={() => {
           if (!disabled) fileInputRef.current?.click();
         }}
-        className={`relative group w-32 h-32 border-2 border-foreground bg-muted overflow-hidden cursor-pointer transition-all hover:border-primary shadow-[4px_4px_0px_0px_var(--color-foreground)] ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className={`relative group w-32 h-32 border-2 ${error ? 'border-red-500 shadow-[4px_4px_0px_0px_var(--color-red-500)]' : 'border-foreground shadow-[4px_4px_0px_0px_var(--color-foreground)]'} bg-muted overflow-hidden cursor-pointer transition-all hover:border-primary ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
         {displayUrl ? (
           <>
@@ -182,6 +187,8 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
           </Button>
         )}
       </div>
+
+      {error && <p className="text-[10px] text-red-500 font-bold uppercase">{error}</p>}
 
       <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" disabled={disabled} />
 

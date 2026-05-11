@@ -17,6 +17,9 @@ import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { FamilyTree } from '@/types';
 import { SplashScreen } from '@/components/ui/splash-screen';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { treeSchema, TreeFormValues } from '@/lib/validations/tree';
 import { ANIMATION_DURATION } from '@/components/tree/constants';
 
 
@@ -28,7 +31,6 @@ export default function DashboardPage() {
   const setUserId = useStore((state) => state.setUserId);
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [newTreeName, setNewTreeName] = useState('');
   const [creating, setCreating] = useState(false);
 
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -80,17 +82,28 @@ export default function DashboardPage() {
     };
   }, [setUserId]);
 
-  const handleCreateTreeSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!session?.user?.id || !newTreeName.trim()) return;
+  const {
+    register: registerTree,
+    handleSubmit: handleSubmitTree,
+    formState: { errors: treeErrors },
+    reset: resetTree,
+  } = useForm<TreeFormValues>({
+    resolver: zodResolver(treeSchema),
+    defaultValues: {
+      name: '',
+    },
+  });
+
+  const handleCreateTreeSubmit = async (data: TreeFormValues) => {
+    if (!session?.user?.id) return;
 
     setCreating(true);
     try {
-      await treeService.create(session.user.id, newTreeName);
+      await treeService.create(session.user.id, data.name);
       await fetchTrees(session.user.id);
       toast.success('Đã tạo gia phả.');
       setIsCreateOpen(false);
-      setNewTreeName('');
+      resetTree();
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Lỗi, vui lòng thử lại.';
       toast.error(message);
@@ -292,7 +305,7 @@ export default function DashboardPage() {
 
                 <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                   <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
-                    <form onSubmit={handleCreateTreeSubmit}>
+                    <form onSubmit={handleSubmitTree(handleCreateTreeSubmit)}>
                       <div className="border-b-2 border-foreground bg-primary/5 p-6">
                         <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest">Tạo Cây Gia Phả</DialogTitle>
                         <p className="text-xs font-semibold text-muted-foreground tracking-[0.16em] mt-2">Khởi tạo hệ thống lưu trữ mới</p>
@@ -303,12 +316,12 @@ export default function DashboardPage() {
                           <Label className="text-xs font-semibold tracking-[0.16em]">Tên Gia Phả</Label>
                           <Input
                             autoFocus
-                            required
-                            value={newTreeName}
-                            onChange={(e) => setNewTreeName(e.target.value)}
+                            {...registerTree('name')}
+                            error={!!treeErrors.name}
                             placeholder="Ví dụ: Gia tộc họ Nguyễn"
                             className="rounded-none border-2 border-foreground focus:border-primary focus:ring-0 h-12 font-semibold"
                           />
+                          {treeErrors.name && <p className="text-[10px] text-red-500 font-bold uppercase">{treeErrors.name.message}</p>}
                         </div>
                       </div>
 

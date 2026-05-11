@@ -12,13 +12,15 @@ export function DatePicker({
   onChange,
   disabled,
   className,
-  placeholder = "Chọn ngày"
+  placeholder = "Chọn ngày",
+  error = false,
 }: {
   value: string | null
   onChange: (value: string | null) => void
   disabled?: boolean
   className?: string
   placeholder?: string
+  error?: boolean
 }) {
   const [open, setOpen] = React.useState(false)
   const [currentMonth, setCurrentMonth] = React.useState(value ? parseISO(value) : new Date())
@@ -207,6 +209,7 @@ export function DatePicker({
               buttonVariants({ variant: 'outline', size: 'default' }),
               "w-full justify-between",
               open && "bg-foreground text-background",
+              error && "border-destructive ring-destructive",
               className
             )}
           >

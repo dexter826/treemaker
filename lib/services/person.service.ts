@@ -1,12 +1,8 @@
 import { supabase } from '../supabase';
 import { Person, Relationship, TreeData } from '../../types';
+import { normalizeSiblingOrder } from '../utils';
 
 export type RelationType = 'father' | 'mother' | 'spouse';
-
-const normalizeSiblingOrder = (value: number | null | undefined): number => {
-  if (typeof value !== 'number' || Number.isNaN(value)) return 0;
-  return Math.max(0, Math.floor(value));
-};
 
 const mapPersonError = (error: unknown): Error => {
   const raw = error as { code?: string; message?: string };
