@@ -15,7 +15,7 @@ import { personService } from '@/lib/services/person.service';
 import { Select } from '@/components/ui/select';
 import { treeService } from '@/lib/services/tree.service';
 import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { personObjectSchema } from '@/lib/validations/person';
 import * as z from 'zod';
@@ -43,8 +43,7 @@ export function TreeToolbar() {
   const {
     register,
     handleSubmit,
-    setValue,
-    watch,
+    control,
     reset,
     formState: { errors },
   } = useForm<AddPersonFormValues>({
@@ -257,14 +256,20 @@ export function TreeToolbar() {
               </div>
               <div className="col-span-1 space-y-2">
                 <Label className="text-xs font-semibold tracking-[0.16em]">Giới Tính</Label>
-                <Select
-                  options={[
-                    { value: 'male', label: 'Nam' },
-                    { value: 'female', label: 'Nữ' },
-                  ]}
-                  value={watch('gender')}
-                  onChange={(val: string) => setValue('gender', val as 'male' | 'female', { shouldValidate: true })}
-                  error={!!errors.gender}
+                <Controller
+                  name="gender"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={[
+                        { value: 'male', label: 'Nam' },
+                        { value: 'female', label: 'Nữ' },
+                      ]}
+                      value={field.value}
+                      onChange={field.onChange}
+                      error={!!errors.gender}
+                    />
+                  )}
                 />
               </div>
             </div>

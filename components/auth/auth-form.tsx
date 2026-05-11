@@ -51,7 +51,7 @@ export function AuthForm() {
         });
         if (error) throw error;
         toast.success('Đăng nhập thành công.');
-        window.location.href = '/';
+        router.push('/');
       }
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Lỗi xác thực.';
