@@ -176,7 +176,7 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
         )}
 
         {displayUrl && !disabled && (
-          <Button variant="ghost" size="icon-xs" onClick={clearImage} className="absolute top-1 right-1 z-10 bg-foreground text-background hover:border-primary hover:bg-primary">
+          <Button variant="outline" size="icon-xs" onClick={clearImage} className="absolute top-1 right-1 z-10 bg-foreground text-background hover:bg-primary hover:text-primary-foreground">
             <X className="h-3 w-3" />
           </Button>
         )}
@@ -189,7 +189,7 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
           <div className="bg-background p-6 rounded-none max-w-md w-full">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-bold">Cắt ảnh</h3>
-              <Button variant="ghost" size="icon-sm" onClick={handleCropCancel}>
+              <Button variant="outline" size="icon-sm" onClick={handleCropCancel}>
                 <X className="h-5 w-5" />
               </Button>
             </div>
@@ -220,15 +220,15 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
                   step={0.1}
                   value={zoom}
                   onChange={(e) => setZoom(Number(e.target.value))}
-                  className="w-full h-1.5 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
+                  className="w-full h-2 bg-muted rounded-none border-2 border-foreground appearance-none cursor-pointer accent-primary"
                 />
               </div>
 
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={handleCropCancel} className="flex-1">
+              <div className="flex gap-3">
+                <Button variant="outline" onClick={handleCropCancel} className="flex-1 h-12">
                   Hủy
                 </Button>
-                <Button onClick={handleCropConfirm} className="flex-1" disabled={!completedCrop}>
+                <Button onClick={handleCropConfirm} className="flex-1 h-12" disabled={!completedCrop}>
                   Lưu
                 </Button>
               </div>

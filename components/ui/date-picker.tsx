@@ -31,7 +31,7 @@ export function DatePicker({
       <div className="flex items-center justify-between px-2 py-3 border-b-2 border-foreground bg-primary/5">
         <Button 
           type="button" 
-          variant="ghost"
+          variant="outline"
           size="icon-xs"
           onClick={() => {
             if (view === 'days') setCurrentMonth(subMonths(currentMonth, 1))
@@ -64,7 +64,7 @@ export function DatePicker({
 
         <Button 
           type="button" 
-          variant="ghost"
+          variant="outline"
           size="icon-xs"
           onClick={() => {
             if (view === 'days') setCurrentMonth(addMonths(currentMonth, 1))
@@ -92,10 +92,10 @@ export function DatePicker({
                 setView('days')
               }}
               className={cn(
-                "flex items-center justify-center border border-foreground/10 text-xs font-bold uppercase tracking-widest transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                "flex items-center justify-center border-2 border-foreground text-xs font-bold uppercase tracking-widest transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                 isSelected 
                   ? "bg-primary text-primary-foreground" 
-                  : "cursor-pointer hover:bg-primary/10"
+                  : "bg-background cursor-pointer hover:bg-primary/10"
               )}
             >
               Th. {m + 1}
@@ -123,10 +123,10 @@ export function DatePicker({
                 setView('months')
               }}
               className={cn(
-                "flex items-center justify-center border border-foreground/10 text-xs font-bold transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                "flex items-center justify-center border-2 border-foreground text-xs font-bold transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                 isSelected 
                   ? "bg-primary text-primary-foreground" 
-                  : "cursor-pointer hover:bg-primary/10"
+                  : "bg-background cursor-pointer hover:bg-primary/10"
               )}
             >
               {y}
@@ -142,7 +142,7 @@ export function DatePicker({
     return (
       <div className="grid grid-cols-7 border-b-2 border-foreground bg-muted/50">
         {days.map((day, i) => (
-          <div key={i} className="py-2 text-[10px] font-bold text-center uppercase tracking-wider text-muted-foreground">
+          <div key={i} className="py-2 text-[10px] font-bold text-center uppercase tracking-wider text-muted-foreground border-r-2 border-foreground last:border-r-0">
             {day}
           </div>
         ))}
@@ -173,10 +173,10 @@ export function DatePicker({
             key={day.toString()}
             type="button"
             className={cn(
-              "flex h-10 w-full items-center justify-center border-r border-b border-foreground/5 text-xs font-medium transition-all last:border-r-0 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+              "flex h-10 w-full items-center justify-center text-xs font-medium transition-all focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background border-r-2 border-b-2 border-foreground bg-background",
               !isCurrentMonth && "text-muted-foreground/20",
               isSelected ? "bg-primary text-primary-foreground font-bold cursor-default" : "hover:bg-primary/10 cursor-pointer",
-              isSameDay(day, new Date()) && !isSelected && "text-primary font-bold ring-1 ring-inset ring-primary/30"
+              isSameDay(day, new Date()) && !isSelected && "text-foreground font-bold ring-2 ring-inset ring-foreground"
             )}
             onClick={() => {
               onChange(format(cloneDay, "yyyy-MM-dd"))
@@ -189,13 +189,13 @@ export function DatePicker({
         day = addDays(day, 1)
       }
       rows.push(
-        <div className="grid grid-cols-7 last:border-b-0" key={day.toString()}>
+        <div className="grid grid-cols-7" key={day.toString()}>
           {days}
         </div>
       )
       days = []
     }
-    return <div className="bg-background h-[282px]">{rows}</div>
+    return <div className="border-l-2 border-t-2 border-foreground flex flex-col overflow-hidden">{rows}</div>
   }
 
   return (

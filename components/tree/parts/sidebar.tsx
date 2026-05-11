@@ -4,7 +4,7 @@ import { useStore } from '@/lib/store';
 import { Person } from '@/types';
 import { PersonForm } from '../forms/person-form';
 import { Button } from '@/components/ui/button';
-import { X, UserPlus, Trash2, Loader2, PanelRightOpen } from 'lucide-react';
+import { X, UserPlus, Trash2, Loader2, PanelRightOpen, ArrowUp, ArrowDown, Heart } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
@@ -198,7 +198,7 @@ export function Sidebar() {
           <h2 className="font-serif font-black text-xl uppercase tracking-widest">{isReadOnly ? 'Thông tin' : 'Cập nhật'}</h2>
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.16em] mt-1">ID: {person.id.split('-')[0]}</p>
         </div>
-        <Button variant="ghost" size="icon" onClick={() => setSelectedPersonId(null)} aria-label="Đóng hồ sơ">
+        <Button variant="outline" size="icon" onClick={() => setSelectedPersonId(null)} aria-label="Đóng hồ sơ">
           <X className="w-6 h-6" />
         </Button>
       </div>
@@ -209,20 +209,13 @@ export function Sidebar() {
           {!isReadOnly && (
             <div className="mt-4 border-t-2 border-foreground pt-4 space-y-4">
               <h3 className="font-bold text-xs uppercase tracking-[0.16em] text-foreground bg-primary/10 inline-block px-2 py-1">Thêm người thân</h3>
-              <div className="grid grid-cols-2 gap-0 border-2 border-foreground">
-                <Button variant="ghost" className="justify-start text-xs" onClick={() => setIsAddingRelative('father')} disabled={!!person.father_id}><UserPlus className="w-4 h-4" /> Cha</Button>
-                <Button variant="ghost" className="justify-start text-xs" onClick={() => setIsAddingRelative('mother')} disabled={!!person.mother_id}><UserPlus className="w-4 h-4" /> Mẹ</Button>
-                <Button variant="ghost" className="justify-start text-xs" onClick={() => {
-                  setIsAddingRelative('spouse');
-                  setNewRelativeGender(person.gender === 'male' ? 'female' : 'male');
-                }} disabled={!!getSpouseId(person.id)}><UserPlus className="w-4 h-4" /> Vợ/Chồng</Button>
-                <Button variant="ghost" className="justify-start text-xs" onClick={() => setIsAddingRelative('child')}><UserPlus className="w-4 h-4" /> Con</Button>
+              <div className="grid grid-cols-2 gap-2">
+                <Button variant="outline" className="justify-start h-12" onClick={() => setIsAddingRelative('father')} disabled={!!person.father_id}><ArrowUp className="mr-2 h-4 w-4" /> Cha</Button>
+                <Button variant="outline" className="justify-start h-12" onClick={() => setIsAddingRelative('mother')} disabled={!!person.mother_id}><ArrowUp className="mr-2 h-4 w-4" /> Mẹ</Button>
+                <Button variant="outline" className="justify-start h-12" onClick={() => { setIsAddingRelative('spouse'); setNewRelativeGender(person.gender === 'male' ? 'female' : 'male'); }} disabled={!!getSpouseId(person.id)}><Heart className="mr-2 h-4 w-4" /> Vợ/Chồng</Button>
+                <Button variant="outline" className="justify-start h-12" onClick={() => setIsAddingRelative('child')}><ArrowDown className="mr-2 h-4 w-4" /> Con</Button>
               </div>
-              <div>
-                <Button variant="destructive" className="w-full relative overflow-hidden" onClick={() => setIsDeleteDialogOpen(true)}>
-                  Xóa hồ sơ
-                </Button>
-              </div>
+              <Button variant="destructive" className="w-full h-12" onClick={() => setIsDeleteDialogOpen(true)}><Trash2 className="mr-2 h-4 w-4" /> Xóa hồ sơ</Button>
             </div>
           )}
         </div>
@@ -239,22 +232,27 @@ export function Sidebar() {
           </SheetContent>
         </Sheet>
       ) : (
-        <div className="w-[400px] h-full bg-background border-l-2 border-foreground flex flex-col z-50 absolute right-0 top-0 overflow-hidden">
+        <motion.div 
+          initial={{ x: '100%' }}
+          animate={{ x: 0 }}
+          exit={{ x: '100%' }}
+          transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
+          className="w-[460px] h-full bg-background border-l-2 border-foreground flex flex-col z-50 absolute right-0 top-0 overflow-hidden"
+        >
           {panelContent}
-        </div>
+        </motion.div>
       )}
 
       <Dialog open={!!isAddingRelative} onOpenChange={(v) => !v && resetRelativeState()}>
         <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
           <div className="border-b-2 border-foreground bg-primary/5 p-6">
             <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest">Thêm {isAddingRelative ? relationshipMap[isAddingRelative] : ''}</DialogTitle>
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.16em] mt-2">Liên kết với: {person.full_name}</p>
           </div>
 
           <div className="space-y-3 p-4">
             {availablePersons.length > 0 && (
               <div className="space-y-2">
-                <Label className="text-xs font-semibold uppercase tracking-[0.16em]">Chọn từ danh sách có sẵn</Label>
+                <Label className="text-xs font-semibold uppercase tracking-[0.16em]">Chọn từ danh sách</Label>
                 <Select
                   options={[{ value: '', label: '-- Chọn người --' }, ...availablePersons.map((p) => ({ value: p.id, label: p.full_name }))]}
                   value={selectedExistingPersonId}
@@ -268,23 +266,16 @@ export function Sidebar() {
               </div>
             )}
 
-            <div className="flex items-center gap-2">
-              <div className="flex-1 h-px bg-foreground/20" />
-              <span className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">hoặc tạo mới</span>
-              <div className="flex-1 h-px bg-foreground/20" />
-            </div>
-
             <div className="grid grid-cols-3 gap-4">
               <div className={((isAddingRelative === 'child' || isAddingRelative === 'spouse') && !selectedExistingPersonId) ? 'col-span-2 space-y-2' : 'col-span-3 space-y-2'}>
                 <Label className="text-xs font-semibold uppercase tracking-[0.16em]">Họ và Tên</Label>
                 <Input
-                  autoFocus={!selectedExistingPersonId && !availablePersons.length}
                   value={newRelativeName}
                   onChange={(e) => {
                     setNewRelativeName(e.target.value);
                     if (e.target.value) setSelectedExistingPersonId('');
                   }}
-                  placeholder="Nhập tên người mới"
+                  placeholder="Nhập tên"
                 />
               </div>
               {(isAddingRelative === 'child' || isAddingRelative === 'spouse') && !selectedExistingPersonId && (
@@ -309,19 +300,16 @@ export function Sidebar() {
                 <Input
                   type="number"
                   min={0}
-                  step={1}
                   value={newRelativeSiblingOrder}
                   onChange={(e) => setNewRelativeSiblingOrder(normalizeSiblingOrder(Number(e.target.value)))}
-                  className="font-bold"
                 />
-                {hasSiblingOrderConflict && <p className="text-xs text-destructive font-medium">Thứ tự sinh đã tồn tại trong nhóm con cùng cha/mẹ.</p>}
               </div>
             )}
           </div>
 
-          <div className="border-t-2 border-foreground p-0 flex">
-            <Button variant="ghost" className="flex-1 h-14 border-r-2 border-foreground" onClick={resetRelativeState}>Hủy</Button>
-            <Button className="flex-1 h-14" onClick={submitAddRelative} disabled={(!newRelativeName && !selectedExistingPersonId) || hasSiblingOrderConflict}>Lưu</Button>
+          <div className="border-t-2 border-foreground flex p-4 gap-3">
+            <Button variant="outline" className="flex-1 h-12" onClick={resetRelativeState}>Hủy</Button>
+            <Button className="flex-1 h-12" onClick={submitAddRelative} disabled={(!newRelativeName && !selectedExistingPersonId) || hasSiblingOrderConflict}>Lưu</Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -330,14 +318,13 @@ export function Sidebar() {
         <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
           <div className="border-b-2 border-foreground bg-destructive/10 p-6">
             <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest text-destructive">Xóa hồ sơ</DialogTitle>
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.16em] mt-2">Hành động này không thể hoàn tác</p>
           </div>
           <div className="p-4">
-            <p className="text-sm font-medium leading-relaxed">Bạn có chắc chắn muốn xóa hồ sơ của <span className="font-bold">{person.full_name}</span> không?</p>
+            <p className="text-sm font-medium">Bạn có chắc chắn muốn xóa <span className="font-bold">{person.full_name}</span>?</p>
           </div>
-          <div className="border-t-2 border-foreground p-0 flex">
-            <Button variant="ghost" className="flex-1 h-14 border-r-2 border-foreground" onClick={() => setIsDeleteDialogOpen(false)}>Hủy</Button>
-            <Button variant="destructive" className="flex-1 h-14" onClick={handleDelete} disabled={isDeleting}>
+          <div className="border-t-2 border-foreground flex p-4 gap-3">
+            <Button variant="outline" className="flex-1 h-12" onClick={() => setIsDeleteDialogOpen(false)}>Hủy</Button>
+            <Button variant="destructive" className="flex-1 h-12" onClick={handleDelete} disabled={isDeleting}>
               {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Xóa'}
             </Button>
           </div>

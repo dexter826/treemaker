@@ -73,9 +73,9 @@ export function FamilyTreeCanvas() {
           <div className="p-6">
             <p className="text-sm font-medium leading-relaxed">Bạn có chắc chắn muốn xóa kết nối này không? Các thông tin quan hệ gia đình liên quan sẽ bị loại bỏ khỏi hồ sơ.</p>
           </div>
-          <div className="border-t-2 border-foreground p-0 flex">
-            <Button variant="ghost" className="flex-1 h-14 border-r-2 border-foreground" onClick={() => setIsConfirmOpen(false)}>Hủy</Button>
-            <Button variant="destructive" className="flex-1 h-14" onClick={confirmDelete}>Xóa</Button>
+          <div className="border-t-2 border-foreground flex p-4 gap-3">
+            <Button variant="outline" className="flex-1 h-12" onClick={() => setIsConfirmOpen(false)}>Hủy</Button>
+            <Button variant="destructive" className="flex-1 h-12" onClick={confirmDelete}>Xóa</Button>
           </div>
         </DialogContent>
       </Dialog>

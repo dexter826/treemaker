@@ -7,6 +7,7 @@ import { Pencil, Eye, Trash2, Loader2 } from 'lucide-react';
 import { personService } from '@/lib/services/person.service';
 import { toast } from 'sonner';
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 
 interface PersonCardActionsProps {
@@ -46,7 +47,12 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="flex flex-col gap-3">
+      <motion.div 
+        className="flex flex-col gap-3"
+        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ type: 'spring', bounce: 0.3, duration: 0.4 }}
+      >
         <Button
           onClick={(e) => {
             e.stopPropagation();
@@ -92,7 +98,7 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
             </Button>
           </>
         )}
-      </div>
+      </motion.div>
 
       <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
         <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md" onClick={(e) => e.stopPropagation()}>
@@ -106,11 +112,11 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
             </p>
           </div>
 
-          <div className="border-t-2 border-foreground p-0 flex">
-            <Button variant="ghost" className="flex-1 h-14 border-r-2 border-foreground" onClick={() => setIsConfirmOpen(false)}>
+          <div className="border-t-2 border-foreground p-4 flex gap-3">
+            <Button variant="outline" className="flex-1 h-12" onClick={() => setIsConfirmOpen(false)}>
               Hủy
             </Button>
-            <Button variant="destructive" className="flex-1 h-14" onClick={confirmDelete} disabled={isDeleting}>
+            <Button variant="destructive" className="flex-1 h-12" onClick={confirmDelete} disabled={isDeleting}>
               {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Xóa'}
             </Button>
           </div>

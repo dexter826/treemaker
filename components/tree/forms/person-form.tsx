@@ -1,4 +1,4 @@
-﻿import { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Person } from '@/types';
 import { useStore } from '@/lib/store';
@@ -19,10 +19,7 @@ const normalizeSiblingOrder = (value: number | null | undefined): number => {
   return Math.max(0, Math.floor(value));
 };
 
-const sectionVariants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: { opacity: 1, y: 0 },
-};
+
 
 export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly: boolean }) {
   const persons = useStore((state) => state.persons);
@@ -93,8 +90,8 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
   }, [person.id, isReadOnly, formData, selectedAvatarFile, persons]);
 
   return (
-    <motion.div className="space-y-4" initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.06 } } }}>
-      <motion.div className="flex flex-col items-center space-y-4" variants={sectionVariants} transition={{ duration: 0.22 }}>
+    <div className="space-y-4">
+      <div className="flex flex-col items-center space-y-4">
         <div className="flex flex-col items-center space-y-1">
           <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground text-center">Ảnh đại diện</Label>
           <AvatarUpload currentUrl={formData.avatar_url} onFileSelect={setSelectedAvatarFile} disabled={isReadOnly} />
@@ -124,13 +121,13 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
             <Input name="nickname" value={formData.nickname || ''} onChange={handleChange} readOnly={isReadOnly} placeholder="Ví dụ: Bé Tí, Tèo..." className="font-semibold" />
           </div>
         </div>
-      </motion.div>
+      </div>
 
-      <motion.div variants={sectionVariants} transition={{ duration: 0.22 }}>
+      <div>
         <Separator className="bg-foreground/20" />
-      </motion.div>
+      </div>
 
-      <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-4" variants={sectionVariants} transition={{ duration: 0.22 }}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-1">
           <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Ngày sinh</Label>
           <DatePicker value={formData.birth_date} onChange={(val) => setFormData({ ...formData, birth_date: val })} disabled={isReadOnly} />
@@ -143,13 +140,13 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
           <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Thứ tự sinh</Label>
           <Input type="number" name="sibling_order" value={normalizeSiblingOrder(formData.sibling_order)} onChange={handleChange} readOnly={isReadOnly} min={0} step={1} className="font-semibold" />
         </div>
-      </motion.div>
+      </div>
 
-      <motion.div variants={sectionVariants} transition={{ duration: 0.22 }}>
+      <div>
         <Separator className="bg-foreground/20" />
-      </motion.div>
+      </div>
 
-      <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-4" variants={sectionVariants} transition={{ duration: 0.22 }}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-1">
           <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Nghề nghiệp</Label>
           <Input name="occupation" value={formData.occupation || ''} onChange={handleChange} readOnly={isReadOnly} placeholder="Ví dụ: Bác sĩ, Kỹ sư..." className="font-semibold" />
@@ -158,25 +155,25 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
           <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Địa chỉ</Label>
           <Input name="address" value={formData.address || ''} onChange={handleChange} readOnly={isReadOnly} placeholder="Ví dụ: Hà Nội, Việt Nam" className="font-semibold" />
         </div>
-      </motion.div>
+      </div>
 
-      <motion.div variants={sectionVariants} transition={{ duration: 0.22 }}>
+      <div>
         <Separator className="bg-foreground/20" />
-      </motion.div>
+      </div>
 
-      <motion.div className="space-y-1" variants={sectionVariants} transition={{ duration: 0.22 }}>
+      <div className="space-y-1">
         <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Tiểu sử</Label>
         <Textarea name="bio" value={formData.bio || ''} onChange={handleChange} rows={4} readOnly={isReadOnly} className="rounded-none border-2 border-foreground focus:border-primary focus:ring-0 font-medium resize-none p-4" />
-      </motion.div>
+      </div>
 
       {!isReadOnly && (
-        <motion.div variants={sectionVariants} transition={{ duration: 0.22 }}>
+        <div>
           <Button className="w-full relative overflow-hidden" onClick={handleSave} disabled={isSaving || (JSON.stringify(formData) === JSON.stringify(person) && !selectedAvatarFile)}>
             {isSaving && <Loader2 className="h-4 w-4 animate-spin" />}
             {isSaving ? 'Đang lưu...' : 'Lưu thay đổi'}
           </Button>
-        </motion.div>
+        </div>
       )}
-    </motion.div>
+    </div>
   );
 }

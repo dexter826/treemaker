@@ -147,7 +147,6 @@ export function TreeChatbot() {
                 <Button 
                   type="submit" 
                   disabled={isLoading || !input.trim()}
-                  effect="raised"
                 >
                   <Send className="w-4 h-4" />
                 </Button>
@@ -158,15 +157,12 @@ export function TreeChatbot() {
       </AnimatePresence>
 
       <Button
-        size="lg"
+        variant={isOpen ? "destructive" : "outline"}
         effect="raised"
         onClick={() => setIsOpen(!isOpen)}
-        className={cn(
-          "h-14 w-14",
-          isOpen && "border-destructive bg-destructive text-destructive-foreground"
-        )}
+        className="h-14 w-14 rounded-none"
       >
-        {isOpen ? <X className="w-6 h-6 text-white" /> : <MessageCircle className="w-6 h-6 text-white" />}
+        {isOpen ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
       </Button>
     </div>
   );
