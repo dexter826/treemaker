@@ -13,6 +13,10 @@ import { DatePicker } from '@/components/ui/date-picker';
 import { AvatarUpload } from './avatar-upload';
 import { personService } from '@/lib/services/person.service';
 import { Separator } from '@/components/ui/separator';
+import { COUNTRIES } from '@/lib/constants/countries';
+import Flag from 'react-world-flags';
+
+
 
 const normalizeSiblingOrder = (value: number | null | undefined): number => {
   if (typeof value !== 'number' || Number.isNaN(value)) return 0;
@@ -76,6 +80,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
         address: formData.address,
         avatar_url: avatarUrl,
         sibling_order: siblingOrder,
+        country_code: formData.country_code,
       });
 
       updatePerson(data);
@@ -154,6 +159,30 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
         <div className="space-y-1">
           <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Địa chỉ</Label>
           <Input name="address" value={formData.address || ''} onChange={handleChange} readOnly={isReadOnly} placeholder="Ví dụ: Hà Nội, Việt Nam" className="font-semibold" />
+        </div>
+        <div className="space-y-1 md:col-span-2">
+          <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Quốc gia cư trú</Label>
+          <Select
+            options={[
+              { value: '', label: '--- Không chọn ---', searchText: 'không chọn' },
+              ...COUNTRIES.map((c) => ({ 
+                value: c.code, 
+                label: (
+                  <div className="flex items-center gap-3">
+                    <div className="w-5 h-3.5 overflow-hidden flex-shrink-0 border border-foreground/20">
+                      <Flag code={c.code} className="w-full h-full object-cover" />
+                    </div>
+                    <span>{c.name}</span>
+                  </div>
+                ),
+                searchText: c.name
+              })),
+            ]}
+            value={formData.country_code || ''}
+            onChange={(val) => setFormData({ ...formData, country_code: val || null })}
+            disabled={isReadOnly}
+            showSearch={true}
+          />
         </div>
       </div>
 

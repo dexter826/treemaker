@@ -45,6 +45,7 @@ CREATE TABLE public.persons (
   father_id UUID REFERENCES public.persons(id) ON DELETE SET NULL,
   mother_id UUID REFERENCES public.persons(id) ON DELETE SET NULL,
   nickname TEXT,
+  country_code TEXT,
   sibling_order INTEGER DEFAULT 0 CHECK (sibling_order >= 0),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL

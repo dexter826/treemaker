@@ -7,6 +7,9 @@ import { User, Mars, Venus, Briefcase } from 'lucide-react';
 import { PersonCardActions } from '../parts/person-card-actions';
 import { TREE_NODE_WIDTH, TREE_NODE_HEIGHT } from '../constants';
 import { motion } from 'framer-motion';
+import { getCountryByCode } from '@/lib/constants/countries';
+import Flag from 'react-world-flags';
+
 
 export function PersonNode({ data }: { data: { person: Person } }) {
   const { person } = data;
@@ -86,6 +89,16 @@ export function PersonNode({ data }: { data: { person: Person } }) {
             <User className={cn('h-12 w-12 opacity-20', isSelected ? 'text-primary' : 'text-foreground')} />
           </AvatarFallback>
         </Avatar>
+
+        {/* Living Country Flag */}
+        {person.country_code && (
+          <div 
+            className="absolute top-2 right-2 z-20 w-8 h-8 flex items-center justify-center bg-background/80 backdrop-blur-sm border-2 border-foreground shadow-[2px_2px_0px_0px_var(--color-foreground)] overflow-hidden"
+            title={`Đang sống tại: ${getCountryByCode(person.country_code)?.name}`}
+          >
+            <Flag code={person.country_code} className="w-full h-full object-cover scale-125" />
+          </div>
+        )}
       </div>
 
       {/* Info Area */}

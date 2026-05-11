@@ -17,7 +17,7 @@ export function Select({
   placeholder = "Chọn một tùy chọn",
   showSearch = false,
 }: {
-  options: { value: string; label: string }[]
+  options: { value: string; label: React.ReactNode; searchText?: string }[]
   value: string
   onChange: (value: string) => void
   disabled?: boolean
@@ -31,9 +31,10 @@ export function Select({
   const selectedOption = options.find((opt) => opt.value === value)
 
   const filteredOptions = React.useMemo(() => {
-    return options.filter((opt) =>
-      opt.label.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+    return options.filter((opt) => {
+      const searchStr = opt.searchText || (typeof opt.label === 'string' ? opt.label : '');
+      return searchStr.toLowerCase().includes(searchTerm.toLowerCase());
+    });
   }, [options, searchTerm])
 
   const handleOpenChange = (isOpen: boolean) => {
@@ -46,7 +47,7 @@ export function Select({
   return (
     <div className="relative w-full">
       <Popover open={open} onOpenChange={handleOpenChange}>
-        <PopoverTrigger disabled={disabled} className="w-full">
+        <PopoverTrigger disabled={disabled} className="w-full cursor-pointer disabled:cursor-not-allowed">
           <div
             className={cn(
               buttonVariants({ variant: 'outline', size: 'default' }),
@@ -88,7 +89,7 @@ export function Select({
                       key={option.value}
                       type="button"
                       className={cn(
-                        "flex items-center justify-between border-2 border-transparent px-4 py-3 text-left text-xs font-bold uppercase tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                        "flex items-center justify-between border-2 border-transparent px-4 py-3 text-left text-xs font-bold uppercase tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer",
                         "hover:bg-primary hover:text-primary-foreground",
                         value === option.value && "bg-primary/10 text-primary",
                       )}

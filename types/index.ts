@@ -24,6 +24,7 @@ export interface Person {
   father_id: string | null;
   mother_id: string | null;
   nickname: string | null;
+  country_code: string | null;
   created_at: string;
   updated_at: string;
 }
