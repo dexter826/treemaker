@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useStore } from '@/lib/store';
 import { removeVietnameseTones } from '@/lib/utils';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { Search, Share2, ArrowLeft, UserPlus, Trash2, Mars, Venus, Loader2, MoreHorizontal } from 'lucide-react';
+import { Search, Share2, ArrowLeft, UserPlus, Trash2, Mars, Venus, Loader2, MoreHorizontal, CalendarDays } from 'lucide-react';
 import { toast } from 'sonner';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
@@ -19,6 +19,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { basePersonSchema } from '@/lib/validations/person';
 import * as z from 'zod';
+import { EventListModal } from '../modals/event-list-modal';
 
 const addPersonSchema = basePersonSchema.pick({ full_name: true, gender: true });
 type AddPersonFormValues = z.infer<typeof addPersonSchema>;
@@ -33,6 +34,7 @@ export function TreeToolbar() {
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [isAddPersonOpen, setIsAddPersonOpen] = useState(false);
+  const [isEventListOpen, setIsEventListOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -164,6 +166,16 @@ export function TreeToolbar() {
               size="icon" 
               effect="raised" 
               className="w-10 h-10 md:w-12 md:h-12 rounded-none shrink-0" 
+              onClick={() => setIsEventListOpen(true)}
+              title="Danh mục sự kiện"
+            >
+              <CalendarDays className="w-4 h-4 md:w-5 md:h-5" />
+            </Button>
+            <Button 
+              variant="outline" 
+              size="icon" 
+              effect="raised" 
+              className="w-10 h-10 md:w-12 md:h-12 rounded-none shrink-0" 
               onClick={handleShare}
               title="Chia sẻ liên kết"
             >
@@ -199,6 +211,10 @@ export function TreeToolbar() {
                 <MoreHorizontal className="w-4 h-4 md:w-5 md:h-5" />
               </PopoverTrigger>
               <PopoverContent className="w-48 p-2 border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--color-foreground)] flex flex-col gap-2" align="end">
+                <Button variant="ghost" className="justify-start h-10 px-2 rounded-none text-xs" onClick={() => setIsEventListOpen(true)}>
+                  <CalendarDays className="w-4 h-4 mr-2" />
+                  Sự kiện
+                </Button>
                 <Button variant="ghost" className="justify-start h-10 px-2 rounded-none text-xs" onClick={handleShare}>
                   <Share2 className="w-4 h-4 mr-2" />
                   Chia sẻ
@@ -280,6 +296,10 @@ export function TreeToolbar() {
           </div>
         </DialogContent>
       </Dialog>
+      <EventListModal 
+        isOpen={isEventListOpen} 
+        onClose={() => setIsEventListOpen(false)} 
+      />
     </motion.div>
   );
 }
