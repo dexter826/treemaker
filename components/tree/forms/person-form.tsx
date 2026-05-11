@@ -158,7 +158,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
           </div>
 
           <div className="sm:col-span-3 space-y-1">
-            <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Tên gọi khác (Nickname)</Label>
+            <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Tên gọi khác</Label>
             <Input 
               {...register('nickname')} 
               error={!!errors.nickname}

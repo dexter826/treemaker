@@ -10,9 +10,10 @@ import { Sidebar } from './parts/sidebar';
 import { ViewPersonModal } from './modals/view-person-modal';
 import { personService } from '../../lib/services/person.service';
 import { toast } from 'sonner';
-import { LoadingSpinner } from '../ui/loading-spinner';
+import { SplashScreen } from '../ui/splash-screen';
 import { TreeChatbot } from './parts/tree-chatbot';
 
+// Thành phần Client quản lý tương tác cây gia phả.
 export default function TreeClient({ treeId }: { treeId: string }) {
   const setCurrentTree = useStore((state) => state.setCurrentTree);
   const setPersons = useStore((state) => state.setPersons);
@@ -51,24 +52,22 @@ export default function TreeClient({ treeId }: { treeId: string }) {
     loadTree();
   }, [treeId, setCurrentTree, setIsReadOnly, setIsLoading, setPersons, setRelationships, setSelectedPersonId, setShowCardActions, setViewPersonId]);
 
-  if (isLoading) {
-    return (
-      <div className="w-full h-dvh flex items-center justify-center bg-background">
-        <LoadingSpinner size="lg" text="Đang tải cây gia phả..." />
-      </div>
-    );
-  }
-
   return (
-    <div className="w-full h-dvh flex relative overflow-hidden bg-background">
-      <div className="pointer-events-none absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(currentColor 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
-      <ReactFlowProvider>
-        <TreeToolbar />
-        <FamilyTreeCanvas />
-        <Sidebar />
-        <ViewPersonModal />
-        <TreeChatbot />
-      </ReactFlowProvider>
-    </div>
+    <>
+      <SplashScreen isVisible={isLoading} />
+      
+      {!isLoading && (
+        <div className="w-full h-dvh flex relative overflow-hidden bg-background">
+          <div className="pointer-events-none absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(currentColor 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
+          <ReactFlowProvider>
+            <TreeToolbar />
+            <FamilyTreeCanvas />
+            <Sidebar />
+            <ViewPersonModal />
+            <TreeChatbot />
+          </ReactFlowProvider>
+        </div>
+      )}
+    </>
   );
 }

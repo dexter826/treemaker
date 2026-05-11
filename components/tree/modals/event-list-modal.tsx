@@ -73,7 +73,7 @@ export function EventListModal({ isOpen, onClose }: EventListModalProps) {
                             <button
                               key={`${event.personId}-${event.type}-${idx}`}
                               onClick={() => handlePersonClick(event.personId)}
-                              className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors text-left"
+                              className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors text-left cursor-pointer"
                             >
                               <div className="flex items-center gap-4 min-w-0">
                                 <div className={`

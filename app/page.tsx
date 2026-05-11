@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription, Di
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import { SplashScreen } from '@/components/ui/splash-screen';
 import { FamilyTree } from '@/types';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
@@ -120,21 +121,18 @@ export default function DashboardPage() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-dvh flex items-center justify-center">
-        <LoadingSpinner size="lg" />
-      </div>
-    );
-  }
-
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: ANIMATION_DURATION.FADE / 1000 }}
-      className="min-h-dvh bg-background relative selection:bg-primary/20"
-    >
+    <>
+      <SplashScreen isVisible={loading} />
+      
+      {!loading && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: ANIMATION_DURATION.FADE / 1000 }}
+          className="min-h-dvh bg-background relative selection:bg-primary/20"
+        >
+          {/* Nội dung Dashboard */}
       <div className="max-w-5xl mx-auto px-4 py-8 lg:px-8 lg:py-10 flex flex-col">
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-4 border-foreground pb-6 mb-6">
           <div className="flex flex-col md:flex-row md:items-end gap-6">
@@ -333,6 +331,8 @@ export default function DashboardPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </motion.div>
+        </motion.div>
+      )}
+    </>
   );
 }
