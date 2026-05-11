@@ -41,7 +41,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   }, []);
 
-  const hasSiblingOrderConflict = (order: number) => {
+  const hasSiblingOrderConflict = useCallback((order: number) => {
     if (person.father_id === null && person.mother_id === null) return false;
     return persons.some(
       (p) =>
@@ -51,7 +51,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
         p.mother_id === person.mother_id &&
         normalizeSiblingOrder(p.sibling_order) === order,
     );
-  };
+  }, [person, persons]);
 
   const handleSave = useCallback(async () => {
     if (isReadOnly) return;
@@ -92,7 +92,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
     } finally {
       setIsSaving(false);
     }
-  }, [person.id, isReadOnly, formData, selectedAvatarFile, persons]);
+  }, [person.id, isReadOnly, formData, selectedAvatarFile, updatePerson, hasSiblingOrderConflict]);
 
   return (
     <div className="space-y-4">

@@ -70,9 +70,10 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled }: AvatarUploa
   const blobUrlsRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
+    const urls = blobUrlsRef.current;
     return () => {
-      blobUrlsRef.current.forEach(url => URL.revokeObjectURL(url));
-      blobUrlsRef.current.clear();
+      urls.forEach(url => URL.revokeObjectURL(url));
+      urls.clear();
     };
   }, []);
 

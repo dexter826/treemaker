@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Handle, Position } from '@xyflow/react';
 import { Person } from '@/types';
 import { useStore } from '@/lib/store';
@@ -21,12 +22,15 @@ export function PersonNode({ data }: { data: { person: Person } }) {
   const relationships = useStore((state) => state.relationships);
 
   const setSelectedPersonId = useStore((state) => state.setSelectedPersonId);
+  const delay = useMemo(() => {
+    const hash = person.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return (hash % 20) / 100;
+  }, [person.id]);
 
   const isSelected = selectedPersonId === person.id;
   const isShowingActions = showCardActions === person.id;
 
   const handleOpen = () => {
-    // Nếu click vào Card khác khi đang mở Sidebar của người cũ, đóng Sidebar cũ
     if (!isSelected && selectedPersonId) {
       setSelectedPersonId(null);
     }
@@ -54,7 +58,7 @@ export function PersonNode({ data }: { data: { person: Person } }) {
       )}
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.3, delay: Math.random() * 0.2 }}
+      transition={{ duration: 0.3, delay }}
       onClick={handleOpen}
     >
       <Handle 
@@ -93,10 +97,10 @@ export function PersonNode({ data }: { data: { person: Person } }) {
         {/* Living Country Flag */}
         {person.country_code && (
           <div 
-            className="absolute top-2 right-2 z-20 w-8 h-8 flex items-center justify-center bg-background/80 backdrop-blur-sm border-2 border-foreground shadow-[2px_2px_0px_0px_var(--color-foreground)] overflow-hidden"
+            className="absolute top-2 right-2 z-20 w-8 h-5 flex items-center justify-center bg-background border border-foreground shadow-[2px_2px_0px_0px_var(--color-foreground)] overflow-hidden"
             title={`Đang sống tại: ${getCountryByCode(person.country_code)?.name}`}
           >
-            <Flag code={person.country_code} className="w-full h-full object-cover scale-125" />
+            <Flag code={person.country_code} className="w-full h-full object-cover" />
           </div>
         )}
       </div>

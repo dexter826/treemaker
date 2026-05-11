@@ -31,16 +31,15 @@ export function TreeToolbar() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  if (!currentTree) return null;
-
   const handleShare = useCallback(() => {
+    if (!currentTree) return;
     const url = `${window.location.origin}/share/${currentTree.share_token}`;
     navigator.clipboard.writeText(url);
     toast.success('Đã sao chép liên kết chia sẻ.');
-  }, [currentTree.share_token]);
+  }, [currentTree]);
 
   const handleAddPerson = useCallback(async () => {
-    if (!newPersonName.trim() || isSubmitting) return;
+    if (!currentTree || !newPersonName.trim() || isSubmitting) return;
 
     setIsSubmitting(true);
     try {
@@ -61,7 +60,9 @@ export function TreeToolbar() {
     } finally {
       setIsSubmitting(false);
     }
-  }, [currentTree.id, addPerson, setSelectedPersonId, newPersonName, newPersonGender, isSubmitting]);
+  }, [currentTree, addPerson, setSelectedPersonId, newPersonName, newPersonGender, isSubmitting]);
+
+  if (!currentTree) return null;
 
   const handleDeleteTree = async () => {
     setIsDeleting(true);
