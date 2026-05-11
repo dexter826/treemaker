@@ -1,16 +1,16 @@
 import { useMemo } from 'react';
 import { useStore } from '@/lib/store';
 import { getSortedEvents, groupEventsByMonth } from '@/lib/utils/event-utils';
-import { Dialog, DialogContent, DialogTitle, DialogClose } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogHeader } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Cake, HeartCrack, Calendar, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Cake, HeartCrack, Calendar } from 'lucide-react';
 
 interface EventListModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+// Danh sách sự kiện ngày sinh và ngày giỗ.
 export function EventListModal({ isOpen, onClose }: EventListModalProps) {
   const persons = useStore((state) => state.persons);
   const setSelectedPersonId = useStore((state) => state.setSelectedPersonId);
@@ -36,24 +36,13 @@ export function EventListModal({ isOpen, onClose }: EventListModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent 
-        showCloseButton={false}
-        className="border-2 border-foreground rounded-none shadow-[6px_6px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-[400px] h-[500px] overflow-hidden flex flex-col gap-0"
-      >
-        <DialogClose render={<Button variant="outline" size="icon-xs" className="absolute top-3 right-3 z-50 bg-background border-2 border-foreground shadow-[2px_2px_0px_0px_var(--color-foreground)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px]" />}>
-          <X size={14} strokeWidth={3} />
-        </DialogClose>
-
-        <div className="h-1.5 w-full shrink-0 bg-primary" />
-
-        <div className="border-b-2 border-foreground bg-primary/5 p-5 shrink-0">
+      <DialogContent className="sm:max-w-[400px] h-[500px] overflow-hidden flex flex-col">
+        <DialogHeader>
           <div className="flex items-center gap-3">
             <Calendar className="w-5 h-5 text-primary" strokeWidth={2.5} />
-            <DialogTitle className="font-serif font-black text-lg uppercase tracking-tight">
-              Sự kiện Gia phả
-            </DialogTitle>
+            <DialogTitle className="text-lg">Sự kiện Gia phả</DialogTitle>
           </div>
-        </div>
+        </DialogHeader>
 
         <ScrollArea className="flex-1 min-h-0 pr-1">
           <div className="p-0">

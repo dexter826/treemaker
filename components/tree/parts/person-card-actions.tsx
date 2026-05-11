@@ -8,13 +8,14 @@ import { personService } from '@/lib/services/person.service';
 import { toast } from 'sonner';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 
 interface PersonCardActionsProps {
   person: Person;
   onClose: () => void;
 }
 
+// Các thao tác nhanh trên thẻ cá nhân.
 export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
   const setSelectedPersonId = useStore((state) => state.setSelectedPersonId);
   const setViewPersonId = useStore((state) => state.setViewPersonId);
@@ -101,10 +102,11 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
       </motion.div>
 
       <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
-        <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md" onClick={(e) => e.stopPropagation()}>
-          <div className="border-b-2 border-foreground bg-destructive/10 p-6">
-            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest text-destructive">Xóa hồ sơ</DialogTitle>
-          </div>
+        <DialogContent onClick={(e) => e.stopPropagation()}>
+          <DialogHeader variant="destructive">
+            <DialogTitle>Xóa hồ sơ</DialogTitle>
+            <DialogDescription>Hành động này không thể hoàn tác</DialogDescription>
+          </DialogHeader>
 
           <div className="p-6">
             <p className="text-sm font-medium leading-relaxed">
@@ -112,14 +114,14 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
             </p>
           </div>
 
-          <div className="border-t-2 border-foreground p-4 flex gap-3">
+          <DialogFooter>
             <Button variant="outline" className="flex-1 h-12" onClick={() => setIsConfirmOpen(false)}>
               Hủy
             </Button>
             <Button variant="destructive" className="flex-1 h-12" onClick={confirmDelete} disabled={isDeleting}>
               {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Xóa'}
             </Button>
-          </div>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

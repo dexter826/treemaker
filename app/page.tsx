@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Copy, Plus, Trash2, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
@@ -254,12 +254,12 @@ export default function DashboardPage() {
       </div>
 
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
+        <DialogContent>
           <form onSubmit={handleSubmitTree(handleCreateTreeSubmit)}>
-            <div className="border-b-2 border-foreground bg-primary/5 p-6">
-              <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest">Tạo Cây Gia Phả</DialogTitle>
-              <p className="text-xs font-semibold text-muted-foreground tracking-[0.16em] mt-2">Khởi tạo hệ thống lưu trữ mới</p>
-            </div>
+            <DialogHeader>
+              <DialogTitle>Tạo Cây Gia Phả</DialogTitle>
+              <DialogDescription>Khởi tạo hệ thống lưu trữ mới</DialogDescription>
+            </DialogHeader>
 
             <div className="space-y-4 p-6">
               <div className="space-y-2">
@@ -275,84 +275,62 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="border-t-2 border-foreground p-4 flex gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                className="flex-1 h-12"
-                onClick={() => setIsCreateOpen(false)}
-              >
+            <DialogFooter>
+              <Button type="button" variant="outline" className="flex-1 h-12" onClick={() => setIsCreateOpen(false)}>
                 Hủy
               </Button>
               <Button type="submit" disabled={creating} className="flex-1 h-12">
                 {creating ? <LoadingSpinner size="sm" className="text-background" /> : 'Tạo'}
               </Button>
-            </div>
+            </DialogFooter>
           </form>
         </DialogContent>
       </Dialog>
 
       <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-        <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
-          <div className="border-b-2 border-foreground bg-destructive/10 p-6">
-            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest text-destructive">Xóa Gia Phả</DialogTitle>
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.16em] mt-2">Hành động này không thể hoàn tác</p>
-          </div>
+        <DialogContent>
+          <DialogHeader variant="destructive">
+            <DialogTitle>Xóa Gia Phả</DialogTitle>
+            <DialogDescription>Hành động này không thể hoàn tác</DialogDescription>
+          </DialogHeader>
           <div className="p-6">
             <p className="text-sm font-medium leading-relaxed">
               Bạn có chắc chắn muốn xóa toàn bộ gia phả <span className="font-bold">&ldquo;{treeToDelete?.name}&rdquo;</span> không?
               Mọi dữ liệu về thành viên và mối quan hệ sẽ bị xóa vĩnh viễn.
             </p>
           </div>
-          <div className="border-t-2 border-foreground p-4 flex gap-3">
-            <Button
-              variant="outline"
-              className="flex-1 h-12"
-              onClick={() => setIsDeleteOpen(false)}
-            >
+          <DialogFooter>
+            <Button variant="outline" className="flex-1 h-12" onClick={() => setIsDeleteOpen(false)}>
               Hủy
             </Button>
-            <Button
-              variant="destructive"
-              className="flex-1 h-12"
-              onClick={handleDeleteTree}
-              disabled={deleting}
-            >
+            <Button variant="destructive" className="flex-1 h-12" onClick={handleDeleteTree} disabled={deleting}>
               {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Xóa'}
             </Button>
-          </div>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
+
       <Dialog open={isLogoutOpen} onOpenChange={setIsLogoutOpen}>
-        <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
-          <div className="border-b-2 border-foreground bg-primary/5 p-6">
-            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest">Đăng xuất</DialogTitle>
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.16em] mt-2">Xác nhận kết thúc phiên làm việc</p>
-          </div>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Đăng xuất</DialogTitle>
+            <DialogDescription>Xác nhận kết thúc phiên làm việc</DialogDescription>
+          </DialogHeader>
           <div className="p-6">
             <p className="text-sm font-medium">Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?</p>
           </div>
-          <div className="border-t-2 border-foreground p-4 flex gap-3">
-            <Button
-              variant="outline"
-              className="flex-1 h-12"
-              onClick={() => setIsLogoutOpen(false)}
-            >
+          <DialogFooter>
+            <Button variant="outline" className="flex-1 h-12" onClick={() => setIsLogoutOpen(false)}>
               Hủy
             </Button>
-            <Button
-              variant="destructive"
-              className="flex-1 h-12"
-              onClick={async () => {
-                setLoading(true);
-                await supabase.auth.signOut();
-                window.location.href = '/login';
-              }}
-              disabled={loading}
-            >
+            <Button variant="destructive" className="flex-1 h-12" onClick={async () => {
+              setLoading(true);
+              await supabase.auth.signOut();
+              window.location.href = '/login';
+            }} disabled={loading}>
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Đăng xuất'}
             </Button>
-          </div>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </motion.div>

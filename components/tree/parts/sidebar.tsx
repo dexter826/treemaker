@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { X, UserPlus, Trash2, Loader2, PanelRightOpen, ArrowUp, ArrowDown, Heart } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from 'sonner';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select } from '@/components/ui/select';
@@ -244,12 +244,12 @@ export function Sidebar() {
       )}
 
       <Dialog open={!!isAddingRelative} onOpenChange={(v) => !v && resetRelativeState()}>
-        <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
-          <div className="border-b-2 border-foreground bg-primary/5 p-6">
-            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest">Thêm {isAddingRelative ? relationshipMap[isAddingRelative] : ''}</DialogTitle>
-          </div>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Thêm {isAddingRelative ? relationshipMap[isAddingRelative] : ''}</DialogTitle>
+          </DialogHeader>
 
-          <div className="space-y-3 p-4">
+          <div className="space-y-3 p-6">
             {availablePersons.length > 0 && (
               <div className="space-y-2">
                 <Label className="text-xs font-semibold uppercase tracking-[0.16em]">Chọn từ danh sách</Label>
@@ -307,27 +307,28 @@ export function Sidebar() {
             )}
           </div>
 
-          <div className="border-t-2 border-foreground flex p-4 gap-3">
+          <DialogFooter>
             <Button variant="outline" className="flex-1 h-12" onClick={resetRelativeState}>Hủy</Button>
             <Button className="flex-1 h-12" onClick={submitAddRelative} disabled={(!newRelativeName && !selectedExistingPersonId) || hasSiblingOrderConflict}>Lưu</Button>
-          </div>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
-          <div className="border-b-2 border-foreground bg-destructive/10 p-6">
-            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest text-destructive">Xóa hồ sơ</DialogTitle>
-          </div>
-          <div className="p-4">
+        <DialogContent>
+          <DialogHeader variant="destructive">
+            <DialogTitle>Xóa hồ sơ</DialogTitle>
+            <DialogDescription>Hành động này không thể hoàn tác</DialogDescription>
+          </DialogHeader>
+          <div className="p-6">
             <p className="text-sm font-medium">Bạn có chắc chắn muốn xóa <span className="font-bold">{person.full_name}</span>?</p>
           </div>
-          <div className="border-t-2 border-foreground flex p-4 gap-3">
+          <DialogFooter>
             <Button variant="outline" className="flex-1 h-12" onClick={() => setIsDeleteDialogOpen(false)}>Hủy</Button>
             <Button variant="destructive" className="flex-1 h-12" onClick={handleDelete} disabled={isDeleting}>
               {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Xóa'}
             </Button>
-          </div>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>

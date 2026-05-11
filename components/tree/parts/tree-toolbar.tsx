@@ -8,7 +8,7 @@ import { Search, Share2, ArrowLeft, UserPlus, Trash2, Mars, Venus, Loader2, More
 import { toast } from 'sonner';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { personService } from '@/lib/services/person.service';
@@ -201,7 +201,7 @@ export function TreeToolbar() {
               aria-label="Xóa gia phả"
               title="Xóa toàn bộ cây"
             >
-              <Trash2 className="w-4 h-4 md:w-5 md:h-5" />
+              <Trash2 className="size-4" />
             </Button>
           </div>
 
@@ -236,11 +236,11 @@ export function TreeToolbar() {
       )}
 
       <Dialog open={isAddPersonOpen} onOpenChange={(v) => !v && setIsAddPersonOpen(false)}>
-        <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
-          <div className="border-b-2 border-foreground bg-primary/5 p-6">
-            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest">Thêm Người Mới</DialogTitle>
-            <p className="text-xs font-semibold text-muted-foreground tracking-[0.16em] mt-2">Vào cây: {currentTree.name}</p>
-          </div>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Thêm Người Mới</DialogTitle>
+            <DialogDescription>Vào cây: {currentTree.name}</DialogDescription>
+          </DialogHeader>
 
           <div className="space-y-4 p-6">
             <div className="grid grid-cols-3 gap-4">
@@ -270,31 +270,32 @@ export function TreeToolbar() {
             </div>
           </div>
 
-          <div className="border-t-2 border-foreground flex p-4 gap-3">
+          <DialogFooter>
             <Button variant="outline" className="flex-1 h-12" onClick={() => setIsAddPersonOpen(false)}>
               Hủy
             </Button>
             <Button className="flex-1 h-12" onClick={handleSubmit(handleAddPerson)} disabled={isSubmitting}>
               {isSubmitting ? 'Đang thêm...' : 'Thêm'}
             </Button>
-          </div>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
       
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
-          <div className="border-b-2 border-foreground bg-destructive/10 p-6">
-            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest text-destructive">Xóa toàn bộ Cây</DialogTitle>
-          </div>
-          <div className="p-4">
+        <DialogContent>
+          <DialogHeader variant="destructive">
+            <DialogTitle>Xóa toàn bộ Cây</DialogTitle>
+            <DialogDescription>Hành động này không thể hoàn tác</DialogDescription>
+          </DialogHeader>
+          <div className="p-6">
             <p className="text-sm font-medium">Bạn có chắc chắn muốn xóa toàn bộ cây gia phả này không? Mọi dữ liệu sẽ biến mất vĩnh viễn.</p>
           </div>
-          <div className="border-t-2 border-foreground flex p-4 gap-3">
+          <DialogFooter>
             <Button variant="outline" className="flex-1 h-12" onClick={() => setIsDeleteDialogOpen(false)}>Hủy</Button>
             <Button variant="destructive" className="flex-1 h-12" onClick={handleDeleteTree} disabled={isDeleting}>
               {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Xóa'}
             </Button>
-          </div>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
       <EventListModal 

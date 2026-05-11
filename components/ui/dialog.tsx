@@ -43,14 +43,14 @@ function DialogContent({ className, children, showCloseButton = true, ...props }
       <DialogPrimitive.Popup
         data-slot="dialog-content"
         className={cn(
-          "fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-none bg-popover p-4 text-sm text-popover-foreground border-2 border-foreground shadow-[8px_8px_0px_0px_var(--color-foreground)] duration-100 outline-none sm:max-w-sm data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+          "fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-0 rounded-none bg-popover text-sm text-popover-foreground border-2 border-foreground shadow-[8px_8px_0px_0px_var(--color-foreground)] duration-100 outline-none sm:max-w-sm data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
           className
         )}
         {...props}
       >
         {children}
         {showCloseButton && (
-          <DialogPrimitive.Close data-slot="dialog-close" render={<Button variant="outline" className="absolute top-2 right-2" size="icon-sm" />}>
+          <DialogPrimitive.Close data-slot="dialog-close" render={<Button variant="outline" className="absolute top-4 right-4 z-50 rounded-none shadow-[2px_2px_0px_0px_var(--color-foreground)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none" size="icon-xs" />}>
             <XIcon />
             <span className="sr-only">Close</span>
           </DialogPrimitive.Close>
@@ -60,25 +60,59 @@ function DialogContent({ className, children, showCloseButton = true, ...props }
   )
 }
 
-function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
-  return <div data-slot="dialog-header" className={cn("flex flex-col gap-2", className)} {...props} />
+function DialogHeader({ className, variant = "primary", ...props }: React.ComponentProps<"div"> & { variant?: "primary" | "destructive" | "none" }) {
+  const variantStyles = {
+    primary: "bg-primary/5",
+    destructive: "bg-destructive/10",
+    none: "",
+  }
+
+  return (
+    <div 
+      data-slot="dialog-header" 
+      className={cn(
+        "flex flex-col gap-1.5 p-6 border-b-2 border-foreground", 
+        variantStyles[variant],
+        className
+      )} 
+      {...props} 
+    />
+  )
 }
 
-function DialogFooter({ className, showCloseButton = false, children, ...props }: React.ComponentProps<"div"> & { showCloseButton?: boolean }) {
+function DialogFooter({ className, children, ...props }: React.ComponentProps<"div">) {
   return (
-    <div data-slot="dialog-footer" className={cn("-mx-4 -mb-4 flex flex-col-reverse gap-2 border-t-2 border-foreground bg-muted/50 p-4 sm:flex-row sm:justify-end", className)} {...props}>
+    <div 
+      data-slot="dialog-footer" 
+      className={cn(
+        "flex flex-row gap-3 border-t-2 border-foreground p-4", 
+        className
+      )} 
+      {...props}
+    >
       {children}
-      {showCloseButton && <DialogPrimitive.Close render={<Button variant="outline" />}>Close</DialogPrimitive.Close>}
     </div>
   )
 }
 
 function DialogTitle({ className, ...props }: DialogPrimitive.Title.Props) {
-  return <DialogPrimitive.Title data-slot="dialog-title" className={cn("font-heading text-base leading-none font-semibold", className)} {...props} />
+  return (
+    <DialogPrimitive.Title 
+      data-slot="dialog-title" 
+      className={cn("font-serif font-black text-2xl uppercase tracking-widest", className)} 
+      {...props} 
+    />
+  )
 }
 
 function DialogDescription({ className, ...props }: DialogPrimitive.Description.Props) {
-  return <DialogPrimitive.Description data-slot="dialog-description" className={cn("text-sm text-muted-foreground", className)} {...props} />
+  return (
+    <DialogPrimitive.Description 
+      data-slot="dialog-description" 
+      className={cn("text-xs font-semibold text-muted-foreground uppercase tracking-[0.16em] mt-0.5", className)} 
+      {...props} 
+    />
+  )
 }
 
 export { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger }

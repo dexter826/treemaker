@@ -1,6 +1,6 @@
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { ReactFlow, Controls, Background, BackgroundVariant, Node } from '@xyflow/react';
+import { ReactFlow, Controls, Background, BackgroundVariant } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useStore } from '@/lib/store';
 import { PersonNode } from './person-node';
@@ -18,6 +18,7 @@ const edgeTypes = {
   familyEdge: FamilyEdge
 };
 
+// Vùng hiển thị cây gia phả tương tác.
 export function FamilyTreeCanvas() {
   const persons = useStore((state) => state.persons);
   const relationships = useStore((state) => state.relationships);
@@ -48,7 +49,6 @@ export function FamilyTreeCanvas() {
         onBeforeDelete={onBeforeDelete}
         onPaneClick={() => setShowCardActions(null)}
         onNodeClick={(_, node) => {
-          // Chỉ đóng nếu click vào node không phải personNode hoặc logic đã xử lý trong PersonNode
           if (node.type !== 'personNode') setShowCardActions(null);
         }}
         nodeTypes={nodeTypes}
@@ -65,18 +65,18 @@ export function FamilyTreeCanvas() {
       </ReactFlow>
 
       <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
-        <DialogContent className="border-2 border-foreground rounded-none shadow-[8px_8px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-md">
-          <div className="border-b-2 border-foreground bg-destructive/10 p-6">
-            <DialogTitle className="font-serif font-black text-2xl uppercase tracking-widest text-destructive">Xóa kết nối</DialogTitle>
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.16em] mt-2">Hành động này không thể hoàn tác</p>
-          </div>
+        <DialogContent>
+          <DialogHeader variant="destructive">
+            <DialogTitle>Xóa kết nối</DialogTitle>
+            <DialogDescription>Hành động này không thể hoàn tác</DialogDescription>
+          </DialogHeader>
           <div className="p-6">
             <p className="text-sm font-medium leading-relaxed">Bạn có chắc chắn muốn xóa kết nối này không? Các thông tin quan hệ gia đình liên quan sẽ bị loại bỏ khỏi hồ sơ.</p>
           </div>
-          <div className="border-t-2 border-foreground flex p-4 gap-3">
+          <DialogFooter>
             <Button variant="outline" className="flex-1 h-12" onClick={() => setIsConfirmOpen(false)}>Hủy</Button>
             <Button variant="destructive" className="flex-1 h-12" onClick={confirmDelete}>Xóa</Button>
-          </div>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

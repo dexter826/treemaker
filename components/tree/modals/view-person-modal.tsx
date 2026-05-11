@@ -35,7 +35,7 @@ export function ViewPersonModal() {
     >
       <DialogContent 
         showCloseButton={false}
-        className="border-2 border-foreground rounded-none shadow-[6px_6px_0px_0px_var(--color-foreground)] bg-background p-0 sm:max-w-[380px] overflow-hidden flex flex-col h-[440px] gap-0"
+        className="sm:max-w-[380px] overflow-hidden flex flex-col h-[440px]"
       >
         {!showFullBio && (
           <DialogClose render={<Button variant="outline" size="icon-xs" className="absolute top-3 right-3 z-50 bg-background border-2 border-foreground shadow-[2px_2px_0px_0px_var(--color-foreground)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px]" />}>
