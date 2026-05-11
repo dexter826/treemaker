@@ -6,11 +6,14 @@ import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Loader2, Eye, EyeOff } from 'lucide-react';
 import { authSchema, AuthFormValues } from '@/lib/validations/auth';
 
+// Thành phần xử lý đăng nhập và đăng ký.
 export function AuthForm() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -48,6 +51,7 @@ export function AuthForm() {
         });
         if (error) throw error;
         toast.success('Đăng nhập thành công.');
+        window.location.href = '/';
       }
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Lỗi xác thực.';
@@ -63,8 +67,8 @@ export function AuthForm() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto relative group">
-      <div className="absolute inset-0 translate-x-2 translate-y-2 bg-primary/10 border-2 border-foreground -z-10 transition-transform group-hover:translate-x-3 group-hover:translate-y-3" />
+    <div className="w-full max-w-md mx-auto relative">
+      <div className="absolute inset-0 translate-x-2 translate-y-2 bg-primary/10 border-2 border-foreground -z-10" />
 
       <div className="border-2 border-foreground bg-background p-6 lg:p-8 relative">
         <div className="mb-8 text-center border-b-2 border-foreground/10 pb-5">

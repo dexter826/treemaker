@@ -17,13 +17,14 @@ import { treeService } from '@/lib/services/tree.service';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { basePersonSchema } from '@/lib/validations/person';
+import { personObjectSchema } from '@/lib/validations/person';
 import * as z from 'zod';
 import { EventListModal } from '../modals/event-list-modal';
 
-const addPersonSchema = basePersonSchema.pick({ full_name: true, gender: true });
+const addPersonSchema = personObjectSchema.pick({ full_name: true, gender: true });
 type AddPersonFormValues = z.infer<typeof addPersonSchema>;
 
+// Thanh công cụ điều khiển cây gia phả.
 export function TreeToolbar() {
   const currentTree = useStore((state) => state.currentTree);
   const persons = useStore((state) => state.persons);
