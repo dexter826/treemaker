@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useStore } from '@/lib/store';
+import { removeVietnameseTones } from '@/lib/utils';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Search, Share2, ArrowLeft, UserPlus, Trash2, Mars, Venus, Loader2, MoreHorizontal } from 'lucide-react';
 import { toast } from 'sonner';
@@ -105,7 +106,7 @@ export function TreeToolbar() {
       transition={{ duration: 0.3, delay: 0.1 }}
       className="absolute top-3 left-3 right-3 md:top-4 md:left-4 md:right-auto z-10 flex items-stretch gap-2 md:gap-3"
     >
-      <Link href="/" className={buttonVariants({ variant: 'outline', effect: 'raised', className: 'w-10 h-10 md:w-12 md:h-12 px-0 rounded-none shrink-0' })} aria-label="Quay lại trang chính">
+      <Link href="/" className={buttonVariants({ variant: 'outline', effect: 'raised', className: 'w-10 h-10 md:w-12 md:h-12 px-0 rounded-none shrink-0' })} aria-label="Quay lại trang chính" title="Quay lại trang chính">
         <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
       </Link>
 
@@ -115,11 +116,19 @@ export function TreeToolbar() {
       </div>
 
       <Popover open={searchOpen} onOpenChange={setSearchOpen}>
-        <PopoverTrigger className={buttonVariants({ variant: 'outline', size: 'icon', effect: 'raised', className: 'h-10 w-10 md:h-12 md:w-12 rounded-none shrink-0' })} aria-label="Tìm kiếm cá nhân">
+        <PopoverTrigger className={buttonVariants({ variant: 'outline', size: 'icon', effect: 'raised', className: 'h-10 w-10 md:h-12 md:w-12 rounded-none shrink-0' })} aria-label="Tìm kiếm cá nhân" title="Tìm kiếm cá nhân">
           <Search className="w-4 h-4 md:w-5 md:h-5" />
         </PopoverTrigger>
         <PopoverContent className="w-[calc(100vw-32px)] sm:w-[280px] p-0 border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--color-foreground)]" align="start">
-          <Command className="rounded-none">
+          <Command 
+            className="rounded-none"
+            filter={(value, search) => {
+              const normalizedValue = removeVietnameseTones(value);
+              const normalizedSearch = removeVietnameseTones(search);
+              if (normalizedValue.includes(normalizedSearch)) return 1;
+              return 0;
+            }}
+          >
             <CommandInput placeholder="Tìm kiếm cá nhân..." className="border-none focus:ring-0" />
             <CommandList>
               <CommandEmpty>Không tìm thấy.</CommandEmpty>
@@ -150,24 +159,43 @@ export function TreeToolbar() {
         <>
           {/* Desktop Actions */}
           <div className="hidden sm:flex items-stretch gap-2">
-            <Button variant="outline" effect="raised" className="h-12 rounded-none" onClick={handleShare}>
-              <Share2 className="w-4 h-4 mr-2" />
-              <span>Chia sẻ</span>
+            <Button 
+              variant="outline" 
+              size="icon" 
+              effect="raised" 
+              className="w-10 h-10 md:w-12 md:h-12 rounded-none shrink-0" 
+              onClick={handleShare}
+              title="Chia sẻ liên kết"
+            >
+              <Share2 className="w-4 h-4 md:w-5 md:h-5" />
             </Button>
-            <Button variant="outline" effect="raised" className="h-12 rounded-none" onClick={() => setIsAddPersonOpen(true)}>
-              <UserPlus className="w-4 h-4 mr-2" />
-              <span>Thêm người</span>
+            <Button 
+              variant="outline" 
+              size="icon" 
+              effect="raised" 
+              className="w-10 h-10 md:w-12 md:h-12 rounded-none shrink-0" 
+              onClick={() => setIsAddPersonOpen(true)}
+              title="Thêm người mới"
+            >
+              <UserPlus className="w-4 h-4 md:w-5 md:h-5" />
             </Button>
-            <Button variant="destructive" effect="raised" className="h-12 w-12 sm:w-auto rounded-none" onClick={() => setIsDeleteDialogOpen(true)} aria-label="Xóa gia phả">
-              <Trash2 className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">Xóa cây</span>
+            <Button 
+              variant="destructive" 
+              size="icon" 
+              effect="raised" 
+              className="w-10 h-10 md:w-12 md:h-12 rounded-none shrink-0" 
+              onClick={() => setIsDeleteDialogOpen(true)} 
+              aria-label="Xóa gia phả"
+              title="Xóa toàn bộ cây"
+            >
+              <Trash2 className="w-4 h-4 md:w-5 md:h-5" />
             </Button>
           </div>
 
           {/* Mobile Actions Menu */}
           <div className="sm:hidden flex items-stretch">
             <Popover>
-              <PopoverTrigger className={buttonVariants({ variant: 'outline', size: 'icon', effect: 'raised', className: 'h-10 w-10 md:h-12 md:w-12 rounded-none shrink-0' })} aria-label="Thao tác thêm">
+              <PopoverTrigger className={buttonVariants({ variant: 'outline', size: 'icon', effect: 'raised', className: 'h-10 w-10 md:h-12 md:w-12 rounded-none shrink-0' })} aria-label="Thao tác thêm" title="Thêm thao tác">
                 <MoreHorizontal className="w-4 h-4 md:w-5 md:h-5" />
               </PopoverTrigger>
               <PopoverContent className="w-48 p-2 border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--color-foreground)] flex flex-col gap-2" align="end">

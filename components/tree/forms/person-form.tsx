@@ -265,7 +265,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
                         <span>{c.name}</span>
                       </div>
                     ),
-                    searchText: c.name
+                    searchText: `${c.name} ${c.code}`
                   })),
                 ]}
                 value={field.value || ''}

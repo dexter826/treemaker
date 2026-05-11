@@ -3,7 +3,7 @@
 import * as React from "react"
 import { Popover, PopoverContent, PopoverTrigger } from "./popover"
 import { buttonVariants } from "./button"
-import { cn } from "@/lib/utils"
+import { cn, removeVietnameseTones } from "@/lib/utils"
 import { ChevronDown, Check, Search } from "lucide-react"
 import { ScrollArea } from "./scroll-area"
 import { Input } from "./input"
@@ -35,7 +35,9 @@ export function Select({
   const filteredOptions = React.useMemo(() => {
     return options.filter((opt) => {
       const searchStr = opt.searchText || (typeof opt.label === 'string' ? opt.label : '');
-      return searchStr.toLowerCase().includes(searchTerm.toLowerCase());
+      const normalizedSearch = removeVietnameseTones(searchStr);
+      const normalizedTerm = removeVietnameseTones(searchTerm);
+      return normalizedSearch.includes(normalizedTerm);
     });
   }, [options, searchTerm])
 
