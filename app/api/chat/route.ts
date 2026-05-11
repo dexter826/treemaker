@@ -7,20 +7,34 @@ export const maxDuration = 30;
 export async function POST(req: Request) {
   try {
     const { messages, dataContext } = await req.json();
+    const { tree, persons, relationships } = dataContext;
+
+    // Tinh gọn dữ liệu để tiết kiệm token
+    const simplifiedPersons = (persons || []).map((p: any) => ({
+      id: p.id,
+      name: p.full_name,
+      gender: p.gender,
+      birth: p.birth_date,
+      father: p.father_id,
+      mother: p.mother_id
+    }));
+
+    const simplifiedRels = (relationships || [])
+      .filter((r: any) => r.relationship_type === 'spouse')
+      .map((r: any) => ({ p1: r.person1_id, p2: r.person2_id }));
 
     const result = streamText({
       model: google('gemini-2.5-flash'),
-      system: `Bạn là trợ lý ảo chuyên về gia phả trong ứng dụng TreeMaker. 
-      Dưới đây là dữ liệu hiện tại của cây gia phả:
-      ${JSON.stringify(dataContext, null, 2)}
+      system: `Bạn là trợ lý ảo chuyên về gia phả trong ứng dụng TreeMaker.
+      Tên cây: ${tree?.name || 'Chưa rõ'}.
+      Dữ liệu:
+      - Thành viên: ${JSON.stringify(simplifiedPersons)}
+      - Vợ chồng: ${JSON.stringify(simplifiedRels)}
       
       Nhiệm vụ:
-      1. Trả lời các câu hỏi về mối quan hệ giữa các thành viên.
-      2. Giải thích cách sử dụng ứng dụng.
-      3. Phân tích thông tin dựa trên dữ liệu JSON được cung cấp.
-      4. Trả lời ngắn gọn, súc tích, phong cách chuyên nghiệp nhưng thân thiện.
-      
-      Lưu ý: Nếu không biết câu trả lời từ dữ liệu, hãy nói rõ là thông tin chưa được cập nhật.`,
+      1. Phân tích quan hệ từ father_id, mother_id và danh sách vợ chồng.
+      2. Trả lời ngắn gọn, tiếng Việt súc tích (dưới 3 câu).
+      3. Nếu không có dữ liệu, hãy nói rõ thông tin chưa được cập nhật.`,
       messages: await convertToModelMessages(messages),
     });
 

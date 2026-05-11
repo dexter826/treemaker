@@ -45,7 +45,7 @@ export function AuthForm() {
 
   return (
     <div className="w-full max-w-md mx-auto relative group">
-      <div className="absolute top-2 left-2 w-full h-full bg-primary/10 border-2 border-foreground -z-10 transition-transform group-hover:translate-x-1 group-hover:translate-y-1" />
+      <div className="absolute inset-0 translate-x-2 translate-y-2 bg-primary/10 border-2 border-foreground -z-10 transition-transform group-hover:translate-x-3 group-hover:translate-y-3" />
 
       <div className="border-2 border-foreground bg-background p-6 lg:p-8 relative">
         <div className="mb-8 text-center border-b-2 border-foreground/10 pb-5">

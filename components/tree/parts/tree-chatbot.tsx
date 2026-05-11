@@ -17,9 +17,9 @@ export function TreeChatbot() {
   const relationships = useStore((state) => state.relationships);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const currentTree = useStore((state) => state.currentTree);
   const { messages, sendMessage, status, error } = useChat<UIMessage>({
-    // @ts-ignore
-    initialMessages: [],
+    messages: [],
   });
 
   const isLoading = status === "streaming" || status === "submitted";
@@ -36,15 +36,15 @@ export function TreeChatbot() {
     
     sendMessage(
       {
-        role: "user",
-        parts: [{ type: "text", text: input }]
+        text: input,
       },
       {
         body: {
           dataContext: {
+            tree: currentTree,
             persons: persons.map(p => ({
               id: p.id,
-              name: p.full_name,
+              full_name: p.full_name,
               gender: p.gender,
               father_id: p.father_id,
               mother_id: p.mother_id,
@@ -112,7 +112,7 @@ export function TreeChatbot() {
                       <ReactMarkdown>
                         {m.parts
                           .filter((part) => part.type === "text")
-                          .map((part) => part.text)
+                          .map((part) => (part as any).text)
                           .join("")}
                       </ReactMarkdown>
                     </div>
@@ -122,10 +122,17 @@ export function TreeChatbot() {
               {isLoading && (
                 <div className="flex gap-3">
                   <div className="w-8 h-8 flex items-center justify-center border-2 border-foreground bg-primary shrink-0">
-                    <Loader2 className="w-4 h-4 text-white animate-spin" />
+                    <Bot className="w-4 h-4 text-white" />
                   </div>
                   <div className="p-3 border-2 border-foreground bg-muted shadow-[4px_4px_0px_0px_var(--color-foreground)]">
-                    <span className="animate-pulse">Đang suy nghĩ...</span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs font-bold uppercase tracking-wider animate-pulse">Đang suy nghĩ</span>
+                      <span className="flex gap-0.5">
+                        <span className="w-1 h-1 bg-foreground rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                        <span className="w-1 h-1 bg-foreground rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                        <span className="w-1 h-1 bg-foreground rounded-full animate-bounce"></span>
+                      </span>
+                    </div>
                   </div>
                 </div>
               )}

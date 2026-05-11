@@ -129,10 +129,10 @@ export default function DashboardPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: ANIMATION_DURATION.FADE / 1000, delay: 0.2 }}
-            className="min-h-screen"
+            className="min-h-dvh"
           >
             {!session ? (
-              <div className="min-h-screen flex flex-col bg-background relative overflow-hidden">
+              <div className="min-h-dvh flex flex-col bg-background relative overflow-hidden">
                 {/* Header Landing Page */}
                 <header className="absolute top-0 left-0 w-full p-6 lg:px-10 z-50 flex items-center">
                 </header>
@@ -148,16 +148,16 @@ export default function DashboardPage() {
                   />
                 </div>
 
-                <div className="flex-1 flex items-center justify-center p-4 lg:p-8 mt-16 lg:mt-0">
-                  <div className="w-full max-w-6xl flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16 z-10">
-                    <div className="flex-1 text-left space-y-6 lg:pl-10">
-                      <h1 className="text-5xl lg:text-7xl font-black font-serif leading-[0.9] tracking-tight text-foreground">
+                <div className="flex-1 flex items-center justify-center px-6 py-4 lg:p-8 lg:mt-0 min-h-dvh overflow-hidden">
+                  <div className="w-full max-w-6xl flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-16 z-10 pb-8 lg:pb-0">
+                    <div className="flex-1 text-left space-y-4 lg:space-y-6 lg:pl-10">
+                      <h1 className="text-3xl md:text-5xl lg:text-7xl font-black font-serif leading-[0.9] tracking-tight text-foreground break-words">
                         <span className="block">Khám Phá</span>
                         <span className="block text-primary italic font-light">&</span>
                         <span className="block">Lưu Giữ</span>
                       </h1>
-                      <p className="text-muted-foreground text-base max-w-md leading-relaxed font-medium">
-                        Nền tảng quản lý gia phả trực quan, bảo toàn mối quan hệ qua nhiều thế hệ với dữ liệu nhất quán và an toàn.
+                      <p className="text-muted-foreground text-sm md:text-base max-w-md leading-relaxed font-medium">
+                        Nền tảng quản lý gia phả trực quan, bảo toàn mối quan hệ qua nhiều thế hệ.
                       </p>
                     </div>
 
@@ -168,13 +168,13 @@ export default function DashboardPage() {
                 </div>
               </div>
             ) : (
-              <div className="min-h-screen bg-background relative selection:bg-primary/20">
+              <div className="min-h-dvh bg-background relative selection:bg-primary/20">
                 <div className="max-w-5xl mx-auto px-4 py-8 lg:px-8 lg:py-10 flex flex-col">
                   <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-4 border-foreground pb-6 mb-6">
                     <div className="flex flex-col md:flex-row md:items-end gap-6">
                       <div className="space-y-2">
                         <h2 className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Hồ Sơ Lưu Trữ</h2>
-                        <h1 className="text-4xl md:text-6xl font-black font-serif tracking-tight leading-none">
+                        <h1 className="text-3xl md:text-6xl font-black font-serif tracking-tight leading-none">
                           Cây <span className="text-primary italic font-light">Gia Phả</span>
                         </h1>
                       </div>
@@ -199,16 +199,16 @@ export default function DashboardPage() {
                   </header>
 
                   <main className="flex-1">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b-2 border-foreground/20 pb-3 mb-4 gap-4">
-                      <h3 className="text-lg font-bold tracking-wide text-foreground">Danh Sách Gia Phả</h3>
+                    <div className="flex flex-row items-center justify-between border-b-2 border-foreground/20 pb-3 mb-4 gap-2">
+                      <h3 className="text-base md:text-lg font-bold tracking-wide text-foreground truncate">Danh Sách Gia Phả</h3>
                       <Button
-                        variant="ghost"
+                        variant="outline"
                         size="sm"
                         onClick={() => setIsCreateOpen(true)}
-                        className="w-fit"
+                        className="h-9 px-3 text-[10px] sm:text-xs font-bold uppercase tracking-wider"
                       >
+                        <Plus className="w-3.5 h-3.5 mr-1.5" />
                         <span>Tạo Cây Mới</span>
-                        <Plus className="w-4 h-4" />
                       </Button>
                     </div>
 
@@ -230,11 +230,11 @@ export default function DashboardPage() {
                             key={tree.id}
                             className="group relative flex flex-col md:flex-row justify-between items-start md:items-center p-4 lg:p-5 border-2 border-foreground bg-background hover:bg-foreground/[0.02] transition-colors"
                           >
-                            <div className="absolute top-0 left-0 bg-foreground text-background text-[10px] font-bold px-2 py-0.5 tracking-wider">
+                            <div className="absolute top-0 left-0 bg-foreground text-background text-[10px] font-bold px-2 py-0.5 tracking-wider z-10">
                               ID-{String(idx + 1).padStart(3, '0')}
                             </div>
 
-                            <div className="flex-1 mt-4 md:mt-0 space-y-1">
+                            <div className="flex-1 mt-6 md:mt-0 space-y-1">
                               <h4 className="text-xl font-serif font-bold text-foreground group-hover:text-primary transition-colors truncate max-w-xl">
                                 {tree.name}
                               </h4>

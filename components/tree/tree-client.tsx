@@ -53,14 +53,14 @@ export default function TreeClient({ treeId }: { treeId: string }) {
 
   if (isLoading) {
     return (
-      <div className="w-full h-screen flex items-center justify-center bg-background">
+      <div className="w-full h-dvh flex items-center justify-center bg-background">
         <LoadingSpinner size="lg" text="Đang tải cây gia phả..." />
       </div>
     );
   }
 
   return (
-    <div className="w-full h-screen flex relative overflow-hidden bg-background">
+    <div className="w-full h-dvh flex relative overflow-hidden bg-background">
       <div className="pointer-events-none absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(currentColor 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
       <ReactFlowProvider>
         <TreeToolbar />

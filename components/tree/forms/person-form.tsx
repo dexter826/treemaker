@@ -97,13 +97,13 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
           <AvatarUpload currentUrl={formData.avatar_url} onFileSelect={setSelectedAvatarFile} disabled={isReadOnly} />
         </div>
 
-        <div className="grid grid-cols-3 gap-4 w-full">
-          <div className="col-span-2 space-y-1">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
+          <div className="sm:col-span-2 space-y-1">
             <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Họ và tên</Label>
             <Input name="full_name" value={formData.full_name} onChange={handleChange} readOnly={isReadOnly} placeholder="Ví dụ: Nguyễn Văn A" className="font-semibold w-full" />
           </div>
 
-          <div className="col-span-1 space-y-1">
+          <div className="sm:col-span-1 space-y-1">
             <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Giới tính</Label>
             <Select
               options={[
@@ -116,7 +116,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
             />
           </div>
 
-          <div className="col-span-3 space-y-1">
+          <div className="sm:col-span-3 space-y-1">
             <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Tên gọi khác (Nickname)</Label>
             <Input name="nickname" value={formData.nickname || ''} onChange={handleChange} readOnly={isReadOnly} placeholder="Ví dụ: Bé Tí, Tèo..." className="font-semibold" />
           </div>

@@ -113,17 +113,20 @@ export const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'T
     ranker: 'network-simplex'
   });
 
-  const marriageNodes = nodes.filter(n => n.type === 'marriageNode');
+  // Tạo Maps để truy xuất O(1)
+  const nodesMap = new Map(nodes.map(n => [n.id, n]));
   const personNodes = nodes.filter(n => n.type === 'personNode');
+  const marriageNodes = nodes.filter(n => n.type === 'marriageNode');
   
   const coupleMap = new Map<string, { spouse1: string; spouse2: string }>();
-  marriageNodes.forEach(mNode => {
-    const spouseEdges = edges.filter(e => e.target === mNode.id && (e.id.startsWith('e:m1:') || e.id.startsWith('e:m2:')));
-    if (spouseEdges.length === 2) {
-      coupleMap.set(mNode.id, {
-        spouse1: spouseEdges[0].source,
-        spouse2: spouseEdges[1].source
-      });
+  edges.forEach(edge => {
+    if (edge.id.startsWith('e:m1:') || edge.id.startsWith('e:m2:')) {
+      const mNodeId = edge.target;
+      const spouseId = edge.source;
+      const current = coupleMap.get(mNodeId) || { spouse1: '', spouse2: '' };
+      if (!current.spouse1) current.spouse1 = spouseId;
+      else if (!current.spouse2) current.spouse2 = spouseId;
+      coupleMap.set(mNodeId, current);
     }
   });
 
@@ -138,15 +141,15 @@ export const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'T
 
   const dagreNodesToAdd: { id: string, width: number, height: number, order: number, dateMs: number }[] = [];
 
-  const getPerson = (id: string) => nodes.find(n => n.id === id)?.data?.person as Person | undefined;
+  const getPersonData = (id: string) => nodesMap.get(id)?.data?.person as Person | undefined;
 
   marriageNodes.forEach(mNode => {
     const couple = coupleMap.get(mNode.id);
     let order = 999;
     let dateMs = Infinity;
     if (couple) {
-      const p1 = getPerson(couple.spouse1);
-      const p2 = getPerson(couple.spouse2);
+      const p1 = getPersonData(couple.spouse1);
+      const p2 = getPersonData(couple.spouse2);
       const bloodP = (p1?.father_id || p1?.mother_id) ? p1 : ((p2?.father_id || p2?.mother_id) ? p2 : p1);
       order = bloodP?.sibling_order ?? 999;
       dateMs = bloodP?.birth_date ? new Date(bloodP.birth_date).getTime() : Infinity;
@@ -156,7 +159,7 @@ export const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'T
 
   personNodes.forEach(node => {
     if (!groupedPersonIds.has(node.id)) {
-      const p = getPerson(node.id);
+      const p = getPersonData(node.id);
       const order = p?.sibling_order ?? 999;
       const dateMs = p?.birth_date ? new Date(p.birth_date).getTime() : Infinity;
       dagreNodesToAdd.push({ id: node.id, width: TREE_NODE_WIDTH, height: TREE_NODE_HEIGHT, order, dateMs });
@@ -172,20 +175,13 @@ export const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'T
     dagreGraph.setNode(n.id, { width: n.width, height: n.height });
   });
 
-  const sortedEdges = [...edges].sort((a, b) => {
-    const getOrder = (personId: string) => {
-      const person = nodes.find(n => n.id === personId)?.data?.person as Person;
-      return person?.sibling_order ?? 0;
-    };
-    return getOrder(a.target) - getOrder(b.target);
-  });
-
-  sortedEdges.forEach((edge) => {
+  edges.forEach((edge) => {
     if (edge.id.startsWith('e:m1:') || edge.id.startsWith('e:m2:')) return;
 
     let source = edge.source;
     let target = edge.target;
 
+    // Check if source or target is part of a couple
     for (const [mId, couple] of coupleMap.entries()) {
       if (couple.spouse1 === source || couple.spouse2 === source) source = mId;
       if (couple.spouse1 === target || couple.spouse2 === target) target = mId;
@@ -197,16 +193,18 @@ export const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'T
   dagre.layout(dagreGraph);
 
   const layoutedNodes: Node[] = [];
+  const processedNodesMap = new Map<string, Node>();
 
   coupleMap.forEach((couple, mId) => {
     const dagreNode = dagreGraph.node(mId);
+    if (!dagreNode) return;
+
     const centerX = dagreNode.x;
     const centerY = dagreNode.y;
-
-    const mNode = nodes.find(n => n.id === mId)!;
+    const mNode = nodesMap.get(mId)!;
     
-    const p1 = nodes.find(n => n.id === couple.spouse1)?.data?.person as Person;
-    const p2 = nodes.find(n => n.id === couple.spouse2)?.data?.person as Person;
+    const p1 = getPersonData(couple.spouse1);
+    const p2 = getPersonData(couple.spouse2);
     
     let leftId = couple.spouse1;
     let rightId = couple.spouse2;
@@ -221,33 +219,40 @@ export const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'T
       rightId = couple.spouse1;
     }
 
-    const leftNode = nodes.find(n => n.id === leftId)!;
-    const rightNode = nodes.find(n => n.id === rightId)!;
-
+    const leftNode = nodesMap.get(leftId)!;
+    const rightNode = nodesMap.get(rightId)!;
     const xOffset = (TREE_NODE_WIDTH + coupleSpacing) / 2;
 
-    layoutedNodes.push({
+    const finalMNode = {
       ...mNode,
       position: { x: centerX - MARRIAGE_NODE_SIZE / 2, y: centerY - MARRIAGE_NODE_SIZE / 2 },
-    });
-
-    layoutedNodes.push({
+    };
+    const finalLeftNode = {
       ...leftNode,
       position: { x: centerX - xOffset - TREE_NODE_WIDTH / 2, y: centerY - TREE_NODE_HEIGHT / 2 },
-    });
-    layoutedNodes.push({
+    };
+    const finalRightNode = {
       ...rightNode,
       position: { x: centerX + xOffset - TREE_NODE_WIDTH / 2, y: centerY - TREE_NODE_HEIGHT / 2 },
-    });
+    };
+
+    layoutedNodes.push(finalMNode, finalLeftNode, finalRightNode);
+    processedNodesMap.set(mId, finalMNode);
+    processedNodesMap.set(leftId, finalLeftNode);
+    processedNodesMap.set(rightId, finalRightNode);
   });
 
   personNodes.forEach(node => {
     if (!groupedPersonIds.has(node.id)) {
       const dagreNode = dagreGraph.node(node.id);
-      layoutedNodes.push({
-        ...node,
-        position: { x: dagreNode.x - TREE_NODE_WIDTH / 2, y: dagreNode.y - TREE_NODE_HEIGHT / 2 },
-      });
+      if (dagreNode) {
+        const finalNode = {
+          ...node,
+          position: { x: dagreNode.x - TREE_NODE_WIDTH / 2, y: dagreNode.y - TREE_NODE_HEIGHT / 2 },
+        };
+        layoutedNodes.push(finalNode);
+        processedNodesMap.set(node.id, finalNode);
+      }
     }
   });
 
@@ -257,9 +262,12 @@ export const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'T
     sourcePosition: isHorizontal ? Position.Right : Position.Bottom,
   }));
 
+  // Re-map final nodes for edge processing
+  const finalNodesMap = new Map(finalNodes.map(n => [n.id, n]));
+
   const layoutedEdges = edges.map((edge) => {
-    const sourceNode = finalNodes.find(n => n.id === edge.source);
-    const targetNode = finalNodes.find(n => n.id === edge.target);
+    const sourceNode = finalNodesMap.get(edge.source);
+    const targetNode = finalNodesMap.get(edge.target);
 
     if (sourceNode && targetNode) {
       if (edge.id.startsWith('e:m1:') || edge.id.startsWith('e:m2:')) {
