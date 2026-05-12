@@ -34,6 +34,15 @@ export function TreeChatbot() {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
     
+    const minimalPersons = persons.map(p => ({
+      id: p.id,
+      full_name: p.full_name,
+      gender: p.gender,
+      father_id: p.father_id,
+      mother_id: p.mother_id,
+      birth_date: p.birth_date
+    }));
+
     sendMessage(
       {
         text: input,
@@ -42,15 +51,8 @@ export function TreeChatbot() {
         body: {
           dataContext: {
             tree: currentTree,
-            persons: persons.map(p => ({
-              id: p.id,
-              full_name: p.full_name,
-              gender: p.gender,
-              father_id: p.father_id,
-              mother_id: p.mother_id,
-              birth_date: p.birth_date
-            })),
-            relationships: relationships
+            persons: minimalPersons,
+            relationships: relationships.filter(r => r.relationship_type === 'spouse')
           }
         }
       }
