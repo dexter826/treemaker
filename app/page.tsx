@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { treeService } from '@/lib/services/tree.service';
 import { useStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Copy, Plus, Trash2, Loader2 } from 'lucide-react';
+import { ArrowRight, Copy, Plus, Trash2, Loader2, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription, DialogFooter } from '@/components/ui/dialog';
@@ -144,17 +144,19 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="text-left md:text-right flex flex-col md:items-end gap-3">
-            <div className="bg-primary/5 border-2 border-foreground px-4 py-2">
-              <p className="text-xs font-semibold tracking-[0.16em] text-muted-foreground mb-1">Tài Khoản</p>
-              <p className="text-sm font-semibold text-foreground break-all">{user?.email}</p>
+          <div className="flex items-stretch gap-2 w-full md:w-auto">
+            <div className="bg-primary/5 border-2 border-foreground px-3 py-1 flex flex-col justify-center flex-1 min-w-0">
+              <p className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase leading-none mb-1">Tài Khoản</p>
+              <p className="text-xs font-bold text-foreground truncate">{user?.email}</p>
             </div>
             <Button
-              variant="link"
-              className="h-auto px-0 text-xs"
+              variant="destructive"
+              size="icon"
+              className="h-auto w-10 md:w-12 rounded-none border-2 shrink-0"
               onClick={() => setIsLogoutOpen(true)}
+              title="Đăng xuất"
             >
-              Đăng xuất
+              <LogOut className="size-4" />
             </Button>
           </div>
         </header>

@@ -71,7 +71,7 @@ export function TreeChatbot() {
           >
             <div className="p-4 border-b-2 border-foreground bg-primary text-primary-foreground flex items-center justify-between">
               <div className="flex items-center gap-2 text-white">
-                <Bot className="w-5 h-5" />
+                <Bot className="size-5" />
                 <span className="font-serif font-black uppercase tracking-widest text-sm">Trợ Lý Gia Phả</span>
               </div>
             </div>
@@ -82,7 +82,7 @@ export function TreeChatbot() {
             >
               {messages.length === 0 && !isLoading && (
                 <div className="text-center py-8">
-                  <Bot className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                  <Bot className="size-12 mx-auto mb-3 opacity-20" />
                   <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground px-4">
                     Chào bạn! Tôi có thể giúp gì cho bạn về cây gia phả này?
                   </p>
@@ -97,10 +97,10 @@ export function TreeChatbot() {
                   )}
                 >
                   <div className={cn(
-                    "w-8 h-8 flex items-center justify-center border-2 border-foreground shrink-0",
+                    "size-8 flex items-center justify-center border-2 border-foreground shrink-0",
                     m.role === "user" ? "bg-secondary" : "bg-primary"
                   )}>
-                    {m.role === "user" ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4 text-white" />}
+                    {m.role === "user" ? <User className="size-4" /> : <Bot className="size-4 text-white" />}
                   </div>
                   <div className={cn(
                     "p-3 border-2 border-foreground text-sm font-medium leading-relaxed max-w-[80%]",
@@ -121,8 +121,8 @@ export function TreeChatbot() {
               ))}
               {isLoading && (
                 <div className="flex gap-3">
-                  <div className="w-8 h-8 flex items-center justify-center border-2 border-foreground bg-primary shrink-0">
-                    <Bot className="w-4 h-4 text-white" />
+                  <div className="size-8 flex items-center justify-center border-2 border-foreground bg-primary shrink-0">
+                    <Bot className="size-4 text-white" />
                   </div>
                   <div className="p-3 border-2 border-foreground bg-muted shadow-[4px_4px_0px_0px_var(--color-foreground)]">
                     <div className="flex items-center gap-1">
@@ -155,7 +155,7 @@ export function TreeChatbot() {
                   type="submit" 
                   disabled={isLoading || !input.trim()}
                 >
-                  <Send className="w-4 h-4" />
+                  <Send className="size-4" />
                 </Button>
               </div>
             </form>
@@ -165,11 +165,12 @@ export function TreeChatbot() {
 
       <Button
         variant={isOpen ? "destructive" : "outline"}
+        size="icon"
         effect="raised"
         onClick={() => setIsOpen(!isOpen)}
-        className="h-14 w-14 rounded-none"
+        className="w-10 h-10 md:w-12 md:h-12 rounded-none shrink-0"
       >
-        {isOpen ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
+        {isOpen ? <X className="size-4 md:size-5" /> : <MessageCircle className="size-4 md:size-5" />}
       </Button>
     </div>
   );

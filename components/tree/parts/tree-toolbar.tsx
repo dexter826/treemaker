@@ -108,8 +108,13 @@ export function TreeToolbar() {
       transition={{ duration: 0.3, delay: 0.1 }}
       className="absolute top-3 left-3 right-3 md:top-4 md:left-4 md:right-auto z-10 flex items-stretch gap-2 md:gap-3"
     >
-      <Link href="/" className={buttonVariants({ variant: 'outline', effect: 'raised', className: 'w-10 h-10 md:w-12 md:h-12 px-0 rounded-none shrink-0' })} aria-label="Quay lại trang chính" title="Quay lại trang chính">
-        <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
+      <Link 
+        href="/" 
+        className={buttonVariants({ variant: 'outline', size: 'icon', effect: 'raised', className: 'w-10 h-10 md:w-12 md:h-12 rounded-none shrink-0' })} 
+        aria-label="Quay lại trang chính" 
+        title="Quay lại trang chính"
+      >
+        <ArrowLeft className="size-4 md:size-5" />
       </Link>
 
       <div className="relative group/name flex-1 md:flex-none min-w-0 h-10 md:h-12 border-2 border-foreground bg-background shadow-[4px_4px_0px_0px_var(--color-foreground)] px-2 md:px-4 flex flex-col justify-center">
@@ -118,8 +123,8 @@ export function TreeToolbar() {
       </div>
 
       <Popover open={searchOpen} onOpenChange={setSearchOpen}>
-        <PopoverTrigger className={buttonVariants({ variant: 'outline', size: 'icon', effect: 'raised', className: 'h-10 w-10 md:h-12 md:w-12 rounded-none shrink-0' })} aria-label="Tìm kiếm cá nhân" title="Tìm kiếm cá nhân">
-          <Search className="w-4 h-4 md:w-5 md:h-5" />
+        <PopoverTrigger className={buttonVariants({ variant: 'outline', size: 'icon', effect: 'raised', className: 'w-10 h-10 md:w-12 md:h-12 rounded-none shrink-0' })} aria-label="Tìm kiếm cá nhân" title="Tìm kiếm cá nhân">
+          <Search className="size-4 md:size-5" />
         </PopoverTrigger>
         <PopoverContent className="w-[calc(100vw-32px)] sm:w-[280px] p-0 border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--color-foreground)]" align="start">
           <Command 
@@ -165,7 +170,7 @@ export function TreeToolbar() {
         onClick={() => setIsEventListOpen(true)}
         title="Danh mục sự kiện"
       >
-        <CalendarDays className="w-4 h-4 md:w-5 md:h-5" />
+        <CalendarDays className="size-4 md:size-5" />
       </Button>
 
       {!isReadOnly ? (
@@ -180,7 +185,7 @@ export function TreeToolbar() {
               onClick={handleShare}
               title="Chia sẻ liên kết"
             >
-              <Share2 className="w-4 h-4 md:w-5 md:h-5" />
+              <Share2 className="size-4 md:size-5" />
             </Button>
             <Button 
               variant="outline" 
@@ -190,7 +195,7 @@ export function TreeToolbar() {
               onClick={() => setIsAddPersonOpen(true)}
               title="Thêm người mới"
             >
-              <UserPlus className="w-4 h-4 md:w-5 md:h-5" />
+              <UserPlus className="size-4 md:size-5" />
             </Button>
             <Button 
               variant="destructive" 
@@ -208,8 +213,8 @@ export function TreeToolbar() {
           {/* Mobile Actions Menu */}
           <div className="sm:hidden flex items-stretch">
             <Popover>
-              <PopoverTrigger className={buttonVariants({ variant: 'outline', size: 'icon', effect: 'raised', className: 'h-10 w-10 md:h-12 md:w-12 rounded-none shrink-0' })} aria-label="Thao tác thêm" title="Thêm thao tác">
-                <MoreHorizontal className="w-4 h-4 md:w-5 md:h-5" />
+              <PopoverTrigger className={buttonVariants({ variant: 'outline', size: 'icon', effect: 'raised', className: 'w-10 h-10 md:w-12 md:h-12 rounded-none shrink-0' })} aria-label="Thao tác thêm" title="Thêm thao tác">
+                <MoreHorizontal className="size-4 md:size-5" />
               </PopoverTrigger>
               <PopoverContent className="w-48 p-2 border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--color-foreground)] flex flex-col gap-2" align="end">
                 <Button variant="ghost" className="justify-start h-10 px-2 rounded-none text-xs" onClick={() => setIsEventListOpen(true)}>
@@ -239,11 +244,11 @@ export function TreeToolbar() {
             variant="outline" 
             size="icon" 
             effect="raised" 
-            className="h-10 w-10 md:h-12 md:w-12 rounded-none shrink-0" 
+            className="w-10 h-10 md:w-12 md:h-12 rounded-none shrink-0" 
             onClick={() => setIsEventListOpen(true)}
             title="Danh mục sự kiện"
           >
-            <CalendarDays className="w-4 h-4 md:w-5 md:h-5" />
+            <CalendarDays className="size-4 md:size-5" />
           </Button>
         </div>
       )}
