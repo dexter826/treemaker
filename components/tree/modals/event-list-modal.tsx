@@ -13,7 +13,7 @@ interface EventListModalProps {
 // Danh sách sự kiện ngày sinh và ngày giỗ.
 export function EventListModal({ isOpen, onClose }: EventListModalProps) {
   const persons = useStore((state) => state.persons);
-  const setSelectedPersonId = useStore((state) => state.setSelectedPersonId);
+  const setViewPersonId = useStore((state) => state.setViewPersonId);
 
   const today = new Date();
   const todayDay = today.getDate();
@@ -30,7 +30,7 @@ export function EventListModal({ isOpen, onClose }: EventListModalProps) {
   );
 
   const handlePersonClick = (id: string) => {
-    setSelectedPersonId(id);
+    setViewPersonId(id);
     onClose();
   };
 
