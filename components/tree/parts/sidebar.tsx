@@ -43,7 +43,6 @@ export function Sidebar() {
   const person = persons.find((p) => p.id === selectedPersonId);
   const personId = person?.id;
 
-  // Lay spouse tu relationships
   const getSpouseId = useCallback((pId: string) => {
     const rel = relationships.find(r => r.person1_id === pId || r.person2_id === pId);
     if (!rel) return null;

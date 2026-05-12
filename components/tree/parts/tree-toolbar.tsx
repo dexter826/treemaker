@@ -157,20 +157,21 @@ export function TreeToolbar() {
         </PopoverContent>
       </Popover>
 
-      {!isReadOnly && (
+      <Button 
+        variant="outline" 
+        size="icon" 
+        effect="raised" 
+        className="hidden sm:flex w-10 h-10 md:w-12 md:h-12 rounded-none shrink-0" 
+        onClick={() => setIsEventListOpen(true)}
+        title="Danh mục sự kiện"
+      >
+        <CalendarDays className="w-4 h-4 md:w-5 md:h-5" />
+      </Button>
+
+      {!isReadOnly ? (
         <>
           {/* Desktop Actions */}
           <div className="hidden sm:flex items-stretch gap-2">
-            <Button 
-              variant="outline" 
-              size="icon" 
-              effect="raised" 
-              className="w-10 h-10 md:w-12 md:h-12 rounded-none shrink-0" 
-              onClick={() => setIsEventListOpen(true)}
-              title="Danh mục sự kiện"
-            >
-              <CalendarDays className="w-4 h-4 md:w-5 md:h-5" />
-            </Button>
             <Button 
               variant="outline" 
               size="icon" 
@@ -232,6 +233,19 @@ export function TreeToolbar() {
             </Popover>
           </div>
         </>
+      ) : (
+        <div className="sm:hidden flex items-stretch">
+          <Button 
+            variant="outline" 
+            size="icon" 
+            effect="raised" 
+            className="h-10 w-10 md:h-12 md:w-12 rounded-none shrink-0" 
+            onClick={() => setIsEventListOpen(true)}
+            title="Danh mục sự kiện"
+          >
+            <CalendarDays className="w-4 h-4 md:w-5 md:h-5" />
+          </Button>
+        </div>
       )}
 
       <Dialog open={isAddPersonOpen} onOpenChange={(v) => !v && setIsAddPersonOpen(false)}>

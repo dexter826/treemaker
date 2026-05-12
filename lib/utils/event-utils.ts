@@ -13,16 +13,14 @@ export interface FamilyEvent {
   originalDate: string;
 }
 
-/**
- * Trích xuất và sắp xếp sự kiện theo tháng/ngày dương lịch
- */
+// Sắp xếp sự kiện theo tháng và ngày dương lịch.
 export const getSortedEvents = (persons: Person[]): FamilyEvent[] => {
   const events: FamilyEvent[] = [];
   const today = new Date();
   const currentYear = today.getFullYear();
 
   persons.forEach((person) => {
-    // Xử lý ngày sinh
+
     if (person.birth_date) {
       const date = new Date(person.birth_date);
       if (!isNaN(date.getTime())) {
@@ -46,7 +44,7 @@ export const getSortedEvents = (persons: Person[]): FamilyEvent[] => {
       }
     }
 
-    // Xử lý ngày mất
+
     if (person.death_date) {
       const date = new Date(person.death_date);
       if (!isNaN(date.getTime())) {
@@ -71,16 +69,14 @@ export const getSortedEvents = (persons: Person[]): FamilyEvent[] => {
     }
   });
 
-  // Sắp xếp theo tháng, sau đó đến ngày
+
   return events.sort((a, b) => {
     if (a.month !== b.month) return a.month - b.month;
     return a.day - b.day;
   });
 };
 
-/**
- * Nhóm sự kiện theo tháng
- */
+// Nhóm danh sách sự kiện theo tháng.
 export const groupEventsByMonth = (events: FamilyEvent[]) => {
   const grouped: Record<number, FamilyEvent[]> = {};
   

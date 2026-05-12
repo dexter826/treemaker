@@ -71,7 +71,6 @@ export const PersonNode = memo(function PersonNode({ data }: { data: { person: P
       onClick={handleOpen}
       onKeyDown={handleKeyDown}
     >
-      {/* Handles - Hidden by default, show on hover or selection */}
       <Handle 
         id="top" 
         type="target" 

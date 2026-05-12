@@ -132,7 +132,7 @@ export default function DashboardPage() {
           transition={{ duration: ANIMATION_DURATION.FADE / 1000 }}
           className="min-h-dvh bg-background relative selection:bg-primary/20"
         >
-          {/* Nội dung Dashboard */}
+
       <div className="max-w-5xl mx-auto px-4 py-8 lg:px-8 lg:py-10 flex flex-col">
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-4 border-foreground pb-6 mb-6">
           <div className="flex flex-col md:flex-row md:items-end gap-6">

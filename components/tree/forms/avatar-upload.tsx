@@ -63,7 +63,7 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled, error }: Avat
   const [srcForCrop, setSrcForCrop] = useState<string | null>(null);
   const [isCleared, setIsCleared] = useState(false);
   
-  // State cho việc crop
+
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [completedCrop, setCompletedCrop] = useState<{ x: number; y: number; width: number; height: number } | null>(null);

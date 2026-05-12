@@ -1,6 +1,6 @@
 import * as z from 'zod';
 
-// Định nghĩa Schema thuần túy để có thể sử dụng .pick() hoặc .omit()
+// Schema cơ bản cho hồ sơ cá nhân.
 export const personObjectSchema = z.object({
   full_name: z.string({ error: 'Họ tên là bắt buộc' }).min(2, 'Họ tên phải có ít nhất 2 ký tự'),
   gender: z.enum(['male', 'female'], {
@@ -18,7 +18,7 @@ export const personObjectSchema = z.object({
   avatar_file: z.any().nullable().optional(),
 });
 
-// Thêm các hàm kiểm tra logic (refinements) sau khi đã có schema thuần
+
 export const basePersonSchema = personObjectSchema.refine((data) => {
   if (!data.birth_date) return true;
   return new Date(data.birth_date) <= new Date();

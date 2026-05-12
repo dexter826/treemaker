@@ -87,7 +87,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
 
       updatePerson(updatedPerson);
       setIsAvatarCleared(false);
-      reset(data); // Cập nhật trạng thái default của form
+      reset(data);
       toast.success('Đã cập nhật thành công.');
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Lỗi khi cập nhật hồ sơ.';

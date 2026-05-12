@@ -47,7 +47,7 @@ export function ViewPersonModal() {
 
         <div className="flex-1 overflow-hidden flex flex-col min-h-0 p-0">
           {showFullBio ? (
-            /* Chi tiết tiểu sử */
+
             <div className="flex flex-col h-full">
               <div className="px-5 py-3 border-b-2 border-foreground bg-primary/5 flex items-center justify-between shrink-0">
                 <span className="font-serif font-black text-sm uppercase tracking-tight">Tiểu sử chi tiết</span>
@@ -68,7 +68,7 @@ export function ViewPersonModal() {
               </div>
             </div>
           ) : (
-            /* Thông tin tổng quát */
+
             <div className="flex flex-col h-full">
               <div className="border-b-2 border-foreground bg-primary/5 p-4 flex items-center gap-4 shrink-0 relative">
                 <Avatar className="h-13 w-13 border-2 border-foreground rounded-none bg-background shadow-[3px_3px_0px_0px_var(--color-foreground)] shrink-0">

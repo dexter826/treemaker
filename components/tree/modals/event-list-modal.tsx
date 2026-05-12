@@ -100,7 +100,7 @@ export function EventListModal({ isOpen, onClose }: EventListModalProps) {
                                       {event.type === 'birth' ? 'Ngày sinh' : 'Ngày giỗ'}
                                     </span>
                                     
-                                    {/* Badge số năm/tuổi */}
+
                                     <div className={`
                                       flex items-center gap-1 px-1.5 py-0.5 border font-black text-[9px] uppercase tracking-tighter
                                       ${event.type === 'birth' 
@@ -115,7 +115,7 @@ export function EventListModal({ isOpen, onClose }: EventListModalProps) {
                                       {event.yearsCount} {event.type === 'birth' ? 'Tuổi' : 'Năm'}
                                     </div>
 
-                                    {/* Badge mốc đặc biệt */}
+
                                     {event.milestone && (
                                       <div className="bg-primary text-primary-foreground border-2 border-primary px-1.5 py-0.5 font-black text-[9px] uppercase tracking-tighter shadow-[2px_2px_0px_0px_var(--color-foreground)]">
                                         {event.milestone}

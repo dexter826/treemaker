@@ -3,9 +3,7 @@ import { Node, Edge, Position } from '@xyflow/react';
 import { Person, Relationship } from '@/types';
 import { TREE_NODE_WIDTH, TREE_NODE_HEIGHT, MARRIAGE_NODE_SIZE, LAYOUT_CONFIG } from '../constants';
 
-/**
- * Tạo danh sách nodes và edges cho React Flow dựa trên dữ liệu người và quan hệ
- */
+// Tạo danh sách nodes và edges từ dữ liệu người và quan hệ.
 export const generateNodesAndEdges = (persons: Person[], relationships: Relationship[]) => {
   const nodes: Node[] = [];
   const edges: Edge[] = [];
@@ -99,9 +97,7 @@ export const generateNodesAndEdges = (persons: Person[], relationships: Relation
   return { nodes, edges };
 };
 
-/**
- * Tính toán vị trí các node theo đơn vị gia đình.
- */
+// Tính toán vị trí các node theo đơn vị gia đình.
 export const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'TB') => {
   const isHorizontal = direction === 'LR';
   const dagreGraph = new dagre.graphlib.Graph({ multigraph: true });
@@ -113,7 +109,7 @@ export const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'T
     ranker: 'network-simplex'
   });
 
-  // Tạo Maps để truy xuất O(1)
+
   const nodesMap = new Map(nodes.map(n => [n.id, n]));
   const personNodes = nodes.filter(n => n.type === 'personNode');
   const marriageNodes = nodes.filter(n => n.type === 'marriageNode');
@@ -181,7 +177,7 @@ export const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'T
     let source = edge.source;
     let target = edge.target;
 
-    // Check if source or target is part of a couple
+
     for (const [mId, couple] of coupleMap.entries()) {
       if (couple.spouse1 === source || couple.spouse2 === source) source = mId;
       if (couple.spouse1 === target || couple.spouse2 === target) target = mId;
@@ -262,7 +258,7 @@ export const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'T
     sourcePosition: isHorizontal ? Position.Right : Position.Bottom,
   }));
 
-  // Re-map final nodes for edge processing
+
   const finalNodesMap = new Map(finalNodes.map(n => [n.id, n]));
 
   const layoutedEdges = edges.map((edge) => {

@@ -11,11 +11,11 @@ export function FamilyEdge({
   style = {},
   markerEnd,
 }: EdgeProps) {
-  // Tính toán điểm rẽ nhánh (75% quãng đường dọc)
+
   const verticalDistance = targetY - sourceY;
   const splitY = sourceY + verticalDistance * 0.75;
 
-  // Tạo đường dẫn SVG dạng Fork: Dọc -> Ngang -> Dọc
+
   const edgePath = `M ${sourceX},${sourceY} 
                     L ${sourceX},${splitY} 
                     L ${targetX},${splitY} 
