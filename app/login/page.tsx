@@ -22,21 +22,17 @@ export default function LoginPage() {
         />
       </div>
 
-      <div className="w-full max-w-md z-10 flex flex-col items-center gap-2">
-        <div className="w-full flex justify-center -mb-2">
-          <Image
-            src="/logo.png"
-            alt="TreeMaker Logo"
-            width={220}
-            height={66}
-            priority
-            className="object-contain"
-          />
+            <div className="w-full max-w-md z-10 space-y-8">
+        <div className="text-center space-y-2">
+          <h1 className="text-4xl font-black font-serif tracking-tight">
+            Tree<span className="text-primary italic font-light">Maker</span>
+          </h1>
+          <p className="text-muted-foreground text-sm font-medium tracking-wide uppercase">
+            Hệ thống quản lý gia phả
+          </p>
         </div>
 
-        <div className="w-full relative -left-1">
-          <AuthForm />
-        </div>
+        <AuthForm />
       </div>
     </div>
   );
