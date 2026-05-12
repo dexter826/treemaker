@@ -22,11 +22,14 @@ export const calculateAge = (person: Person): number | null => {
 };
 
 /**
- * Định dạng chuỗi hiển thị năm sinh - năm mất.
+ * Định dạng ngày tháng đầy đủ DD/MM/YYYY.
  */
-export const formatLifeSpan = (person: Person): string => {
-  const birth = person.birth_date ? new Date(person.birth_date).getFullYear() : '—';
-  const death = person.death_date ? new Date(person.death_date).getFullYear() : '—';
+export const formatDate = (dateString: string | null | undefined): string => {
+  if (!dateString) return '—';
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return '—';
   
-  return `${birth} / ${death}`;
+  return date.toLocaleDateString('en-GB').replace(/\//g, '/'); // Đảm bảo định dạng DD/MM/YYYY
 };
+
+

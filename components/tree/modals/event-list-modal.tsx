@@ -95,15 +95,31 @@ export function EventListModal({ isOpen, onClose }: EventListModalProps) {
                                     )}
                                   </div>
                                   
-                                  <div className="flex items-center gap-2 mt-1">
+                                  <div className="flex flex-wrap items-center gap-2 mt-1.5">
                                     <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/80">
                                       {event.type === 'birth' ? 'Ngày sinh' : 'Ngày giỗ'}
                                     </span>
-                                    <div className="w-1 h-1 rounded-full bg-foreground/20" />
-                                    {event.type === 'birth' ? (
-                                      <Cake className="w-3 h-3 text-male opacity-70" />
-                                    ) : (
-                                      <HeartCrack className="w-3 h-3 text-destructive opacity-70" />
+                                    
+                                    {/* Badge số năm/tuổi */}
+                                    <div className={`
+                                      flex items-center gap-1 px-1.5 py-0.5 border font-black text-[9px] uppercase tracking-tighter
+                                      ${event.type === 'birth' 
+                                        ? 'bg-male/10 text-male border-male/20' 
+                                        : 'bg-foreground/5 text-muted-foreground border-foreground/10'}
+                                    `}>
+                                      {event.type === 'birth' ? (
+                                        <Cake className="w-2.5 h-2.5" />
+                                      ) : (
+                                        <HeartCrack className="w-2.5 h-2.5" />
+                                      )}
+                                      {event.yearsCount} {event.type === 'birth' ? 'Tuổi' : 'Năm'}
+                                    </div>
+
+                                    {/* Badge mốc đặc biệt */}
+                                    {event.milestone && (
+                                      <div className="bg-primary text-primary-foreground border-2 border-primary px-1.5 py-0.5 font-black text-[9px] uppercase tracking-tighter shadow-[2px_2px_0px_0px_var(--color-foreground)]">
+                                        {event.milestone}
+                                      </div>
                                     )}
                                   </div>
                                 </div>

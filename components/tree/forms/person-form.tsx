@@ -229,26 +229,26 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-1">
           <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">
-            {deceased ? 'Công việc lúc sinh thời' : 'Nghề nghiệp'}
+            Nghề nghiệp
           </Label>
           <Input 
             {...register('occupation')} 
             error={!!errors.occupation}
             readOnly={isReadOnly} 
-            placeholder={deceased ? 'Ví dụ: Từng là Giáo viên...' : 'Ví dụ: Bác sĩ, Kỹ sư...'}
+            placeholder="Ví dụ: Bác sĩ, Giáo viên..."
             className="font-semibold" 
           />
           {errors.occupation && <p className="text-[10px] text-red-500 font-bold uppercase">{errors.occupation.message}</p>}
         </div>
         <div className="space-y-1">
           <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">
-            {deceased ? 'Nơi an nghỉ' : 'Địa chỉ'}
+            Địa chỉ
           </Label>
           <Input 
             {...register('address')} 
             error={!!errors.address}
             readOnly={isReadOnly} 
-            placeholder={deceased ? 'Ví dụ: Nghĩa trang quê nhà...' : 'Ví dụ: Hà Nội, Việt Nam'}
+            placeholder="Ví dụ: Hà Nội, Việt Nam"
             className="font-semibold" 
           />
           {errors.address && <p className="text-[10px] text-red-500 font-bold uppercase">{errors.address.message}</p>}

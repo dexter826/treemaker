@@ -8,6 +8,8 @@ export interface FamilyEvent {
   type: EventType;
   day: number;
   month: number;
+  yearsCount: number;
+  milestone?: string;
   originalDate: string;
 }
 
@@ -16,18 +18,29 @@ export interface FamilyEvent {
  */
 export const getSortedEvents = (persons: Person[]): FamilyEvent[] => {
   const events: FamilyEvent[] = [];
+  const today = new Date();
+  const currentYear = today.getFullYear();
 
   persons.forEach((person) => {
     // Xử lý ngày sinh
     if (person.birth_date) {
       const date = new Date(person.birth_date);
       if (!isNaN(date.getTime())) {
+        const birthYear = date.getFullYear();
+        const age = currentYear - birthYear;
+        
+        let milestone;
+        if (age >= 70 && age % 10 === 0) milestone = 'Mừng thọ';
+        else if (age === 0) milestone = 'Mới sinh';
+
         events.push({
           personId: person.id,
           fullName: person.full_name,
           type: 'birth',
           day: date.getDate(),
           month: date.getMonth() + 1,
+          yearsCount: age,
+          milestone,
           originalDate: person.birth_date,
         });
       }
@@ -37,12 +50,21 @@ export const getSortedEvents = (persons: Person[]): FamilyEvent[] => {
     if (person.death_date) {
       const date = new Date(person.death_date);
       if (!isNaN(date.getTime())) {
+        const deathYear = date.getFullYear();
+        const yearsSinceDeath = currentYear - deathYear;
+        
+        let milestone;
+        if (yearsSinceDeath === 1) milestone = 'Giỗ đầu';
+        else if (yearsSinceDeath === 3) milestone = 'Giỗ hết';
+
         events.push({
           personId: person.id,
           fullName: person.full_name,
           type: 'death',
           day: date.getDate(),
           month: date.getMonth() + 1,
+          yearsCount: yearsSinceDeath,
+          milestone,
           originalDate: person.death_date,
         });
       }

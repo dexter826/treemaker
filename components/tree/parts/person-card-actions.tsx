@@ -9,6 +9,8 @@ import { toast } from 'sonner';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { cn } from '@/lib/utils';
+import { isDeceased } from '@/lib/utils/person-utils';
 
 interface PersonCardActionsProps {
   person: Person;
@@ -41,19 +43,25 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
     }
   };
 
+  const isSelected = useStore((state) => state.selectedPersonId === person.id);
+  const deceased = isDeceased(person);
+
   return (
     <div
-      className="absolute inset-0 z-50 flex items-center justify-center bg-background/90 backdrop-blur-sm person-card-actions"
+      className={cn(
+        "absolute inset-0 z-50 flex items-center justify-center bg-background border-2 [backface-visibility:hidden] [transform:rotateY(180deg)]",
+        isSelected
+          ? 'border-primary shadow-[6px_6px_0px_0px_var(--color-primary)]'
+          : deceased 
+            ? 'border-muted-foreground/30 opacity-90' 
+            : 'border-foreground shadow-[6px_6px_0px_0px_var(--color-foreground)]',
+      )}
       onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        e.stopPropagation();
+        onClose();
       }}
     >
-      <motion.div 
-        className="flex flex-col gap-3"
-        initial={{ opacity: 0, y: 10, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ type: 'spring', bounce: 0.3, duration: 0.4 }}
-      >
+      <div className="flex flex-col gap-4">
         <Button
           onClick={(e) => {
             e.stopPropagation();
@@ -99,7 +107,8 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
             </Button>
           </>
         )}
-      </motion.div>
+      </div>
+
 
       <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
         <DialogContent onClick={(e) => e.stopPropagation()}>
