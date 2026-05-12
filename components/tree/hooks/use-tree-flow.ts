@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNodesState, useEdgesState, useReactFlow, Node, Edge } from '@xyflow/react';
 import { Person, Relationship } from '@/types';
 import { generateNodesAndEdges, getLayoutedElements } from '../utils/layout';
@@ -8,11 +8,14 @@ export function useTreeFlow(persons: Person[], relationships: Relationship[], se
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const { fitView } = useReactFlow();
+  
+  const prevCounts = useRef({ persons: 0, relationships: 0 });
 
   useEffect(() => {
     if (persons.length === 0) {
       setNodes([]);
       setEdges([]);
+      prevCounts.current = { persons: 0, relationships: 0 };
       return;
     }
 
@@ -22,11 +25,18 @@ export function useTreeFlow(persons: Person[], relationships: Relationship[], se
     setNodes(layoutedNodes);
     setEdges(layoutedEdges);
 
-    const timer = setTimeout(() => {
-      fitView({ padding: 0.1, duration: ANIMATION_DURATION.CANVAS_FIT_VIEW });
-    }, 100);
+    const hasStructureChanged = 
+      persons.length !== prevCounts.current.persons || 
+      relationships.length !== prevCounts.current.relationships;
 
-    return () => clearTimeout(timer);
+    if (hasStructureChanged) {
+      const timer = setTimeout(() => {
+        fitView({ padding: 0.1, duration: ANIMATION_DURATION.CANVAS_FIT_VIEW });
+      }, 100);
+      
+      prevCounts.current = { persons: persons.length, relationships: relationships.length };
+      return () => clearTimeout(timer);
+    }
   }, [persons, relationships, setNodes, setEdges, fitView]);
 
   useEffect(() => {

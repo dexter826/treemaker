@@ -5,7 +5,7 @@ import { useStore } from '@/lib/store';
 import { Dialog, DialogContent, DialogTitle, DialogClose } from '@/components/ui/dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format } from 'date-fns';
-import { X, ArrowLeft } from 'lucide-react';
+import { X, ArrowLeft, Map } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import Flag from 'react-world-flags';
@@ -105,7 +105,20 @@ export function ViewPersonModal() {
                 </div>
 
                 <div className="space-y-2 pt-3 border-t-2 border-foreground/10">
-                  <InfoItem label="Địa chỉ" value={person.address || '—'} fullWidth />
+                  <div className="flex items-start justify-between gap-4">
+                    <InfoItem label="Địa chỉ" value={person.address || '—'} fullWidth />
+                    {person.address && (
+                      <Button
+                        variant="outline"
+                        size="icon-xs"
+                        onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(person.address!)}`, '_blank')}
+                        className="mt-4 shrink-0 bg-background border-2 border-foreground shadow-[2px_2px_0px_0px_var(--color-foreground)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
+                        title="Xem trên Google Maps"
+                      >
+                        <Map size={12} strokeWidth={3} />
+                      </Button>
+                    )}
+                  </div>
                   <InfoItem label="Nghề nghiệp" value={person.occupation || '—'} fullWidth />
                   <div className="flex flex-col min-w-0 col-span-2">
                     <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/80 mb-0.5">Tiểu sử</span>
