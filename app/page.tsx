@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { treeService } from '@/lib/services/tree.service';
 import { useStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Copy, Plus, Trash2, Loader2, LogOut } from 'lucide-react';
+import { ArrowRight, Copy, Plus, Trash2, Loader2, LogOut, Pencil } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription, DialogFooter } from '@/components/ui/dialog';
@@ -34,6 +34,9 @@ export default function DashboardPage() {
   const [treeToDelete, setTreeToDelete] = useState<FamilyTree | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [treeToEdit, setTreeToEdit] = useState<FamilyTree | null>(null);
+  const [editing, setEditing] = useState(false);
 
   const fetchTrees = async (userId: string) => {
     try {
@@ -100,6 +103,36 @@ export default function DashboardPage() {
       toast.error(message);
     } finally {
       setCreating(false);
+    }
+  };
+
+  const {
+    register: registerEdit,
+    handleSubmit: handleSubmitEdit,
+    formState: { errors: editErrors },
+    setValue: setEditValue,
+  } = useForm<TreeFormValues>({
+    resolver: zodResolver(treeSchema),
+    defaultValues: {
+      name: '',
+    },
+  });
+
+  const handleEditTreeSubmit = async (data: TreeFormValues) => {
+    if (!user?.id || !treeToEdit) return;
+
+    setEditing(true);
+    try {
+      await treeService.update(treeToEdit.id, { name: data.name });
+      await fetchTrees(user.id);
+      toast.success(`Đã cập nhật tên gia phả.`);
+      setIsEditOpen(false);
+      setTreeToEdit(null);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Cập nhật thất bại.';
+      toast.error(message);
+    } finally {
+      setEditing(false);
     }
   };
 
@@ -215,10 +248,24 @@ export default function DashboardPage() {
                         navigator.clipboard.writeText(url);
                         toast.success('Đã sao chép liên kết chia sẻ.');
                       }}
-                      className="h-9 text-xs"
+                      className="w-9 h-9 p-0"
+                      title="Sao Chép Liên Kết"
                     >
-                      <Copy className="size-3.5" />
-                      Sao Chép
+                      <Copy className="size-4" />
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setTreeToEdit(tree);
+                        setEditValue('name', tree.name);
+                        setIsEditOpen(true);
+                      }}
+                      className="w-9 h-9 p-0"
+                      title="Sửa Tên Gia Phả"
+                    >
+                      <Pencil className="size-4" />
                     </Button>
 
                     <Button
@@ -228,20 +275,19 @@ export default function DashboardPage() {
                         setTreeToDelete(tree);
                         setIsDeleteOpen(true);
                       }}
-                      className="h-9 text-xs"
-                      title="Xóa gia phả"
+                      className="w-9 h-9 p-0"
+                      title="Xóa Gia Phả"
                     >
                       <Trash2 className="size-4" />
-                      Xóa
                     </Button>
 
                     <Link href={`/tree/${tree.id}`} className="flex-1 md:flex-none">
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="w-full md:w-auto h-9"
+                        className="w-9 h-9 p-0"
+                        title="Mở Gia Phả"
                       >
-                        Mở
                         <ArrowRight className="size-4" />
                       </Button>
                     </Link>
@@ -331,6 +377,40 @@ export default function DashboardPage() {
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Đăng xuất'}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+        <DialogContent>
+          <form onSubmit={handleSubmitEdit(handleEditTreeSubmit)}>
+            <DialogHeader>
+              <DialogTitle>Sửa Tên Gia Phả</DialogTitle>
+              <DialogDescription>Cập nhật tên mới cho hệ thống</DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4 p-6">
+              <div className="space-y-2">
+                <Label className="text-xs font-semibold tracking-[0.16em]">Tên Gia Phả</Label>
+                <Input
+                  autoFocus
+                  {...registerEdit('name')}
+                  error={!!editErrors.name}
+                  placeholder="Nhập tên mới"
+                  className="rounded-none border-2 border-foreground focus:border-primary focus:ring-0 h-12 font-semibold"
+                />
+                {editErrors.name && <p className="text-[10px] text-red-500 font-bold uppercase">{editErrors.name.message}</p>}
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button type="button" variant="outline" className="flex-1 h-12" onClick={() => setIsEditOpen(false)}>
+                Hủy
+              </Button>
+              <Button type="submit" disabled={editing} className="flex-1 h-12">
+                {editing ? <LoadingSpinner size="sm" className="text-background" /> : 'Lưu Thay Đổi'}
+              </Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
         </motion.div>

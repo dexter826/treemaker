@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useStore } from '@/lib/store';
 import { removeVietnameseTones } from '@/lib/utils';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { Search, Share2, ArrowLeft, UserPlus, Trash2, Mars, Venus, Loader2, MoreHorizontal, CalendarDays } from 'lucide-react';
+import { Search, Share2, ArrowLeft, UserPlus, Trash2, Mars, Venus, Loader2, MoreHorizontal, CalendarDays, Pencil } from 'lucide-react';
 import { toast } from 'sonner';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
@@ -17,12 +17,10 @@ import { treeService } from '@/lib/services/tree.service';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { personObjectSchema } from '@/lib/validations/person';
 import * as z from 'zod';
+import { treeSchema, TreeFormValues } from '@/lib/validations/tree';
+import { addPersonSchema, AddPersonFormValues } from '@/lib/validations/person';
 import { EventListModal } from '../modals/event-list-modal';
-
-const addPersonSchema = personObjectSchema.pick({ full_name: true, gender: true });
-type AddPersonFormValues = z.infer<typeof addPersonSchema>;
 
 // Thanh công cụ điều khiển cây gia phả.
 export function TreeToolbar() {
@@ -31,6 +29,7 @@ export function TreeToolbar() {
   const setSelectedPersonId = useStore((state) => state.setSelectedPersonId);
   const isReadOnly = useStore((state) => state.isReadOnly);
   const addPerson = useStore((state) => state.addPerson);
+  const setCurrentTree = useStore((state) => state.setCurrentTree);
   const router = useRouter();
 
   const [searchOpen, setSearchOpen] = useState(false);
@@ -39,6 +38,8 @@ export function TreeToolbar() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isEditTreeOpen, setIsEditTreeOpen] = useState(false);
+  const [isSubmittingEdit, setIsSubmittingEdit] = useState(false);
 
   const {
     register,
@@ -85,6 +86,35 @@ export function TreeToolbar() {
     }
   };
 
+  const {
+    register: registerEdit,
+    handleSubmit: handleSubmitEdit,
+    formState: { errors: editErrors },
+    setValue: setEditValue,
+  } = useForm<TreeFormValues>({
+    resolver: zodResolver(treeSchema),
+    defaultValues: {
+      name: currentTree?.name || '',
+    },
+  });
+
+  const handleEditTree = async (data: TreeFormValues) => {
+    if (!currentTree || isSubmittingEdit) return;
+
+    setIsSubmittingEdit(true);
+    try {
+      const updatedTree = await treeService.update(currentTree.id, { name: data.name.trim() });
+      setCurrentTree(updatedTree);
+      setIsEditTreeOpen(false);
+      toast.success('Đã cập nhật tên gia phả.');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Lỗi khi cập nhật tên.';
+      toast.error(message);
+    } finally {
+      setIsSubmittingEdit(false);
+    }
+  };
+
   if (!currentTree) return null;
 
   const handleDeleteTree = async () => {
@@ -117,9 +147,22 @@ export function TreeToolbar() {
         <ArrowLeft className="size-4 md:size-5" />
       </Link>
 
-      <div className="relative group/name flex-1 md:flex-none min-w-0 h-10 md:h-12 border-2 border-foreground bg-background shadow-[4px_4px_0px_0px_var(--color-foreground)] px-2 md:px-4 flex flex-col justify-center">
-        <span className="text-[8px] md:text-[10px] font-semibold tracking-wide text-muted-foreground uppercase truncate">Gia phả</span>
-        <h1 className="font-serif font-black text-xs md:text-lg tracking-tight truncate leading-tight">{currentTree.name}</h1>
+      <div 
+        className={`relative group/name flex-1 md:flex-none min-w-0 h-10 md:h-12 border-2 border-foreground bg-background shadow-[4px_4px_0px_0px_var(--color-foreground)] px-2 md:px-4 flex flex-col justify-center ${!isReadOnly ? 'cursor-pointer hover:bg-foreground/[0.02]' : ''}`}
+        onClick={() => {
+          if (!isReadOnly) {
+            setEditValue('name', currentTree.name);
+            setIsEditTreeOpen(true);
+          }
+        }}
+      >
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex flex-col min-w-0">
+            <span className="text-[8px] md:text-[10px] font-semibold tracking-wide text-muted-foreground uppercase truncate">Gia phả</span>
+            <h1 className="font-serif font-black text-xs md:text-lg tracking-tight truncate leading-tight">{currentTree.name}</h1>
+          </div>
+          {!isReadOnly && <Pencil className="size-3 md:size-3.5 text-muted-foreground group-hover/name:text-primary transition-colors shrink-0" />}
+        </div>
       </div>
 
       <Popover open={searchOpen} onOpenChange={setSearchOpen}>
@@ -320,6 +363,40 @@ export function TreeToolbar() {
               {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Xóa'}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isEditTreeOpen} onOpenChange={setIsEditTreeOpen}>
+        <DialogContent className="sm:max-w-md">
+          <form onSubmit={handleSubmitEdit(handleEditTree)}>
+            <DialogHeader>
+              <DialogTitle>Sửa Tên Gia Phả</DialogTitle>
+              <DialogDescription>Cập nhật tên mới cho cây gia phả này</DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4 p-6">
+              <div className="space-y-2">
+                <Label className="text-xs font-semibold tracking-[0.16em]">Tên Cây Gia Phả</Label>
+                <Input 
+                  autoFocus 
+                  {...registerEdit('name')} 
+                  error={!!editErrors.name}
+                  placeholder="Nhập tên mới" 
+                  className="font-semibold" 
+                />
+                {editErrors.name && <p className="text-[10px] text-destructive font-bold uppercase">{editErrors.name.message}</p>}
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button type="button" variant="outline" className="flex-1 h-12" onClick={() => setIsEditTreeOpen(false)}>
+                Hủy
+              </Button>
+              <Button type="submit" className="flex-1 h-12" disabled={isSubmittingEdit}>
+                {isSubmittingEdit ? 'Đang lưu...' : 'Lưu Thay Đổi'}
+              </Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
       <EventListModal 

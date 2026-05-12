@@ -38,3 +38,6 @@ export const personSchema = basePersonSchema.refine((data) => {
 });
 
 export type PersonFormValues = z.infer<typeof personSchema>;
+
+export const addPersonSchema = personObjectSchema.pick({ full_name: true, gender: true });
+export type AddPersonFormValues = z.infer<typeof addPersonSchema>;
