@@ -61,7 +61,7 @@ export function FamilyTreeCanvas() {
         proOptions={{ hideAttribution: true }}
       >
         <Background variant={BackgroundVariant.Lines} color="var(--color-foreground)" gap={40} size={1} className="opacity-[0.05]" />
-        <Controls showInteractive={false} className="bg-background border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--color-foreground)] overflow-hidden !fill-foreground" />
+        <Controls showInteractive={false} className="bg-background border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--color-foreground)] overflow-hidden !fill-foreground export-exclude" />
       </ReactFlow>
 
       <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>

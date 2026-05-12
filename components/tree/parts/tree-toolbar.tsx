@@ -21,6 +21,9 @@ import * as z from 'zod';
 import { treeSchema, TreeFormValues } from '@/lib/validations/tree';
 import { addPersonSchema, AddPersonFormValues } from '@/lib/validations/person';
 import { EventListModal } from '../modals/event-list-modal';
+import { pdfService } from '@/lib/services/pdf.service';
+import { BookOpen } from 'lucide-react';
+import { useReactFlow } from '@xyflow/react';
 
 // Thanh công cụ điều khiển cây gia phả.
 export function TreeToolbar() {
@@ -30,7 +33,9 @@ export function TreeToolbar() {
   const isReadOnly = useStore((state) => state.isReadOnly);
   const addPerson = useStore((state) => state.addPerson);
   const setCurrentTree = useStore((state) => state.setCurrentTree);
+  const relationships = useStore((state) => state.relationships);
   const router = useRouter();
+  const { fitView } = useReactFlow();
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [isAddPersonOpen, setIsAddPersonOpen] = useState(false);
@@ -40,6 +45,8 @@ export function TreeToolbar() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditTreeOpen, setIsEditTreeOpen] = useState(false);
   const [isSubmittingEdit, setIsSubmittingEdit] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isExportConfirmOpen, setIsExportConfirmOpen] = useState(false);
 
   const {
     register,
@@ -131,6 +138,40 @@ export function TreeToolbar() {
     }
   };
 
+  const handleExportPdf = async () => {
+    if (!currentTree || isExporting) return;
+
+    const treeElement = document.querySelector('.react-flow') as HTMLElement;
+    if (!treeElement) {
+      toast.error('Không tìm thấy sơ đồ cây để xuất.');
+      return;
+    }
+
+    setIsExportConfirmOpen(false);
+    setIsExporting(true);
+    const loadingToast = toast.loading('Đang khởi tạo Gia Phả...');
+
+    try {
+      await fitView({ padding: 0.2, duration: 400 });
+      await new Promise(resolve => setTimeout(resolve, 600));
+
+      await pdfService.generateLegacyBook({
+        tree: currentTree,
+        persons,
+        relationships,
+      }, treeElement, (current, total) => {
+        toast.loading(`Đang xử lý: Trang ${current} / ${total}`, { id: loadingToast });
+      });
+      toast.success('Đã xuất bản Gia Phả thành công!', { id: loadingToast });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Lỗi khi xuất PDF.';
+      toast.error(message, { id: loadingToast });
+      console.error(error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: -20 }}
@@ -216,6 +257,18 @@ export function TreeToolbar() {
         <CalendarDays className="size-4 md:size-5" />
       </Button>
 
+      <Button 
+        variant="outline" 
+        size="icon" 
+        effect="raised" 
+        className="hidden sm:flex w-10 h-10 md:w-12 md:h-12 rounded-none shrink-0" 
+        onClick={() => setIsExportConfirmOpen(true)}
+        disabled={isExporting}
+        title="Xuất Gia Phả (PDF)"
+      >
+        {isExporting ? <Loader2 className="size-4 md:size-5 animate-spin" /> : <BookOpen className="size-4 md:size-5" />}
+      </Button>
+
       {!isReadOnly ? (
         <>
           {/* Desktop Actions */}
@@ -263,6 +316,15 @@ export function TreeToolbar() {
                 <Button variant="ghost" className="justify-start h-10 px-2 rounded-none text-xs" onClick={() => setIsEventListOpen(true)}>
                   <CalendarDays className="w-4 h-4 mr-2" />
                   Sự kiện
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  className="justify-start h-10 px-2 rounded-none text-xs" 
+                  onClick={() => setIsExportConfirmOpen(true)} 
+                  disabled={isExporting}
+                >
+                  {isExporting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <BookOpen className="w-4 h-4 mr-2" />}
+                  Xuất Gia Phả
                 </Button>
                 <Button variant="ghost" className="justify-start h-10 px-2 rounded-none text-xs" onClick={handleShare}>
                   <Share2 className="w-4 h-4 mr-2" />
@@ -403,6 +465,37 @@ export function TreeToolbar() {
         isOpen={isEventListOpen} 
         onClose={() => setIsEventListOpen(false)} 
       />
+
+      <Dialog open={isExportConfirmOpen} onOpenChange={setIsExportConfirmOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Xuất bản Gia Phả</DialogTitle>
+            <DialogDescription>
+              Bao gồm sơ đồ và hồ sơ thành viên.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="p-6 space-y-4">
+            <div className="p-4 bg-muted/50 border-2 border-foreground/10 space-y-2">
+              <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Lưu ý:</p>
+              <ul className="text-xs space-y-1 list-disc list-inside font-medium text-foreground/80">
+                <li>Sơ đồ sẽ tự động được căn giữa.</li>
+                <li>Vui lòng giữ trình duyệt cho đến khi hoàn tất.</li>
+              </ul>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" className="flex-1 h-12" onClick={() => setIsExportConfirmOpen(false)}>
+              Hủy
+            </Button>
+            <Button className="flex-1 h-12" onClick={handleExportPdf} disabled={isExporting}>
+              {isExporting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <BookOpen className="w-4 h-4 mr-2" />}
+              Xuất ngay
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 }

@@ -1,13 +1,13 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import './globals.css';
 import { Inter, Cormorant_Garamond } from 'next/font/google';
 import { Toaster } from '@/components/ui/sonner';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { cn } from '@/lib/utils';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
+const inter = Inter({ subsets: ['latin', 'vietnamese'], variable: '--font-sans' });
 const cormorantGaramond = Cormorant_Garamond({
-  subsets: ['latin'],
+  subsets: ['latin', 'vietnamese'],
   weight: ['300', '400', '600', '700'],
   variable: '--font-serif',
 });

@@ -49,7 +49,7 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
   return (
     <div
       className={cn(
-        "absolute inset-0 z-50 flex items-center justify-center bg-background border-2 [backface-visibility:hidden] [transform:rotateY(180deg)]",
+        "absolute inset-0 z-50 flex items-center justify-center bg-background border-2 [backface-visibility:hidden] [transform:rotateY(180deg)] export-exclude",
         isSelected
           ? 'border-primary shadow-[6px_6px_0px_0px_var(--color-primary)]'
           : deceased 

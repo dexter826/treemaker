@@ -12,6 +12,7 @@ import { personService } from '../../lib/services/person.service';
 import { toast } from 'sonner';
 import { SplashScreen } from '../ui/splash-screen';
 import { TreeChatbot } from './parts/tree-chatbot';
+import { LegacyBookTemplate } from './parts/legacy-book-template';
 
 // Thành phần Client quản lý tương tác cây gia phả.
 export default function TreeClient({ treeId }: { treeId: string }) {
@@ -24,6 +25,9 @@ export default function TreeClient({ treeId }: { treeId: string }) {
   const setShowCardActions = useStore((state) => state.setShowCardActions);
   const isLoading = useStore((state) => state.isLoading);
   const setRelationships = useStore((state) => state.setRelationships);
+  const currentTree = useStore((state) => state.currentTree);
+  const persons = useStore((state) => state.persons);
+  const relationships = useStore((state) => state.relationships);
 
   useEffect(() => {
     const loadTree = async () => {
@@ -65,6 +69,7 @@ export default function TreeClient({ treeId }: { treeId: string }) {
             <Sidebar />
             <ViewPersonModal />
             <TreeChatbot />
+            {currentTree && <LegacyBookTemplate tree={currentTree} persons={persons} relationships={relationships} />}
           </ReactFlowProvider>
         </div>
       )}
