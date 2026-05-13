@@ -79,7 +79,7 @@ export function ShareSettingsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md p-0 overflow-hidden">
+      <DialogContent className="sm:max-w-md p-0 overflow-hidden">
         <DialogHeader className="p-6 bg-primary/5 border-b-2 border-foreground">
           <DialogTitle className="text-xl font-serif font-black uppercase tracking-widest flex items-center gap-2">
             <Globe className="size-5" />
