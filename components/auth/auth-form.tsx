@@ -1,11 +1,12 @@
 "use client"
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Loader2, Eye, EyeOff, ArrowLeft } from 'lucide-react';
@@ -24,6 +25,7 @@ export function AuthForm() {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
     reset,
   } = useForm<AuthFormValues>({
@@ -171,11 +173,17 @@ export function AuthForm() {
           {mode === 'login' && (
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <input
-                  id="rememberMe"
-                  type="checkbox"
-                  {...register('rememberMe')}
-                  className="h-4 w-4 rounded-none border-2 border-foreground bg-background accent-primary focus:ring-0 focus:ring-offset-0 cursor-pointer"
+                <Controller
+                  name="rememberMe"
+                  control={control}
+                  render={({ field }) => (
+                    <Checkbox
+                      id="rememberMe"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      className="cursor-pointer"
+                    />
+                  )}
                 />
                 <Label htmlFor="rememberMe" className="text-xs font-semibold cursor-pointer">Ghi nhớ đăng nhập</Label>
               </div>

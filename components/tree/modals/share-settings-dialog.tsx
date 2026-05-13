@@ -19,6 +19,7 @@ import { toast } from 'sonner';
 import { Copy, Check, Globe, Lock, Shield, Eye, Pencil } from 'lucide-react';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { OTPInput } from '@/components/ui/otp-input';
+import { Checkbox } from '@/components/ui/checkbox';
 
 
 interface ShareSettingsDialogProps {
@@ -84,13 +85,13 @@ export function ShareSettingsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md p-0 overflow-hidden border-4 border-foreground shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-        <DialogHeader className="p-6 bg-primary border-b-4 border-foreground">
-          <DialogTitle className="text-2xl font-black uppercase tracking-tight flex items-center gap-2">
-            <Globe className="size-6" />
+      <DialogContent className="max-w-md p-0 overflow-hidden">
+        <DialogHeader className="p-6 bg-primary/5 border-b-2 border-foreground">
+          <DialogTitle className="text-xl font-serif font-black uppercase tracking-widest flex items-center gap-2">
+            <Globe className="size-5" />
             Cài Đặt Chia Sẻ
           </DialogTitle>
-          <DialogDescription className="text-primary-foreground/80 font-bold uppercase text-[10px] tracking-widest">
+          <DialogDescription className="text-muted-foreground font-bold uppercase text-[10px] tracking-widest mt-1">
             Quản lý quyền truy cập cho cây: {tree.name}
           </DialogDescription>
         </DialogHeader>
@@ -181,12 +182,11 @@ export function ShareSettingsDialog({
                   Mật Khẩu Bảo Vệ
                 </Label>
               </div>
-              <input
-                type="checkbox"
+              <Checkbox
                 id="use-password"
                 checked={usePassword}
-                onChange={(e) => setUsePassword(e.target.checked)}
-                className="size-5 border-2 border-foreground rounded-none accent-primary cursor-pointer"
+                onCheckedChange={(checked) => setUsePassword(!!checked)}
+                className="cursor-pointer"
               />
             </div>
 
@@ -202,7 +202,7 @@ export function ShareSettingsDialog({
           </div>
         </div>
 
-        <DialogFooter className="p-6 bg-muted/30 border-t-4 border-foreground gap-2">
+        <DialogFooter className="p-6 bg-muted/30 border-t-2 border-foreground gap-2">
           <Button
             variant="outline"
             className="flex-1 h-12 font-black"
@@ -214,7 +214,6 @@ export function ShareSettingsDialog({
             className="flex-1 h-12 font-black"
             onClick={handleSave}
             disabled={loading}
-            effect="raised"
           >
             {loading ? <LoadingSpinner size="sm" className="text-background" /> : 'Lưu Cài Đặt'}
           </Button>
