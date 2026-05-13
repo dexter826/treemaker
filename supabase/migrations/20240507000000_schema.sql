@@ -27,9 +27,13 @@ CREATE TABLE public.family_trees (
   owner_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   share_token UUID DEFAULT gen_random_uuid() UNIQUE,
+  visibility TEXT DEFAULT 'private' CHECK (visibility IN ('private', 'public')),
+  share_permission TEXT DEFAULT 'view' CHECK (share_permission IN ('view', 'edit')),
+  share_password TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
 
 CREATE TABLE public.persons (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -223,15 +227,39 @@ ALTER TABLE public.family_trees ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.persons ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.relationships ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Trees View" ON public.family_trees FOR SELECT USING (true);
-CREATE POLICY "Trees Manage" ON public.family_trees FOR ALL USING (auth.uid() = owner_id);
+-- Trees: Chủ sở hữu có toàn quyền, người khác có thể xem nếu là public
+CREATE POLICY "Trees View" ON public.family_trees FOR SELECT USING (
+  owner_id = auth.uid() OR visibility = 'public'
+);
+CREATE POLICY "Trees Manage" ON public.family_trees FOR ALL USING (
+  owner_id = auth.uid()
+);
 
-CREATE POLICY "Persons View" ON public.persons FOR SELECT USING (true);
+-- Persons: Xem nếu cây là public, sửa nếu cây cho phép edit (không cần login)
+CREATE POLICY "Persons View" ON public.persons FOR SELECT USING (
+  EXISTS (
+    SELECT 1 FROM public.family_trees 
+    WHERE id = tree_id AND (owner_id = auth.uid() OR visibility = 'public')
+  )
+);
 CREATE POLICY "Persons Manage" ON public.persons FOR ALL USING (
-  EXISTS (SELECT 1 FROM public.family_trees WHERE id = tree_id AND owner_id = auth.uid())
+  EXISTS (
+    SELECT 1 FROM public.family_trees 
+    WHERE id = tree_id AND (owner_id = auth.uid() OR share_permission = 'edit')
+  )
 );
 
-CREATE POLICY "Relations View" ON public.relationships FOR SELECT USING (true);
-CREATE POLICY "Relations Manage" ON public.relationships FOR ALL USING (
-  EXISTS (SELECT 1 FROM public.family_trees WHERE id = tree_id AND owner_id = auth.uid())
+-- Relationships: Tương tự Persons
+CREATE POLICY "Relations View" ON public.relationships FOR SELECT USING (
+  EXISTS (
+    SELECT 1 FROM public.family_trees 
+    WHERE id = tree_id AND (owner_id = auth.uid() OR visibility = 'public')
+  )
 );
+CREATE POLICY "Relations Manage" ON public.relationships FOR ALL USING (
+  EXISTS (
+    SELECT 1 FROM public.family_trees 
+    WHERE id = tree_id AND (owner_id = auth.uid() OR share_permission = 'edit')
+  )
+);
+

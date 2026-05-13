@@ -44,7 +44,11 @@ export default function TreeClient({ treeId }: { treeId: string }) {
 
         const { data: { session } } = await supabase.auth.getSession();
         const currentUserId = session?.user?.id;
-        setIsReadOnly(currentUserId !== tree.owner_id);
+        const isOwner = currentUserId === tree.owner_id;
+        const canEdit = tree.share_permission === 'edit';
+        setIsReadOnly(!isOwner && !canEdit);
+
+
       } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Lỗi truy xuất hệ thống.';
         toast.error(message);

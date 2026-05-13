@@ -5,9 +5,13 @@ export interface FamilyTree {
   owner_id: string;
   name: string;
   share_token: string;
+  visibility: 'private' | 'public';
+  share_permission: 'view' | 'edit';
+  share_password: string | null;
   created_at: string;
   updated_at: string;
 }
+
 
 export interface Person {
   id: string;

@@ -19,6 +19,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { treeSchema, TreeFormValues } from '@/lib/validations/tree';
 import { ANIMATION_DURATION } from '@/components/tree/constants';
+import { ShareSettingsDialog } from '@/components/tree/modals/share-settings-dialog';
+import { Share2 } from 'lucide-react';
+
 
 // Giao diện quản lý danh sách gia phả.
 export default function DashboardPage() {
@@ -37,6 +40,9 @@ export default function DashboardPage() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [treeToEdit, setTreeToEdit] = useState<FamilyTree | null>(null);
   const [editing, setEditing] = useState(false);
+  const [isShareOpen, setIsShareOpen] = useState(false);
+  const [treeToShare, setTreeToShare] = useState<FamilyTree | null>(null);
+
 
   const fetchTrees = async (userId: string) => {
     try {
@@ -244,15 +250,15 @@ export default function DashboardPage() {
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        const url = `${window.location.origin}/share/${tree.share_token}`;
-                        navigator.clipboard.writeText(url);
-                        toast.success('Đã sao chép liên kết chia sẻ.');
+                        setTreeToShare(tree);
+                        setIsShareOpen(true);
                       }}
                       className="w-9 h-9 p-0"
-                      title="Sao Chép Liên Kết"
+                      title="Cài Đặt Chia Sẻ"
                     >
-                      <Copy className="size-4" />
+                      <Share2 className="size-4" />
                     </Button>
+
 
                     <Button
                       variant="outline"
@@ -413,7 +419,17 @@ export default function DashboardPage() {
           </form>
         </DialogContent>
       </Dialog>
+      
+      {treeToShare && (
+        <ShareSettingsDialog
+          tree={treeToShare}
+          open={isShareOpen}
+          onOpenChange={setIsShareOpen}
+          onUpdate={() => user?.id && fetchTrees(user.id)}
+        />
+      )}
         </motion.div>
+
       )}
     </>
   );

@@ -37,14 +37,15 @@ export const treeService = {
     return data;
   },
 
-  async getByShareToken(token: string): Promise<string | null> {
-    const { data, error } = await supabase.from('family_trees').select('id').eq('share_token', token).single();
+  async getByShareToken(token: string): Promise<FamilyTree | null> {
+    const { data, error } = await supabase.from('family_trees').select('*').eq('share_token', token).single();
 
     if (error || !data) {
       return null;
     }
-    return data.id;
+    return data;
   },
+
 
   async create(userId: string, name: string): Promise<FamilyTree> {
     const { data, error } = await supabase.rpc('create_tree_with_root', {
