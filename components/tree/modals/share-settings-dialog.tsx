@@ -44,13 +44,7 @@ export function ShareSettingsDialog({
   const [password, setPassword] = useState(tree.share_password || '');
   const [usePassword, setUsePassword] = useState(!!tree.share_password);
 
-  // Cập nhật state khi tree thay đổi.
-  useEffect(() => {
-    setVisibility(tree.visibility);
-    setPermission(tree.share_permission);
-    setPassword(tree.share_password || '');
-    setUsePassword(!!tree.share_password);
-  }, [tree]);
+
 
   const shareUrl = typeof window !== 'undefined' 
     ? `${window.location.origin}/share/${tree.share_token}`

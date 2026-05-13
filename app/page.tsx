@@ -422,6 +422,7 @@ export default function DashboardPage() {
       
       {treeToShare && (
         <ShareSettingsDialog
+          key={treeToShare.id}
           tree={treeToShare}
           open={isShareOpen}
           onOpenChange={setIsShareOpen}
