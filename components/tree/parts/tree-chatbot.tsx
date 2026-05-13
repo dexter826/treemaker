@@ -1,23 +1,42 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useChat, UIMessage } from "@ai-sdk/react";
-import { MessageCircle, X, Send, Bot, User, Loader2 } from "lucide-react";
+import { MessageCircle, X, Send, Bot, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "motion/react";
 import ReactMarkdown from "react-markdown";
 
-// Chatbot hỗ trợ tra cứu thông tin gia phả
+// Chatbot hỗ trợ tra cứu gia phả
 export function TreeChatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
-  const persons = useStore((state) => state.persons);
-  const relationships = useStore((state) => state.relationships);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const persons = useStore((state) => state.persons);
+  const relationships = useStore((state) => state.relationships);
   const currentTree = useStore((state) => state.currentTree);
+
+  // Memoize danh sách thành viên rút gọn
+  const minimalPersons = useMemo(() => {
+    return persons.map(p => ({
+      id: p.id,
+      name: p.full_name,
+      gen: p.gender === 'male' ? 'M' : 'F',
+      fid: p.father_id,
+      mid: p.mother_id,
+      birth: p.birth_date
+    }));
+  }, [persons]);
+
+  // Memoize quan hệ vợ chồng
+  const spouseRelationships = useMemo(() => {
+    return relationships.filter(r => r.relationship_type === 'spouse');
+  }, [relationships]);
+
+  // Khởi tạo useChat
   const { messages, sendMessage, status, error } = useChat<UIMessage>({
     messages: [],
   });
@@ -33,32 +52,23 @@ export function TreeChatbot() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
-    
-    const minimalPersons = persons.map(p => ({
-      id: p.id,
-      full_name: p.full_name,
-      gender: p.gender,
-      father_id: p.father_id,
-      mother_id: p.mother_id,
-      birth_date: p.birth_date
-    }));
 
+    const userMessage = input;
+    setInput("");
+
+    // Gửi tin nhắn kèm theo context gia phả
     sendMessage(
-      {
-        text: input,
-      },
+      { text: userMessage },
       {
         body: {
           dataContext: {
             tree: currentTree,
             persons: minimalPersons,
-            relationships: relationships.filter(r => r.relationship_type === 'spouse')
+            relationships: spouseRelationships
           }
         }
       }
     );
-    
-    setInput("");
   };
 
   return (
@@ -90,38 +100,47 @@ export function TreeChatbot() {
                   </p>
                 </div>
               )}
-              {messages.map((m: UIMessage) => (
-                <div
-                  key={m.id}
-                  className={cn(
-                    "flex gap-3",
-                    m.role === "user" ? "flex-row-reverse" : "flex-row"
-                  )}
-                >
-                  <div className={cn(
-                    "size-8 flex items-center justify-center border-2 border-foreground shrink-0",
-                    m.role === "user" ? "bg-secondary" : "bg-primary"
-                  )}>
-                    {m.role === "user" ? <User className="size-4" /> : <Bot className="size-4 text-white" />}
-                  </div>
-                  <div className={cn(
-                    "p-3 border-2 border-foreground text-sm font-medium leading-relaxed max-w-[80%]",
-                    m.role === "user" 
-                      ? "bg-background shadow-[4px_4px_0px_0px_var(--color-foreground)]" 
-                      : "bg-muted shadow-[4px_4px_0px_0px_var(--color-foreground)]"
-                  )}>
-                    <div className="prose prose-sm prose-neutral dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-muted prose-pre:border-2 prose-pre:border-foreground prose-pre:rounded-none">
-                      <ReactMarkdown>
-                        {m.parts
-                          .filter((part) => part.type === "text")
-                          .map((part) => (part as any).text)
-                          .join("")}
-                      </ReactMarkdown>
+              
+              {messages.map((m: UIMessage) => {
+                const messageContent = m.parts
+                  .filter((part) => part.type === "text")
+                  .map((part) => (part as any).text)
+                  .join("");
+
+                if (!messageContent && m.role === 'assistant') return null;
+
+                return (
+                  <div
+                    key={m.id}
+                    className={cn(
+                      "flex gap-3",
+                      m.role === "user" ? "flex-row-reverse" : "flex-row"
+                    )}
+                  >
+                    <div className={cn(
+                      "size-8 flex items-center justify-center border-2 border-foreground shrink-0",
+                      m.role === "user" ? "bg-secondary" : "bg-primary"
+                    )}>
+                      {m.role === "user" ? <User className="size-4" /> : <Bot className="size-4 text-white" />}
+                    </div>
+                    <div className={cn(
+                      "p-3 border-2 border-foreground text-sm font-medium leading-relaxed max-w-[80%]",
+                      m.role === "user" 
+                        ? "bg-background shadow-[4px_4px_0px_0px_var(--color-foreground)]" 
+                        : "bg-muted shadow-[4px_4px_0px_0px_var(--color-foreground)]"
+                    )}>
+                      <div className="prose prose-sm prose-neutral dark:prose-invert max-w-none prose-p:leading-relaxed">
+                        <ReactMarkdown>
+                          {messageContent}
+                        </ReactMarkdown>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-              {isLoading && (
+                );
+              })}
+
+              {/* Loading khi gửi và chưa có chữ */}
+              {isLoading && messages[messages.length - 1]?.role !== 'assistant' && (
                 <div className="flex gap-3">
                   <div className="size-8 flex items-center justify-center border-2 border-foreground bg-primary shrink-0">
                     <Bot className="size-4 text-white" />
@@ -129,18 +148,14 @@ export function TreeChatbot() {
                   <div className="p-3 border-2 border-foreground bg-muted shadow-[4px_4px_0px_0px_var(--color-foreground)]">
                     <div className="flex items-center gap-1">
                       <span className="text-xs font-bold uppercase tracking-wider animate-pulse">Đang suy nghĩ</span>
-                      <span className="flex gap-0.5">
-                        <span className="w-1 h-1 bg-foreground rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                        <span className="w-1 h-1 bg-foreground rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                        <span className="w-1 h-1 bg-foreground rounded-full animate-bounce"></span>
-                      </span>
                     </div>
                   </div>
                 </div>
               )}
+              
               {error && (
                 <div className="p-2 bg-destructive/10 border-2 border-destructive text-destructive text-[10px] font-bold uppercase text-center">
-                  Lỗi kết nối API.
+                  Lỗi kết nối API. Vui lòng thử lại.
                 </div>
               )}
             </div>
@@ -168,9 +183,8 @@ export function TreeChatbot() {
       <Button
         variant={isOpen ? "destructive" : "outline"}
         size="icon"
-        effect="raised"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-10 h-10 md:w-12 md:h-12 rounded-none shrink-0"
+        className="w-10 h-10 md:w-12 md:h-12 rounded-none shrink-0 border-2 border-foreground shadow-[4px_4px_0px_0px_var(--color-foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all"
       >
         {isOpen ? <X className="size-4 md:size-5" /> : <MessageCircle className="size-4 md:size-5" />}
       </Button>
