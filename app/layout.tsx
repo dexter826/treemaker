@@ -25,7 +25,6 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'vi_VN',
-    url: appUrl,
     title: 'TreeMaker | Xây dựng cây gia phả trực tuyến',
     description: 'Nền tảng hiện đại để lưu giữ và kết nối các thế hệ trong gia đình bạn.',
     siteName: 'TreeMaker',
