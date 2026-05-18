@@ -17,7 +17,15 @@ export async function generateMetadata({ params }: { params: Promise<{ token: st
     openGraph: {
       title,
       description,
-      images: ['/og-image.png'],
+      images: [
+        {
+          url: '/og-image.png',
+          width: 1200,
+          height: 630,
+          type: 'image/png',
+          alt: title,
+        },
+      ],
     },
     twitter: {
       title,

@@ -12,7 +12,7 @@ const cormorantGaramond = Cormorant_Garamond({
   variable: '--font-serif',
 });
 
-const appUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://treemaker.vercel.app');
+const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://treemaker.vercel.app';
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
@@ -33,6 +33,7 @@ export const metadata: Metadata = {
         url: '/og-image.png',
         width: 1200,
         height: 630,
+        type: 'image/png',
         alt: 'TreeMaker - Xây dựng cây gia phả trực tuyến',
       },
     ],
