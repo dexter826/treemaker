@@ -34,7 +34,9 @@ export async function middleware(request: NextRequest) {
   const isAuthPage = request.nextUrl.pathname.startsWith('/login');
   const isPublicPage = request.nextUrl.pathname.startsWith('/share') || 
                       request.nextUrl.pathname.startsWith('/api') ||
-                      request.nextUrl.pathname === '/favicon.ico';
+                      request.nextUrl.pathname === '/favicon.ico' ||
+                      request.nextUrl.pathname.includes('opengraph-image') ||
+                      request.nextUrl.pathname.includes('twitter-image');
 
   if (!user && !isAuthPage && !isPublicPage) {
     const url = request.nextUrl.clone();
@@ -55,6 +57,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|sw.js).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|opengraph-image|twitter-image|sw.js).*)',
   ],
 };
