@@ -21,11 +21,17 @@ export const metadata: Metadata = {
     apple: '/apple-touch-icon.png',
   },
   openGraph: {
-    images: ['/og-image.png'],
+    type: 'website',
+    locale: 'vi_VN',
+    url: 'https://treemaker.app',
+    title: 'TreeMaker | Xây dựng cây gia phả trực tuyến',
+    description: 'Nền tảng hiện đại để lưu giữ và kết nối các thế hệ trong gia đình bạn.',
+    siteName: 'TreeMaker',
   },
   twitter: {
     card: 'summary_large_image',
-    images: ['/og-image.png'],
+    title: 'TreeMaker | Xây dựng cây gia phả trực tuyến',
+    description: 'Nền tảng hiện đại để lưu giữ và kết nối các thế hệ trong gia đình bạn.',
   },
 };
 
