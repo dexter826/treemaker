@@ -31,12 +31,11 @@ export async function middleware(request: NextRequest) {
   const { data } = await supabase.auth.getUser();
   const user = data?.user;
 
-  const isAuthPage = request.nextUrl.pathname.startsWith('/login');
-  const isPublicPage = request.nextUrl.pathname.startsWith('/share') || 
-                      request.nextUrl.pathname.startsWith('/api') ||
-                      request.nextUrl.pathname === '/favicon.ico' ||
-                      request.nextUrl.pathname.includes('opengraph-image') ||
-                      request.nextUrl.pathname.includes('twitter-image');
+  const pathname = request.nextUrl.pathname;
+  const isAuthPage = pathname.startsWith('/login');
+  const isPublicPage = pathname.startsWith('/share') || 
+                       pathname.startsWith('/api') ||
+                       /\.(?:png|jpg|jpeg|svg|gif|ico|webp)$/i.test(pathname);
 
   if (!user && !isAuthPage && !isPublicPage) {
     const url = request.nextUrl.clone();
@@ -57,6 +56,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|opengraph-image|twitter-image|sw.js).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|svg|gif|ico|webp)|og-image|opengraph-image|twitter-image|sw.js).*)',
   ],
 };
