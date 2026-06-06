@@ -23,7 +23,7 @@ Dự án được xây dựng với tư duy **Product-First**, tập trung vào 
 ## ✨ Tính năng chính
 
 - 🎨 **Canvas Tương tác 2D**: Sử dụng engine mạnh mẽ từ React Flow, cho phép kéo thả, phóng to/thu nhỏ và điều hướng cây gia phả một cách mượt mượt mà.
-- 🤖 **AI Assistant**: Tích hợp Google Gemini để phân tích dữ liệu gia đình, gợi ý tiểu sử và giải đáp các thắc mắc về lịch sử dòng tộc.
+- 🤖 **AI Assistant**: Tích hợp trí tuệ nhân tạo qua OpenRouter để phân tích dữ liệu gia đình, gợi ý tiểu sử và giải đáp các thắc mắc về lịch sử dòng tộc.
 - 🔒 **Bảo mật RLS**: Toàn bộ dữ liệu được bảo vệ bởi Supabase Row Level Security, đảm bảo chỉ chủ sở hữu cây mới có quyền chỉnh sửa.
 - ⚡ **Real-time Collaboration**: Cập nhật dữ liệu ngay lập tức trên mọi thiết bị khi có thay đổi.
 - 📱 **Thiết kế Responsive**: Trải nghiệm đồng nhất từ máy tính để bàn đến các thiết bị di động.
@@ -42,7 +42,7 @@ graph TD
     SupabaseSDK <--> DB[(PostgreSQL)]
     SupabaseSDK <--> Auth[Supabase Auth]
     SupabaseSDK <--> Storage[Supabase Storage]
-    Frontend <--> Gemini[Google Gemini AI]
+    Frontend <----> OpenRouter[OpenRouter AI]
 ```
 
 ### Stack Công nghệ
@@ -52,7 +52,7 @@ graph TD
 - **Visualization**: React Flow (XYFlow), Dagre (Layouting).
 - **Backend/DB**: Supabase (PostgreSQL, Auth, Real-time).
 - **State Management**: Zustand.
-- **AI**: Google Gemini Pro via AI SDK.
+- **AI**: OpenRouter via AI SDK (mặc định sử dụng Qwen Coder).
 
 ## 🚀 Cài đặt
 
@@ -96,7 +96,7 @@ Dưới đây là các biến môi trường cần thiết để dự án hoạt
 | ------------------------------- | ---------------------------------------------------- |
 | `NEXT_PUBLIC_SUPABASE_URL`      | URL dự án Supabase của bạn.                          |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public Anon Key từ Supabase.                         |
-| `GOOGLE_GENERATIVE_AI_API_KEY`  | API Key của Google Gemini (lấy từ Google AI Studio). |
+| `OPENROUTER_API_KEY`            | API Key từ OpenRouter (đăng ký tại https://openrouter.ai). |
 
 ## 📁 Cấu trúc thư mục
 
