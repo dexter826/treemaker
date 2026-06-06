@@ -6,4 +6,4 @@ export const openrouter = createOpenRouter({
 });
 
 // Model ID mặc định
-export const DEFAULT_AI_MODEL = 'minimax/minimax-m2.5:free';
+export const DEFAULT_AI_MODEL = 'qwen/qwen3-coder:free';
