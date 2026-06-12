@@ -18,7 +18,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const response = await fetch(`${supabaseUrl}/auth/v1/health`, {
+    const response = await fetch(`${supabaseUrl}/rest/v1/family_trees?select=id&limit=1`, {
       headers: {
         apikey: supabaseAnonKey,
         Authorization: `Bearer ${supabaseAnonKey}`,
