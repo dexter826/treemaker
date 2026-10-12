@@ -2,7 +2,7 @@ import { supabase } from '@/lib/supabase';
 
 const mapAuthError = (error: unknown): Error => {
   const raw = error as { code?: string; message?: string };
-  const message = String(raw?.message ?? 'Lỗi xác thực.');
+  const message = String(raw?.message ?? (error instanceof Error ? error.message : 'Lỗi xác thực.'));
 
   const errorMap: Record<string, string> = {
     'invalid login credentials': 'Email hoặc mật khẩu không chính xác.',
@@ -13,6 +13,7 @@ const mapAuthError = (error: unknown): Error => {
     'user not found': 'Không tìm thấy tài khoản với email này.',
     'email not confirmed': 'Email chưa được xác thực. Vui lòng kiểm tra hộp thư.',
     'signup requires a valid password': 'Vui lòng nhập mật khẩu hợp lệ khi đăng ký.',
+    'failed to fetch': 'Không thể kết nối tới máy chủ Supabase. Dự án Supabase có thể đang bị Tạm dừng (Paused) hoặc URL trong .env không tồn tại.',
   };
 
   const lower = message.toLowerCase();
@@ -40,40 +41,60 @@ export interface ResetPasswordParams {
 
 export const authService = {
   async signIn({ email, password }: SignInParams) {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) throw mapAuthError(error);
-    return data;
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) throw mapAuthError(error);
+      return data;
+    } catch (error) {
+      throw mapAuthError(error);
+    }
   },
 
   async signUp({ email, password }: SignUpParams) {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-    if (error) throw mapAuthError(error);
-    return data;
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+      if (error) throw mapAuthError(error);
+      return data;
+    } catch (error) {
+      throw mapAuthError(error);
+    }
   },
 
   async resetPassword({ email, redirectTo }: ResetPasswordParams) {
-    const defaultRedirect = typeof window !== 'undefined' ? `${window.location.origin}/login` : undefined;
-    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: redirectTo ?? defaultRedirect,
-    });
-    if (error) throw mapAuthError(error);
-    return data;
+    try {
+      const defaultRedirect = typeof window !== 'undefined' ? `${window.location.origin}/login` : undefined;
+      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: redirectTo ?? defaultRedirect,
+      });
+      if (error) throw mapAuthError(error);
+      return data;
+    } catch (error) {
+      throw mapAuthError(error);
+    }
   },
 
   async signOut() {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw mapAuthError(error);
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw mapAuthError(error);
+    } catch (error) {
+      throw mapAuthError(error);
+    }
   },
 
   async getSession() {
-    const { data, error } = await supabase.auth.getSession();
-    if (error) throw mapAuthError(error);
-    return data.session;
+    try {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) throw mapAuthError(error);
+      return data.session;
+    } catch (error) {
+      throw mapAuthError(error);
+    }
   },
 };
