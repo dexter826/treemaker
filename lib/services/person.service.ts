@@ -1,6 +1,6 @@
-import { supabase } from '../supabase';
-import { Person, Relationship, TreeData } from '../../types';
-import { normalizeSiblingOrder } from '../utils';
+import { supabase } from '@/lib/supabase';
+import { Person, Relationship, TreeData } from '@/types';
+import { normalizeSiblingOrder } from '@/lib/utils';
 
 export type RelationType = 'father' | 'mother' | 'spouse';
 

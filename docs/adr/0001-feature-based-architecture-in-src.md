@@ -1,0 +1,3 @@
+# Chuyển đổi sang kiến trúc Feature-Based với Deep Modules trong thư mục src
+
+Tổ chức lại codebase từ mô hình Layer-Based ở thư mục gốc sang mô hình Feature-Based (Vertical Slice) đặt bên trong `src/` với 4 feature độc lập (`tree`, `person`, `auth`, `ai`). Mỗi feature hoạt động như một Deep Module có public entry point `index.ts`, `app/` chỉ đóng vai trò Thin Routing Layer, tầng Shared (`src/components/ui`, `src/lib/store`) được tách biệt hoàn toàn và cấm import ngược từ features. Quyết định này giúp tăng tính tập trung (locality), cô lập ranh giới nghiệp vụ gia phả, và giúp cả tác tử AI lẫn lập trình viên dễ bảo trì và kiểm thử hơn.

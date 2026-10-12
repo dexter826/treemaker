@@ -2,15 +2,15 @@
 
 import { useEffect } from 'react';
 import { ReactFlowProvider } from '@xyflow/react';
-import { useStore } from '../../lib/store';
-import { supabase } from '../../lib/supabase';
+import { useStore } from '@/lib/store';
+import { supabase } from '@/lib/supabase';
 import { FamilyTreeCanvas } from './canvas/family-tree-canvas';
 import { TreeToolbar } from './parts/tree-toolbar';
 import { Sidebar } from './parts/sidebar';
 import { ViewPersonModal } from './modals/view-person-modal';
-import { personService } from '../../lib/services/person.service';
+import { personService } from '@/lib/services/person.service';
 import { toast } from 'sonner';
-import { SplashScreen } from '../ui/splash-screen';
+import { SplashScreen } from '@/components/ui/splash-screen';
 import { TreeChatbot } from './parts/tree-chatbot';
 import { LegacyBookTemplate } from './parts/legacy-book-template';
 

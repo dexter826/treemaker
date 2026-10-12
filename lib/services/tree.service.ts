@@ -1,5 +1,5 @@
-import { supabase } from '../supabase';
-import { FamilyTree, Person } from '../../types';
+import { supabase } from '@/lib/supabase';
+import { FamilyTree, Person } from '@/types';
 import { personService } from './person.service';
 
 const mapTreeError = (error: unknown): Error => {
