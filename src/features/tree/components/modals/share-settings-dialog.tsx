@@ -119,7 +119,7 @@ export function ShareSettingsDialog({
                   className={cn(
                     "flex items-center justify-center gap-2 py-2 text-[10px] font-black uppercase transition-all border-2 border-transparent cursor-pointer",
                     visibility === 'private' 
-                      ? "bg-primary text-primary-foreground border-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] -translate-x-[1px] -translate-y-[1px]" 
+                      ? "bg-primary text-primary-foreground border-foreground shadow-brutal-sm -translate-x-[1px] -translate-y-[1px]" 
                       : "hover:bg-background/50"
                   )}
                 >
@@ -130,7 +130,7 @@ export function ShareSettingsDialog({
                   className={cn(
                     "flex items-center justify-center gap-2 py-2 text-[10px] font-black uppercase transition-all border-2 border-transparent cursor-pointer",
                     visibility === 'public' 
-                      ? "bg-primary text-primary-foreground border-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] -translate-x-[1px] -translate-y-[1px]" 
+                      ? "bg-primary text-primary-foreground border-foreground shadow-brutal-sm -translate-x-[1px] -translate-y-[1px]" 
                       : "hover:bg-background/50"
                   )}
                 >
@@ -147,7 +147,7 @@ export function ShareSettingsDialog({
                   className={cn(
                     "flex items-center justify-center gap-2 py-2 text-[10px] font-black uppercase transition-all border-2 border-transparent cursor-pointer",
                     permission === 'view' 
-                      ? "bg-foreground text-background border-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] -translate-x-[1px] -translate-y-[1px]" 
+                      ? "bg-foreground text-background border-foreground shadow-brutal-sm -translate-x-[1px] -translate-y-[1px]" 
                       : "hover:bg-background/50"
                   )}
                 >
@@ -158,7 +158,7 @@ export function ShareSettingsDialog({
                   className={cn(
                     "flex items-center justify-center gap-2 py-2 text-[10px] font-black uppercase transition-all border-2 border-transparent cursor-pointer",
                     permission === 'edit' 
-                      ? "bg-foreground text-background border-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] -translate-x-[1px] -translate-y-[1px]" 
+                      ? "bg-foreground text-background border-foreground shadow-brutal-sm -translate-x-[1px] -translate-y-[1px]" 
                       : "hover:bg-background/50"
                   )}
                 >

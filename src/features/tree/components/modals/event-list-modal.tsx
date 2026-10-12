@@ -78,7 +78,7 @@ export function EventListModal({ isOpen, onClose }: EventListModalProps) {
                               <div className="flex items-center gap-4 min-w-0">
                                 <div className={`
                                   font-mono font-black text-lg w-10 h-10 flex items-center justify-center border-2 shrink-0
-                                  ${isToday ? 'bg-primary text-primary-foreground border-primary shadow-[2px_2px_0px_0px_var(--color-foreground)]' : 'border-foreground/10 text-muted-foreground'}
+                                  ${isToday ? 'bg-primary text-primary-foreground border-primary shadow-brutal-sm' : 'border-foreground/10 text-muted-foreground'}
                                 `}>
                                   {event.day.toString().padStart(2, '0')}
                                 </div>
@@ -117,7 +117,7 @@ export function EventListModal({ isOpen, onClose }: EventListModalProps) {
 
 
                                     {event.milestone && (
-                                      <div className="bg-primary text-primary-foreground border-2 border-primary px-1.5 py-0.5 font-black text-[9px] uppercase tracking-tighter shadow-[2px_2px_0px_0px_var(--color-foreground)]">
+                                      <div className="bg-primary text-primary-foreground border-2 border-primary px-1.5 py-0.5 font-black text-[9px] uppercase tracking-tighter shadow-brutal-sm">
                                         {event.milestone}
                                       </div>
                                     )}

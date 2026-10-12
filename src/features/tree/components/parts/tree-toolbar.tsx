@@ -188,7 +188,7 @@ export function TreeToolbar() {
       </Link>
 
       <div 
-        className={`relative group/name flex-1 md:flex-none min-w-0 h-10 md:h-12 border-2 border-foreground bg-background shadow-[4px_4px_0px_0px_var(--color-foreground)] px-2 md:px-4 flex flex-col justify-center ${!isReadOnly ? 'cursor-pointer hover:bg-foreground/[0.02]' : ''}`}
+        className={`relative group/name flex-1 md:flex-none min-w-0 h-10 md:h-12 border-2 border-foreground bg-background shadow-brutal-md px-2 md:px-4 flex flex-col justify-center ${!isReadOnly ? 'cursor-pointer hover:bg-foreground/[0.02]' : ''}`}
         onClick={() => {
           if (!isReadOnly) {
             setEditValue('name', currentTree.name);
@@ -209,7 +209,7 @@ export function TreeToolbar() {
         <PopoverTrigger className={buttonVariants({ variant: 'outline', size: 'icon', effect: 'raised', className: 'w-10 h-10 md:w-12 md:h-12 rounded-none shrink-0' })} aria-label="Tìm kiếm cá nhân" title="Tìm kiếm cá nhân">
           <Search className="size-4 md:size-5" />
         </PopoverTrigger>
-        <PopoverContent className="w-[calc(100vw-32px)] sm:w-[280px] p-0 border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--color-foreground)]" align="start">
+        <PopoverContent className="w-[calc(100vw-32px)] sm:w-[280px] p-0 border-2 border-foreground rounded-none shadow-brutal-md" align="start">
           <Command 
             className="rounded-none"
             filter={(value, search) => {
@@ -311,7 +311,7 @@ export function TreeToolbar() {
               <PopoverTrigger className={buttonVariants({ variant: 'outline', size: 'icon', effect: 'raised', className: 'w-10 h-10 md:w-12 md:h-12 rounded-none shrink-0' })} aria-label="Thao tác thêm" title="Thêm thao tác">
                 <MoreHorizontal className="size-4 md:size-5" />
               </PopoverTrigger>
-              <PopoverContent className="w-48 p-2 border-2 border-foreground rounded-none shadow-[4px_4px_0px_0px_var(--color-foreground)] flex flex-col gap-2" align="end">
+              <PopoverContent className="w-48 p-2 border-2 border-foreground rounded-none shadow-brutal-md flex flex-col gap-2" align="end">
                 <Button variant="ghost" className="justify-start h-10 px-2 rounded-none text-xs" onClick={() => setIsEventListOpen(true)}>
                   <CalendarDays className="w-4 h-4 mr-2" />
                   Sự kiện

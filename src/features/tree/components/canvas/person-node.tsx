@@ -118,12 +118,12 @@ export const PersonNode = memo(function PersonNode({ data }: { data: { person: P
       >
         {/* Front Side */}
         <div className={cn(
-          'absolute inset-0 bg-background border-2 flex flex-col overflow-hidden [backface-visibility:hidden]',
+          'absolute inset-0 bg-background border-2 flex flex-col overflow-hidden [backface-visibility:hidden] transition-shadow duration-150',
           isSelected
-            ? 'border-primary shadow-[6px_6px_0px_0px_var(--color-primary)]'
+            ? 'border-primary shadow-brutal-primary-lg'
             : deceased 
-              ? 'border-muted-foreground/30 opacity-90' 
-              : 'border-foreground hover:shadow-[6px_6px_0px_0px_var(--color-foreground)]',
+              ? 'border-deceased-border bg-deceased-bg shadow-brutal-sm opacity-95' 
+              : 'border-foreground shadow-brutal-md hover:shadow-brutal-lg',
         )}>
           {/* Gender Indicator Bar */}
           <div className={cn(
@@ -135,12 +135,12 @@ export const PersonNode = memo(function PersonNode({ data }: { data: { person: P
           {/* Photo Area */}
           <div className={cn(
             'relative flex-1 bg-muted overflow-hidden border-b-2', 
-            isSelected ? 'border-primary' : deceased ? 'border-muted-foreground/20' : 'border-foreground'
+            isSelected ? 'border-primary' : deceased ? 'border-deceased-border' : 'border-foreground'
           )}>
-            <Avatar className={cn('w-full h-full rounded-none', deceased && 'grayscale-[0.6] brightness-90')}>
+            <Avatar className={cn('w-full h-full rounded-none', deceased && 'grayscale-[0.5] opacity-85')}>
               <AvatarImage src={person.avatar_url || ''} className="object-cover w-full h-full" />
               <AvatarFallback className="bg-transparent rounded-none flex items-center justify-center">
-                <User className={cn('h-12 w-12 opacity-20', isSelected ? 'text-primary' : 'text-foreground')} />
+                <User className={cn('h-12 w-12 opacity-20', isSelected ? 'text-primary' : deceased ? 'text-deceased-fg' : 'text-foreground')} />
               </AvatarFallback>
             </Avatar>
 
@@ -148,7 +148,7 @@ export const PersonNode = memo(function PersonNode({ data }: { data: { person: P
             {person.country_code && (
               <div 
                 className={cn(
-                  "absolute top-2 right-2 z-20 w-8 h-5 flex items-center justify-center bg-background border border-foreground shadow-[2px_2px_0px_0px_var(--color-foreground)] overflow-hidden",
+                  "absolute top-2 right-2 z-20 w-8 h-5 flex items-center justify-center bg-background border border-foreground shadow-brutal-sm overflow-hidden",
                   deceased && "grayscale-[0.5] opacity-80"
                 )}
                 title={getCountryByCode(person.country_code)?.name}
@@ -159,11 +159,11 @@ export const PersonNode = memo(function PersonNode({ data }: { data: { person: P
           </div>
 
           {/* Info Area */}
-          <div className={cn('p-3 flex flex-col justify-center min-h-[80px]', deceased ? 'bg-muted/30' : 'bg-background')}>
+          <div className={cn('p-3 flex flex-col justify-center min-h-[80px]', deceased ? 'bg-deceased-bg text-deceased-fg' : 'bg-background')}>
             <h3 
               className={cn(
                 'font-serif font-black text-sm leading-tight line-clamp-2 uppercase tracking-tight', 
-                isSelected ? 'text-primary' : deceased ? 'text-muted-foreground italic' : 'text-foreground'
+                isSelected ? 'text-primary' : deceased ? 'text-deceased-fg italic' : 'text-foreground'
               )} 
               title={person.full_name}
             >

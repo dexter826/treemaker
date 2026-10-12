@@ -48,7 +48,7 @@ export function LegacyBookTemplate({ tree, persons, relationships }: LegacyBookT
             <div className="absolute top-0 left-0 w-full h-4" style={{ backgroundColor: genderColor }} />
             
             <div className="flex items-start gap-8 mb-12 pt-8">
-              <Avatar className="h-40 w-40 border-4 rounded-none shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] shrink-0" style={{ borderColor: 'var(--foreground)' }}>
+              <Avatar className="h-40 w-40 border-4 rounded-none shadow-brutal-lg shrink-0" style={{ borderColor: 'var(--foreground)' }}>
                 <AvatarImage src={person.avatar_url || ''} className="object-cover" />
                 <AvatarFallback className="rounded-none font-serif font-black text-6xl" style={{ color: genderColor, backgroundColor: '#ffffff' }}>
                   {person.full_name.charAt(0)}
@@ -128,7 +128,7 @@ function InfoRow({ label, value, isDestructive = false }: { label: string; value
 
 function Badge({ label, value, color }: { label: string; value: string; color: string }) {
   return (
-    <div className="border-2 px-3 py-1 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] flex flex-col" style={{ borderColor: 'var(--foreground)', backgroundColor: `color-mix(in srgb, ${color}, transparent 90%)` }}>
+    <div className="border-2 px-3 py-1 shadow-brutal-sm flex flex-col" style={{ borderColor: 'var(--foreground)', backgroundColor: `color-mix(in srgb, ${color}, transparent 90%)` }}>
        <span className="text-[8px] font-black uppercase leading-none mb-1">{label}</span>
        <span className="text-xs font-black leading-none">{value}</span>
     </div>
