@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Person } from '@/types';
@@ -17,6 +17,7 @@ import { COUNTRIES } from '@/lib/constants/countries';
 import { personService } from '../services/person.service';
 import { personSchema, PersonFormValues } from '../validations/person';
 import { normalizeSiblingOrder } from '@/lib/utils';
+import { hasSiblingOrderConflict } from '../utils/person-utils';
 import Flag from 'react-world-flags';
 
 export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly: boolean }) {
@@ -49,27 +50,14 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
     },
   });
 
-  const hasSiblingOrderConflict = useCallback((order: number) => {
-    if (person.father_id === null && person.mother_id === null) return false;
-    return persons.some(
-      (p) =>
-        p.id !== person.id &&
-        p.tree_id === person.tree_id &&
-        p.father_id === person.father_id &&
-        p.mother_id === person.mother_id &&
-        normalizeSiblingOrder(p.sibling_order) === order,
-    );
-  }, [person, persons]);
-
   const onSave = async (data: PersonFormValues) => {
     if (isReadOnly) return;
     setIsSaving(true);
 
     try {
       const siblingOrder = normalizeSiblingOrder(data.sibling_order);
-      if (hasSiblingOrderConflict(siblingOrder)) {
+      if (hasSiblingOrderConflict(person, persons, siblingOrder)) {
         toast.error('Thứ tự sinh đã tồn tại trong cùng nhóm anh/chị/em.');
-        setIsSaving(false);
         return;
       }
 
@@ -154,7 +142,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
                 />
               )}
             />
-            {errors.gender && <p className="text-[10px] text-red-500 font-bold uppercase">{errors.gender.message}</p>}
+            {errors.gender && <p className="text-[10px] text-destructive font-bold uppercase">{errors.gender.message}</p>}
           </div>
 
           <div className="sm:col-span-3 space-y-1">
@@ -166,7 +154,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
               placeholder="Ví dụ: Bé Tí, Tèo..." 
               className="font-semibold" 
             />
-            {errors.nickname && <p className="text-[10px] text-red-500 font-bold uppercase">{errors.nickname.message}</p>}
+            {errors.nickname && <p className="text-[10px] text-destructive font-bold uppercase">{errors.nickname.message}</p>}
           </div>
         </div>
       </div>
@@ -190,7 +178,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
               />
             )}
           />
-          {errors.birth_date && <p className="text-[10px] text-red-500 font-bold uppercase">{errors.birth_date.message}</p>}
+          {errors.birth_date && <p className="text-[10px] text-destructive font-bold uppercase">{errors.birth_date.message}</p>}
         </div>
         <div className="space-y-1">
           <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Ngày mất</Label>
@@ -205,7 +193,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
               />
             )}
           />
-          {errors.death_date && <p className="text-[10px] text-red-500 font-bold uppercase">{errors.death_date.message}</p>}
+          {errors.death_date && <p className="text-[10px] text-destructive font-bold uppercase">{errors.death_date.message}</p>}
         </div>
         <div className="space-y-1 md:col-span-2">
           <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Thứ tự sinh</Label>
@@ -218,7 +206,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
             step={1} 
             className="font-semibold" 
           />
-          {errors.sibling_order && <p className="text-[10px] text-red-500 font-bold uppercase">{errors.sibling_order.message}</p>}
+          {errors.sibling_order && <p className="text-[10px] text-destructive font-bold uppercase">{errors.sibling_order.message}</p>}
         </div>
       </div>
 
@@ -238,7 +226,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
             placeholder="Ví dụ: Bác sĩ, Giáo viên..."
             className="font-semibold" 
           />
-          {errors.occupation && <p className="text-[10px] text-red-500 font-bold uppercase">{errors.occupation.message}</p>}
+          {errors.occupation && <p className="text-[10px] text-destructive font-bold uppercase">{errors.occupation.message}</p>}
         </div>
         <div className="space-y-1">
           <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">
@@ -251,7 +239,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
             placeholder="Ví dụ: Hà Nội, Việt Nam"
             className="font-semibold" 
           />
-          {errors.address && <p className="text-[10px] text-red-500 font-bold uppercase">{errors.address.message}</p>}
+          {errors.address && <p className="text-[10px] text-destructive font-bold uppercase">{errors.address.message}</p>}
         </div>
         <div className="space-y-1 md:col-span-2">
           <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Quốc gia cư trú</Label>
@@ -299,7 +287,7 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
           readOnly={isReadOnly} 
           className="rounded-none border-2 border-foreground focus:border-primary focus:ring-0 font-medium resize-none p-4" 
         />
-        {errors.bio && <p className="text-[10px] text-red-500 font-bold uppercase">{errors.bio.message}</p>}
+        {errors.bio && <p className="text-[10px] text-destructive font-bold uppercase">{errors.bio.message}</p>}
       </div>
 
       {!isReadOnly && (

@@ -15,7 +15,7 @@ export const personObjectSchema = z.object({
   country_code: z.string().nullable().optional(),
   bio: z.string().nullable().optional(),
   avatar_url: z.string().nullable().optional(),
-  avatar_file: z.any().nullable().optional(),
+  avatar_file: z.custom<File | null | undefined>().nullable().optional(),
 });
 
 

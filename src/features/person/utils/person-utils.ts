@@ -1,4 +1,5 @@
 import { Person } from '@/types';
+import { normalizeSiblingOrder } from '@/lib/utils';
 
 // Kiểm tra trạng thái đã mất dựa trên ngày mất.
 export const isDeceased = (person: Person): boolean => {
@@ -26,4 +27,19 @@ export const formatDate = (dateString: string | null | undefined): string => {
   return date.toLocaleDateString('en-GB').replace(/\//g, '/'); // Đảm bảo định dạng DD/MM/YYYY
 };
 
-
+// Kiểm tra xung đột thứ tự sinh trong cùng nhóm cha/mẹ.
+export const hasSiblingOrderConflict = (
+  person: Pick<Person, 'id' | 'tree_id' | 'father_id' | 'mother_id'>,
+  persons: Person[],
+  order: number,
+): boolean => {
+  if (person.father_id === null && person.mother_id === null) return false;
+  return persons.some(
+    (p) =>
+      p.id !== person.id &&
+      p.tree_id === person.tree_id &&
+      p.father_id === person.father_id &&
+      p.mother_id === person.mother_id &&
+      normalizeSiblingOrder(p.sibling_order) === order,
+  );
+};

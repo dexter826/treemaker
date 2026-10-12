@@ -6,6 +6,7 @@ export type RelationType = 'father' | 'mother' | 'spouse';
 
 const mapPersonError = (error: unknown): Error => {
   const raw = error as { code?: string; message?: string };
+  const code = String(raw?.code ?? '');
   const message = String(raw?.message ?? 'Đã xảy ra lỗi hệ thống.');
 
   const errorMap: Record<string, string> = {
@@ -19,7 +20,7 @@ const mapPersonError = (error: unknown): Error => {
   };
 
   for (const [key, val] of Object.entries(errorMap)) {
-    if (message.includes(key)) return new Error(val);
+    if (code === key || message.includes(key)) return new Error(val);
   }
 
   return error instanceof Error ? error : new Error(message);
@@ -96,9 +97,9 @@ export const personService = {
     if (error) throw mapPersonError(error);
   },
 
-  async uploadAvatar(file: File): Promise<string> {
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${crypto.randomUUID()}.${fileExt}`;
+  async uploadAvatar(file: File | Blob): Promise<string> {
+    const fileExt = file instanceof File && file.name ? file.name.split('.').pop() : 'jpg';
+    const fileName = `${crypto.randomUUID()}.${fileExt || 'jpg'}`;
     const filePath = `avatars/${fileName}`;
 
     const { error } = await supabase.storage.from('avatars').upload(filePath, file);

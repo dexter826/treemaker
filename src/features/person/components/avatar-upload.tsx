@@ -102,7 +102,7 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled, error }: Avat
     setIsCleared(false);
   };
 
-  const onCropComplete = useCallback((_: any, pixelCrop: { x: number; y: number; width: number; height: number }) => {
+  const onCropComplete = useCallback((_croppedArea: unknown, pixelCrop: { x: number; y: number; width: number; height: number }) => {
     setCompletedCrop(pixelCrop);
   }, []);
 
@@ -177,7 +177,7 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled, error }: Avat
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground gap-2">
             <User className="h-10 w-10" />
-            <span className="text-[8px] font-bold uppercase tracking-tighter">Upload Photo</span>
+            <span className="text-[8px] font-bold uppercase tracking-tighter">Tải ảnh lên</span>
           </div>
         )}
 
@@ -188,7 +188,7 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled, error }: Avat
         )}
       </div>
 
-      {error && <p className="text-[10px] text-red-500 font-bold uppercase">{error}</p>}
+      {error && <p className="text-[10px] text-destructive font-bold uppercase">{error}</p>}
 
       <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" disabled={disabled} />
 

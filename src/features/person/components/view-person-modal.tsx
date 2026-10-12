@@ -111,7 +111,11 @@ export function ViewPersonModal() {
                       <Button
                         variant="outline"
                         size="icon-xs"
-                        onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(person.address!)}`, '_blank')}
+                        onClick={() => {
+                          if (person.address) {
+                            window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(person.address)}`, '_blank');
+                          }
+                        }}
                         className="mt-4 shrink-0 bg-background border-2 border-foreground shadow-brutal-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
                         title="Xem trên Google Maps"
                       >

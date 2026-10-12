@@ -7,7 +7,6 @@ import { Pencil, Eye, Trash2, Loader2 } from 'lucide-react';
 import { personService } from '../services/person.service';
 import { toast } from 'sonner';
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import { isDeceased } from '../utils/person-utils';
