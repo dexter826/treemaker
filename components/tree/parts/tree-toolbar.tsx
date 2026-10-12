@@ -11,7 +11,6 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { personService } from '@/lib/services/person.service';
 import { Select } from '@/components/ui/select';
 import { treeService } from '@/lib/services/tree.service';
 import { useRouter } from 'next/navigation';
@@ -19,7 +18,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { treeSchema, TreeFormValues } from '@/lib/validations/tree';
-import { addPersonSchema, AddPersonFormValues } from '@/lib/validations/person';
+import { personService, addPersonSchema, type AddPersonFormValues } from '@/features/person';
 import { EventListModal } from '../modals/event-list-modal';
 import { pdfService } from '@/lib/services/pdf.service';
 import { BookOpen } from 'lucide-react';

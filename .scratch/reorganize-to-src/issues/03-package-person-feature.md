@@ -4,9 +4,17 @@
 
 **Blocked by:** 01: Thiết lập cấu trúc src và di chuyển tầng Shared
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Toàn bộ logic nghiệp vụ, giao diện và dịch vụ của Person được gom về feature Person.
-- [ ] Tuân thủ thuật ngữ chuẩn `Person` đã định nghĩa trong domain glossary.
-- [ ] Feature Person xuất ra public interface rõ ràng qua entry point duy nhất (form, modal chi tiết, validation, service).
-- [ ] Mọi chi tiết nội bộ được giấu kín khỏi các module bên ngoài.
+- [x] Toàn bộ logic nghiệp vụ, giao diện và dịch vụ của Person được gom về feature Person.
+- [x] Tuân thủ thuật ngữ chuẩn `Person` đã định nghĩa trong domain glossary.
+- [x] Feature Person xuất ra public interface rõ ràng qua entry point duy nhất (form, modal chi tiết, validation, service).
+- [x] Mọi chi tiết nội bộ được giấu kín khỏi các module bên ngoài.
+
+## Answer
+
+Đã hoàn thành đóng gói Feature Person thành Deep Module:
+- `src/features/person/` (components, services, validations, utils)
+- `src/features/person/index.ts` (public entry point)
+- Cập nhật các module tiêu thụ (`person-node`, `sidebar`, `tree-toolbar`, `tree-client`, `tree.service`) import qua `@/features/person`.
+- Xác minh `npx tsc --noEmit` và `npm run build` thành công 100%.

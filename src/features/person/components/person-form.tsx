@@ -12,10 +12,10 @@ import { Loader2 } from 'lucide-react';
 import { Select } from '@/components/ui/select';
 import { DatePicker } from '@/components/ui/date-picker';
 import { AvatarUpload } from './avatar-upload';
-import { personService } from '@/lib/services/person.service';
 import { Separator } from '@/components/ui/separator';
 import { COUNTRIES } from '@/lib/constants/countries';
-import { personSchema, PersonFormValues } from '@/lib/validations/person';
+import { personService } from '../services/person.service';
+import { personSchema, PersonFormValues } from '../validations/person';
 import { normalizeSiblingOrder } from '@/lib/utils';
 import Flag from 'react-world-flags';
 

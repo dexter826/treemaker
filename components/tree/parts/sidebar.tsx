@@ -2,7 +2,6 @@ import { useMemo, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useStore } from '@/lib/store';
 import { Person } from '@/types';
-import { PersonForm } from '../forms/person-form';
 import { Button } from '@/components/ui/button';
 import { X, UserPlus, Trash2, Loader2, PanelRightOpen, ArrowUp, ArrowDown, Heart } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -11,7 +10,7 @@ import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription, Di
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select } from '@/components/ui/select';
-import { personService } from '@/lib/services/person.service';
+import { PersonForm, personService } from '@/features/person';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 

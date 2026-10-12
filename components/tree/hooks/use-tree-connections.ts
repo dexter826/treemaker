@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { Connection, Edge } from '@xyflow/react';
 import { Person } from '@/types';
 import { useStore } from '@/lib/store';
-import { personService } from '@/lib/services/person.service';
+import { personService } from '@/features/person';
 import { toast } from 'sonner';
 
 export function useTreeConnections(
