@@ -1,20 +1,19 @@
-"use client"
+"use client";
+
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { supabase } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { Loader2, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
-import { Loader2, Eye, EyeOff, ArrowLeft } from 'lucide-react';
-import { authSchema, AuthFormValues } from '../validations/auth';
+import { authSchema, AuthFormValues, AuthMode } from '../validations/auth';
+import { authService } from '../services/auth.service';
 
-type AuthMode = 'login' | 'signup' | 'forgot';
-
-// Thành phần xử lý xác thực (Đăng nhập, Đăng ký, Quên mật khẩu).
+// Thành phần giao diện xử lý xác thực tài khoản (Đăng nhập, Đăng ký, Quên mật khẩu).
 export function AuthForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -26,11 +25,14 @@ export function AuthForm() {
     register,
     handleSubmit,
     control,
+    setValue,
+    clearErrors,
+    resetField,
     formState: { errors },
-    reset,
   } = useForm<AuthFormValues>({
     resolver: zodResolver(authSchema),
     defaultValues: {
+      mode: 'login',
       email: '',
       password: '',
       confirmPassword: '',
@@ -38,37 +40,37 @@ export function AuthForm() {
     },
   });
 
+  const handleSwitchMode = (nextMode: AuthMode) => {
+    setMode(nextMode);
+    setValue('mode', nextMode);
+    clearErrors();
+    resetField('password');
+    resetField('confirmPassword');
+  };
+
   const handleAuth = async (data: AuthFormValues) => {
     setLoading(true);
 
     try {
-      if (mode !== 'forgot' && (!data.password || data.password.length < 6)) {
-        toast.error('Vui lòng nhập mật khẩu ít nhất 6 ký tự.');
-        return;
-      }
-
-      if (mode === 'signup') {
-        const { error } = await supabase.auth.signUp({ 
-          email: data.email, 
-          password: data.password! 
+      if (data.mode === 'signup') {
+        await authService.signUp({
+          email: data.email,
+          password: data.password || '',
         });
-        if (error) throw error;
         toast.success('Đăng ký thành công. Hãy kiểm tra email để xác minh.');
-      } else if (mode === 'login') {
-        const { error } = await supabase.auth.signInWithPassword({ 
-          email: data.email, 
-          password: data.password! 
+      } else if (data.mode === 'login') {
+        await authService.signIn({
+          email: data.email,
+          password: data.password || '',
         });
-        if (error) throw error;
         toast.success('Đăng nhập thành công.');
         router.push('/');
-      } else if (mode === 'forgot') {
-        const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
-          redirectTo: `${window.location.origin}/login`,
+      } else if (data.mode === 'forgot') {
+        await authService.resetPassword({
+          email: data.email,
         });
-        if (error) throw error;
         toast.success('Yêu cầu đã được gửi. Kiểm tra email của bạn.');
-        setMode('login');
+        handleSwitchMode('login');
       }
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Lỗi xác thực.';
@@ -78,11 +80,6 @@ export function AuthForm() {
     }
   };
 
-  const toggleMode = () => {
-    setMode(mode === 'signup' ? 'login' : 'signup');
-    reset();
-  };
-
   return (
     <div className="w-full max-w-md mx-auto relative">
       <div className="absolute inset-0 translate-x-2 translate-y-2 bg-primary/10 border-2 border-foreground -z-10" />
@@ -90,8 +87,9 @@ export function AuthForm() {
       <div className="border-2 border-foreground bg-background p-6 lg:p-8 relative">
         <div className="mb-8 text-center border-b-2 border-foreground/10 pb-5">
           {mode === 'forgot' && (
-            <button 
-              onClick={() => setMode('login')}
+            <button
+              type="button"
+              onClick={() => handleSwitchMode('login')}
               className="absolute left-6 top-8 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               title="Quay lại"
             >
@@ -191,7 +189,7 @@ export function AuthForm() {
                 type="button" 
                 variant="link" 
                 className="h-auto px-0 text-xs font-semibold"
-                onClick={() => setMode('forgot')}
+                onClick={() => handleSwitchMode('forgot')}
               >
                 Quên mật khẩu?
               </Button>
@@ -205,7 +203,12 @@ export function AuthForm() {
 
           {mode !== 'forgot' && (
             <div className="pt-5 border-t-2 border-foreground/10 text-center">
-              <Button type="button" variant="link" className="h-auto px-0 text-xs" onClick={toggleMode}>
+              <Button 
+                type="button" 
+                variant="link" 
+                className="h-auto px-0 text-xs" 
+                onClick={() => handleSwitchMode(mode === 'signup' ? 'login' : 'signup')}
+              >
                 {mode === 'signup' ? 'Đã có tài khoản? Đăng nhập' : 'Chưa có tài khoản? Tạo mới'}
               </Button>
             </div>
@@ -215,4 +218,3 @@ export function AuthForm() {
     </div>
   );
 }
-
