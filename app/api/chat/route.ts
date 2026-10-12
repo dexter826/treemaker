@@ -1,5 +1,5 @@
 import { streamText, convertToModelMessages } from 'ai';
-import { openrouter, DEFAULT_AI_MODEL } from '@/lib/ai/config';
+import { openrouter, DEFAULT_AI_MODEL } from '@/features/ai';
 
 export const maxDuration = 30;
 

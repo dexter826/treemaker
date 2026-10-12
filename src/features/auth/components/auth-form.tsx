@@ -10,7 +10,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Loader2, Eye, EyeOff, ArrowLeft } from 'lucide-react';
-import { authSchema, AuthFormValues } from '@/lib/validations/auth';
+import { authSchema, AuthFormValues } from '../validations/auth';
 
 type AuthMode = 'login' | 'signup' | 'forgot';
 

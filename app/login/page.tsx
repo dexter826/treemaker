@@ -1,4 +1,4 @@
-import { AuthForm } from '@/components/auth/auth-form';
+import { AuthForm } from '@/features/auth';
 import { Metadata } from 'next';
 import Image from 'next/image';
 

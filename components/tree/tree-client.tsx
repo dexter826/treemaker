@@ -11,7 +11,7 @@ import { ViewPersonModal } from './modals/view-person-modal';
 import { personService } from '@/lib/services/person.service';
 import { toast } from 'sonner';
 import { SplashScreen } from '@/components/ui/splash-screen';
-import { TreeChatbot } from './parts/tree-chatbot';
+import { TreeChatbot } from '@/features/ai';
 import { LegacyBookTemplate } from './parts/legacy-book-template';
 
 // Thành phần Client quản lý tương tác cây gia phả.
