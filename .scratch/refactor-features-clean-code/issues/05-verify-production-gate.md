@@ -4,10 +4,10 @@
 
 **Blocked by:** 04: Refactor AI Feature
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Thực thi `npm run lint` trên toàn bộ codebase với 0 cảnh báo/lỗi.
-- [ ] Thực thi `npm run build` thành công trên toàn bộ các route Next.js.
-- [ ] Quét toàn bộ codebase kiểm tra vi phạm import cross-feature (đảm bảo tuân thủ ADR 0001).
-- [ ] Kiểm tra tính nhất quán của `GLOSSARY.md` và cập nhật nếu có thuật ngữ mới.
-- [ ] Đóng và đánh dấu hoàn thành toàn bộ tickets.
+- [x] Thực thi `npm run lint` trên toàn bộ codebase với 0 cảnh báo/lỗi.
+- [x] Thực thi `npm run build` thành công trên toàn bộ các route Next.js.
+- [x] Quét toàn bộ codebase kiểm tra vi phạm import cross-feature (đảm bảo tuân thủ ADR 0001).
+- [x] Kiểm tra tính nhất quán của `GLOSSARY.md` và cập nhật nếu có thuật ngữ mới.
+- [x] Đóng và đánh dấu hoàn thành toàn bộ tickets.
