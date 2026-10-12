@@ -4,9 +4,9 @@
 
 **Blocked by:** 05: Overhaul Dashboard, Share, Login, and AI
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Perform a global sweep across `src/` to remove any remaining arbitrary shadow declarations, ensuring 100% adherence to `shadow-brutal-*`.
-- [ ] Verify that all shared UI components strictly maintain `rounded-none` and `border-2` consistency.
-- [ ] Run `npm run lint` and verify zero ESLint errors or unused imports.
-- [ ] Run `npm run build` and verify that production compilation and static page generation pass cleanly.
+- [x] Perform a global sweep across `src/` to remove any remaining arbitrary shadow declarations, ensuring 100% adherence to `shadow-brutal-*`.
+- [x] Verify that all shared UI components strictly maintain `rounded-none` and `border-2` consistency.
+- [x] Run `npm run lint` and verify zero ESLint errors or unused imports.
+- [x] Run `npm run build` and verify that production compilation and static page generation pass cleanly.
