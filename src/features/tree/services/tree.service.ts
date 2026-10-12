@@ -1,6 +1,5 @@
 import { supabase } from '@/lib/supabase';
-import { FamilyTree, Person } from '@/types';
-import { personService } from '@/features/person';
+import { FamilyTree } from '@/types';
 
 const mapTreeError = (error: unknown): Error => {
   const raw = error as { message?: string };
