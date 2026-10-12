@@ -79,7 +79,7 @@ export function TreeChatbot() {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="mb-4 w-80 sm:w-96 h-[500px] bg-background border-2 border-foreground shadow-[8px_8px_0px_0px_var(--color-foreground)] flex flex-col overflow-hidden"
+            className="mb-4 w-80 sm:w-96 h-[500px] bg-background border-2 border-foreground shadow-brutal-lg flex flex-col overflow-hidden"
           >
             <div className="p-4 border-b-2 border-foreground bg-primary text-primary-foreground flex items-center justify-between">
               <div className="flex items-center gap-2 text-white">
@@ -126,8 +126,8 @@ export function TreeChatbot() {
                     <div className={cn(
                       "p-3 border-2 border-foreground text-sm font-medium leading-relaxed max-w-[80%]",
                       m.role === "user" 
-                        ? "bg-background shadow-[4px_4px_0px_0px_var(--color-foreground)]" 
-                        : "bg-muted shadow-[4px_4px_0px_0px_var(--color-foreground)]"
+                        ? "bg-background shadow-brutal-sm" 
+                        : "bg-muted shadow-brutal-sm"
                     )}>
                       <div className="prose prose-sm prose-neutral dark:prose-invert max-w-none prose-p:leading-relaxed">
                         <ReactMarkdown>
@@ -145,7 +145,7 @@ export function TreeChatbot() {
                   <div className="size-8 flex items-center justify-center border-2 border-foreground bg-primary shrink-0">
                     <Bot className="size-4 text-white" />
                   </div>
-                  <div className="p-3 border-2 border-foreground bg-muted shadow-[4px_4px_0px_0px_var(--color-foreground)]">
+                  <div className="p-3 border-2 border-foreground bg-muted shadow-brutal-sm">
                     <div className="flex items-center gap-1">
                       <span className="text-xs font-bold uppercase tracking-wider animate-pulse">Đang suy nghĩ</span>
                     </div>
@@ -184,7 +184,7 @@ export function TreeChatbot() {
         variant={isOpen ? "destructive" : "outline"}
         size="icon"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-10 h-10 md:w-12 md:h-12 rounded-none shrink-0 border-2 border-foreground shadow-[4px_4px_0px_0px_var(--color-foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all"
+        className="w-10 h-10 md:w-12 md:h-12 rounded-none shrink-0 border-2 border-foreground shadow-brutal-md hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-brutal-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
       >
         {isOpen ? <X className="size-4 md:size-5" /> : <MessageCircle className="size-4 md:size-5" />}
       </Button>

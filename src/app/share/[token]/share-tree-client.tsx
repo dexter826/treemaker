@@ -83,7 +83,7 @@ export function ShareTreeClient({ token }: { token: string }) {
           {error}
         </p>
         <Link href="/">
-          <Button variant="outline" className="h-12 px-8 border-2 shadow-[4px_4px_0px_0px_var(--color-foreground)]">
+          <Button variant="outline" className="h-12 px-8 border-2 shadow-brutal-md">
             <Home className="size-4 mr-2" />
             Về Trang Chủ
           </Button>
@@ -102,7 +102,7 @@ export function ShareTreeClient({ token }: { token: string }) {
           exit={{ opacity: 0, y: -20 }}
           className="w-full h-screen flex items-center justify-center bg-background p-6"
         >
-          <div className="w-full max-w-sm border-2 border-foreground p-8 bg-background shadow-[8px_8px_0px_0px_var(--color-foreground)]">
+          <div className="w-full max-w-sm border-2 border-foreground p-8 bg-background shadow-brutal-lg">
             <div className="flex justify-center mb-6">
               <div className="size-12 bg-primary/10 flex items-center justify-center border-2 border-primary">
                 <Lock className="size-6 text-primary" />
@@ -124,7 +124,7 @@ export function ShareTreeClient({ token }: { token: string }) {
               
               <Button 
                 onClick={() => handlePasswordSubmit()} 
-                className="w-full h-12 font-black uppercase tracking-widest border-2 border-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+                className="w-full h-12 font-black uppercase tracking-widest border-2 border-foreground shadow-brutal-md active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
                 disabled={password.length < 4}
               >
                 Xác Thực Ngay

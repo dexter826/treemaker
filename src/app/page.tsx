@@ -201,10 +201,11 @@ export default function DashboardPage() {
           <div className="flex flex-row items-center justify-between border-b-2 border-foreground/20 pb-3 mb-4 gap-2">
             <h3 className="text-base md:text-lg font-bold tracking-wide text-foreground truncate">Danh Sách Gia Phả</h3>
             <Button
-              variant="outline"
+              variant="default"
+              effect="raised"
               size="sm"
               onClick={() => setIsCreateOpen(true)}
-              className="h-9 px-3 text-[10px] sm:text-xs font-bold uppercase tracking-wider"
+              className="h-9 px-4 text-[10px] sm:text-xs font-bold uppercase tracking-wider"
             >
               <Plus className="w-3.5 h-3.5 mr-1.5" />
               <span>Tạo Cây Mới</span>
@@ -217,6 +218,7 @@ export default function DashboardPage() {
               <Button
                 onClick={() => setIsCreateOpen(true)}
                 variant="outline"
+                effect="raised"
                 size="sm"
               >
                 Tạo Gia Phả Đầu Tiên
@@ -227,7 +229,7 @@ export default function DashboardPage() {
               {trees.map((tree, idx) => (
                 <div
                   key={tree.id}
-                  className="group relative flex flex-col md:flex-row justify-between items-start md:items-center p-4 lg:p-5 border-2 border-foreground bg-background hover:bg-foreground/[0.02] transition-colors"
+                  className="group relative flex flex-col md:flex-row justify-between items-start md:items-center p-4 lg:p-5 border-2 border-foreground bg-background shadow-brutal-md hover:shadow-brutal-lg transition-all"
                 >
                   <div className="absolute top-0 left-0 bg-foreground text-background text-[10px] font-bold px-2 py-0.5 tracking-wider z-10">
                     ID-{String(idx + 1).padStart(3, '0')}
@@ -245,6 +247,7 @@ export default function DashboardPage() {
                   <div className="flex flex-wrap items-center gap-2 mt-3 md:mt-0 w-full md:w-auto">
                     <Button
                       variant="outline"
+                      effect="raised"
                       size="sm"
                       onClick={() => {
                         setTreeToShare(tree);
@@ -256,9 +259,9 @@ export default function DashboardPage() {
                       <Share2 className="size-4" />
                     </Button>
 
-
                     <Button
                       variant="outline"
+                      effect="raised"
                       size="sm"
                       onClick={() => {
                         setTreeToEdit(tree);
@@ -273,6 +276,7 @@ export default function DashboardPage() {
 
                     <Button
                       variant="destructive"
+                      effect="raised"
                       size="sm"
                       onClick={() => {
                         setTreeToDelete(tree);
@@ -286,7 +290,8 @@ export default function DashboardPage() {
 
                     <Link href={`/tree/${tree.id}`} className="flex-1 md:flex-none">
                       <Button 
-                        variant="outline" 
+                        variant="default"
+                        effect="raised"
                         size="sm" 
                         className="w-9 h-9 p-0"
                         title="Mở Gia Phả"
