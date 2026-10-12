@@ -75,9 +75,9 @@ export const PersonNode = memo(function PersonNode({ data }: { data: { person: P
         type="target" 
         position={Position.Top} 
         className={cn(
-          'w-3 h-3 rounded-none border-2 border-background top-0 translate-y-[-50%] z-20 transition-all duration-300 export-exclude',
+          'w-2 h-2 rounded-none border-2 border-background top-0 translate-y-[-50%] z-20 transition-all duration-300 export-exclude',
           'opacity-0 group-hover:opacity-100',
-          isSelected ? 'bg-primary opacity-100' : deceased ? 'bg-muted-foreground/50' : 'bg-foreground'
+          isSelected ? 'bg-primary opacity-100' : deceased ? 'bg-deceased-fg' : 'bg-foreground'
         )} 
       />
       <Handle 
@@ -85,9 +85,9 @@ export const PersonNode = memo(function PersonNode({ data }: { data: { person: P
         type="source" 
         position={Position.Bottom} 
         className={cn(
-          'w-3 h-3 rounded-none border-2 border-background bottom-0 translate-y-[50%] z-20 transition-all duration-300 export-exclude',
+          'w-2 h-2 rounded-none border-2 border-background bottom-0 translate-y-[50%] z-20 transition-all duration-300 export-exclude',
           'opacity-0 group-hover:opacity-100',
-          isSelected ? 'bg-primary opacity-100' : deceased ? 'bg-muted-foreground/50' : 'bg-foreground'
+          isSelected ? 'bg-primary opacity-100' : deceased ? 'bg-deceased-fg' : 'bg-foreground'
         )} 
       />
       <Handle 
@@ -95,9 +95,9 @@ export const PersonNode = memo(function PersonNode({ data }: { data: { person: P
         type="source" 
         position={Position.Left} 
         className={cn(
-          'w-3 h-3 rounded-none border-2 border-background left-0 translate-x-[-50%] z-20 transition-all duration-300 export-exclude',
+          'w-2 h-2 rounded-none border-2 border-background left-0 translate-x-[-50%] z-20 transition-all duration-300 export-exclude',
           'opacity-0 group-hover:opacity-100',
-          isSelected ? 'bg-primary opacity-100' : deceased ? 'bg-muted-foreground/50' : 'bg-foreground'
+          isSelected ? 'bg-primary opacity-100' : deceased ? 'bg-deceased-fg' : 'bg-foreground'
         )} 
       />
       <Handle 
@@ -105,9 +105,9 @@ export const PersonNode = memo(function PersonNode({ data }: { data: { person: P
         type="source" 
         position={Position.Right} 
         className={cn(
-          'w-3 h-3 rounded-none border-2 border-background right-0 translate-x-[50%] z-20 transition-all duration-300 export-exclude',
+          'w-2 h-2 rounded-none border-2 border-background right-0 translate-x-[50%] z-20 transition-all duration-300 export-exclude',
           'opacity-0 group-hover:opacity-100',
-          isSelected ? 'bg-primary opacity-100' : deceased ? 'bg-muted-foreground/50' : 'bg-foreground'
+          isSelected ? 'bg-primary opacity-100' : deceased ? 'bg-deceased-fg' : 'bg-foreground'
         )} 
       />
       

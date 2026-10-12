@@ -183,8 +183,9 @@ export function TreeChatbot() {
       <Button
         variant={isOpen ? "destructive" : "outline"}
         size="icon"
+        effect="raised"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-10 h-10 md:w-12 md:h-12 rounded-none shrink-0 border-2 border-foreground shadow-brutal-md hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-brutal-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+        className="w-10 h-10 md:w-12 md:h-12 rounded-none shrink-0"
       >
         {isOpen ? <X className="size-4 md:size-5" /> : <MessageCircle className="size-4 md:size-5" />}
       </Button>

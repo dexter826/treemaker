@@ -16,7 +16,7 @@ function Card({
         "group/card flex flex-col gap-4 overflow-hidden rounded-none bg-card py-4 text-sm text-card-foreground border-2 border-foreground shadow-brutal-md has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:gap-3 data-[size=sm]:py-3 data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-none *:[img:last-child]:rounded-none",
         className
       )}
-      whileHover={{ y: -2, boxShadow: "6px 6px 0px 0px var(--foreground)" }}
+      whileHover={{ y: -2, boxShadow: "var(--shadow-brutal-lg)" }}
       transition={{ duration: 0.1 }}
       {...props}
     />
