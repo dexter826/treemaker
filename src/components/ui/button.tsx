@@ -35,7 +35,9 @@ const buttonVariants = cva(
       effect: {
         none: "",
         raised:
-          "shadow-[4px_4px_0px_0px_var(--color-foreground)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none active:translate-x-[4px] active:translate-y-[4px]",
+          "shadow-brutal-md hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-brutal-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
+        "primary-raised":
+          "shadow-brutal-primary-md hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-brutal-primary-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
       },
     },
     defaultVariants: {

@@ -4,9 +4,9 @@
 
 **Blocked by:** 01: Setup Design Tokens and Elevation
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Standardize buttons with unified height scales, border-2 styling, uppercase bold tracking, and consistent `shadow-brutal-md` press feedback.
-- [ ] Standardize form input primitives (text input, textarea, input groups, date picker, select) with 2px borders, sharp corners, and high-contrast focus states.
-- [ ] Standardize overlay surfaces (dialogs, sheets, popovers, dropdown menus) with bold borders, hard offset shadows, and clean backdrop blurring.
-- [ ] Ensure all modified primitives pass TypeScript typechecks and production build verification.
+- [x] Standardize buttons with unified height scales, border-2 styling, uppercase bold tracking, and consistent `shadow-brutal-md` press feedback.
+- [x] Standardize form input primitives (text input, textarea, input groups, date picker, select) with 2px borders, sharp corners, and high-contrast focus states.
+- [x] Standardize overlay surfaces (dialogs, sheets, popovers, dropdown menus) with bold borders, hard offset shadows, and clean backdrop blurring.
+- [x] Ensure all modified primitives pass TypeScript typechecks and production build verification.

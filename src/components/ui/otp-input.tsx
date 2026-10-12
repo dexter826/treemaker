@@ -76,7 +76,7 @@ export function OTPInput({
           onKeyDown={(e) => handleKeyDown(e, i)}
           disabled={disabled}
           className={cn(
-            "size-12 md:size-14 text-center text-xl font-black rounded-none border-4 border-foreground bg-background shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all",
+            "size-12 md:size-14 text-center text-xl font-black rounded-none border-4 border-foreground bg-background shadow-brutal-md transition-all",
             "focus:outline-none focus:bg-primary focus:text-primary-foreground focus:translate-x-[2px] focus:translate-y-[2px] focus:shadow-none",
             "disabled:opacity-50 disabled:cursor-not-allowed"
           )}
