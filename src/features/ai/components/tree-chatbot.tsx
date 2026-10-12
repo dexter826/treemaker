@@ -86,6 +86,14 @@ export function TreeChatbot() {
                 <Bot className="size-5" />
                 <span className="font-serif font-black uppercase tracking-widest text-sm">Trợ Lý Gia Phả</span>
               </div>
+              <button
+                type="button"
+                onClick={() => setIsOpen(false)}
+                className="text-white/80 hover:text-white transition-colors cursor-pointer"
+                aria-label="Đóng trợ lý"
+              >
+                <X className="size-5" />
+              </button>
             </div>
 
             <div 
@@ -102,9 +110,9 @@ export function TreeChatbot() {
               )}
               
               {messages.map((m: UIMessage) => {
-                const messageContent = m.parts
-                  .filter((part) => part.type === "text")
-                  .map((part) => (part as any).text)
+                const messageContent = (m.parts ?? [])
+                  .filter((part): part is { type: "text"; text: string } => part.type === "text")
+                  .map((part) => part.text)
                   .join("");
 
                 if (!messageContent && m.role === 'assistant') return null;
