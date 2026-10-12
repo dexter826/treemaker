@@ -5,7 +5,7 @@ import { useStore } from '@/lib/store';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { User, Flower2, Cake } from 'lucide-react';
-import { TREE_NODE_WIDTH, TREE_NODE_HEIGHT } from '../constants';
+import { TREE_NODE_WIDTH, TREE_NODE_HEIGHT } from '../../constants';
 import { motion } from 'framer-motion';
 import { getCountryByCode } from '@/lib/constants/countries';
 import Flag from 'react-world-flags';

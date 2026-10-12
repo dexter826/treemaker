@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
-import { getOrderedPersons } from '@/lib/utils/tree-utils';
+import { getOrderedPersons } from '../../utils/tree-utils';
 
 interface LegacyBookTemplateProps {
   tree: FamilyTree;

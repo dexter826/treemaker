@@ -12,15 +12,15 @@ import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription, Di
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select } from '@/components/ui/select';
-import { treeService } from '@/lib/services/tree.service';
+import { treeService } from '../../services/tree.service';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { treeSchema, TreeFormValues } from '@/lib/validations/tree';
+import { treeSchema, TreeFormValues } from '../../validations/tree';
 import { personService, addPersonSchema, type AddPersonFormValues } from '@/features/person';
 import { EventListModal } from '../modals/event-list-modal';
-import { pdfService } from '@/lib/services/pdf.service';
+import { pdfService } from '../../services/pdf.service';
 import { BookOpen } from 'lucide-react';
 import { useReactFlow } from '@xyflow/react';
 

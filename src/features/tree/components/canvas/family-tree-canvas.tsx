@@ -5,8 +5,8 @@ import '@xyflow/react/dist/style.css';
 import { useStore } from '@/lib/store';
 import { PersonNode } from './person-node';
 import { MarriageNode } from './marriage-node';
-import { useTreeFlow } from '../hooks/use-tree-flow';
-import { useTreeConnections } from '../hooks/use-tree-connections';
+import { useTreeFlow } from '../../hooks/use-tree-flow';
+import { useTreeConnections } from '../../hooks/use-tree-connections';
 import { FamilyEdge } from './family-edge';
 
 const nodeTypes = { 

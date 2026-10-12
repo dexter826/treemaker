@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import TreeClient from '../../../components/tree/tree-client';
-import { treeService } from '../../../lib/services/tree.service';
+import { TreeClient, treeService } from '@/features/tree';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

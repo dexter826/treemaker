@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { FamilyTree } from '@/types';
-import { treeService } from '@/lib/services/tree.service';
+import { treeService } from '../../services/tree.service';
 import {
   Dialog,
   DialogContent,

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useStore } from '@/lib/store';
-import { getSortedEvents, groupEventsByMonth } from '@/lib/utils/event-utils';
+import { getSortedEvents, groupEventsByMonth } from '../../utils/event-utils';
 import { Dialog, DialogContent, DialogTitle, DialogHeader } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Cake, HeartCrack, Calendar } from 'lucide-react';

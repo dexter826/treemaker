@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { treeService } from '../../../lib/services/tree.service';
+import { treeService } from '@/features/tree';
 import { ShareTreeClient } from './share-tree-client';
 
 // Tạo siêu dữ liệu cho trang chia sẻ.

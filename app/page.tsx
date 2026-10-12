@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import { treeService } from '@/lib/services/tree.service';
 import { useStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Copy, Plus, Trash2, Loader2, LogOut, Pencil } from 'lucide-react';
@@ -17,9 +16,7 @@ import { FamilyTree } from '@/types';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { treeSchema, TreeFormValues } from '@/lib/validations/tree';
-import { ANIMATION_DURATION } from '@/components/tree/constants';
-import { ShareSettingsDialog } from '@/components/tree/modals/share-settings-dialog';
+import { treeService, treeSchema, type TreeFormValues, ANIMATION_DURATION, ShareSettingsDialog } from '@/features/tree';
 import { Share2 } from 'lucide-react';
 
 
