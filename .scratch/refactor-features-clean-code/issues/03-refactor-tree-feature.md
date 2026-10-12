@@ -4,12 +4,12 @@
 
 **Blocked by:** 02: Refactor Person Feature
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Hoàn thành Báo cáo Review Chuẩn A cho module `tree`.
-- [ ] Chuẩn hoá danh pháp miền trong code/types/comments theo `GLOSSARY.md` (`FamilyTree`, `Relationship`, `LegacyBook`).
-- [ ] Tái cấu trúc hooks `useTreeFlow` và `useTreeConnections`: giảm thiểu coupling, tối ưu hoá callback và xử lý kết nối quan hệ.
-- [ ] Tách biệt `pdf.service.ts` và `legacy-book-template.tsx` khỏi HUD điều khiển canvas, đảm bảo in ấn/tải PDF độc lập.
-- [ ] Làm sạch `tree.service.ts` và các modal quản lý sự kiện/chia sẻ gia phả.
-- [ ] Cập nhật public API `src/features/tree/index.ts`.
-- [ ] Kiểm tra xác thực `npm run lint` và `npm run build` vượt qua thành công với 0 lỗi.
+- [x] Hoàn thành Báo cáo Review Chuẩn A cho module `tree`.
+- [x] Chuẩn hoá danh pháp miền trong code/types/comments theo `GLOSSARY.md` (`FamilyTree`, `Relationship`, `LegacyBook`).
+- [x] Tái cấu trúc hooks `useTreeFlow` và `useTreeConnections`: giảm thiểu coupling, tối ưu hoá callback và xử lý kết nối quan hệ.
+- [x] Tách biệt `pdf.service.ts` và `legacy-book-template.tsx` khỏi HUD điều khiển canvas, đảm bảo in ấn/tải PDF độc lập.
+- [x] Làm sạch `tree.service.ts` và các modal quản lý sự kiện/chia sẻ gia phả.
+- [x] Cập nhật public API `src/features/tree/index.ts`.
+- [x] Kiểm tra xác thực `npm run lint` và `npm run build` vượt qua thành công với 0 lỗi.

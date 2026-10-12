@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase';
-import { FamilyTree } from '@/types';
+import { FamilyTree, TreeData } from '@/types';
 
 const mapTreeError = (error: unknown): Error => {
   const raw = error as { message?: string };
@@ -18,6 +18,24 @@ const isFamilyTree = (value: unknown): value is FamilyTree => {
 };
 
 export const treeService = {
+  async getTreeData(treeId: string): Promise<TreeData> {
+    const [treeRes, personsRes, relsRes] = await Promise.all([
+      supabase.from('family_trees').select('*').eq('id', treeId).single(),
+      supabase.from('persons').select('*').eq('tree_id', treeId).order('sibling_order', { ascending: true }),
+      supabase.from('relationships').select('*').eq('tree_id', treeId),
+    ]);
+
+    if (treeRes.error) throw mapTreeError(treeRes.error);
+    if (personsRes.error) throw mapTreeError(personsRes.error);
+    if (relsRes.error) throw mapTreeError(relsRes.error);
+
+    return {
+      tree: treeRes.data,
+      persons: personsRes.data ?? [],
+      relationships: relsRes.data ?? [],
+    };
+  },
+
   async getAllByUser(userId: string): Promise<FamilyTree[]> {
     const { data, error } = await supabase
       .from('family_trees')

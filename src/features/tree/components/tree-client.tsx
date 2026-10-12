@@ -3,11 +3,12 @@
 import { useEffect } from 'react';
 import { ReactFlowProvider } from '@xyflow/react';
 import { useStore } from '@/lib/store';
-import { supabase } from '@/lib/supabase';
 import { FamilyTreeCanvas } from './canvas/family-tree-canvas';
 import { TreeToolbar } from './parts/tree-toolbar';
 import { Sidebar } from './parts/sidebar';
-import { ViewPersonModal, personService } from '@/features/person';
+import { ViewPersonModal } from '@/features/person';
+import { treeService } from '../services/tree.service';
+import { authService } from '@/features/auth';
 import { toast } from 'sonner';
 import { SplashScreen } from '@/components/ui/splash-screen';
 import { TreeChatbot } from '@/features/ai';
@@ -36,12 +37,12 @@ export default function TreeClient({ treeId }: { treeId: string }) {
       setShowCardActions(null);
 
       try {
-        const { tree, persons, relationships } = await personService.getTreeData(treeId);
+        const { tree, persons, relationships } = await treeService.getTreeData(treeId);
         setCurrentTree(tree);
         setPersons(persons);
         setRelationships(relationships);
 
-        const { data: { session } } = await supabase.auth.getSession();
+        const session = await authService.getSession();
         const currentUserId = session?.user?.id;
         const isOwner = currentUserId === tree.owner_id;
         const canEdit = tree.share_permission === 'edit';

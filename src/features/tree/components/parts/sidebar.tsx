@@ -13,10 +13,9 @@ import { Select } from '@/components/ui/select';
 import { PersonForm, personService } from '@/features/person';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
+import { normalizeSiblingOrder } from '@/lib/utils';
 
 type RelativeType = 'father' | 'mother' | 'spouse' | 'child';
-
-const normalizeSiblingOrder = (value: number): number => Math.max(0, Math.floor(value || 0));
 
 export function Sidebar() {
   const selectedPersonId = useStore((state) => state.selectedPersonId);

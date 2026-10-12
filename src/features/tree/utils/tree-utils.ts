@@ -34,8 +34,9 @@ export function getOrderedPersons(persons: Person[], relationships: Relationship
   });
 
   const sortPersons = (ids: string[]) => {
-    return ids.map(id => persons.find(p => p.id === id)!)
-      .filter(Boolean)
+    return ids
+      .map((id) => persons.find((p) => p.id === id))
+      .filter((p): p is Person => p !== undefined)
       .sort((a, b) => {
         if (a.sibling_order !== null && b.sibling_order !== null) {
           return a.sibling_order - b.sibling_order;

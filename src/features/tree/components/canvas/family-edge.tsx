@@ -1,4 +1,4 @@
-import { BaseEdge, EdgeProps, getSimpleBezierPath } from '@xyflow/react';
+import { BaseEdge, EdgeProps } from '@xyflow/react';
 
 export function FamilyEdge({
   id,

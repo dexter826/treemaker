@@ -1,6 +1,4 @@
 import { Handle, Position } from '@xyflow/react';
-import { cn } from '@/lib/utils';
-import { MARRIAGE_NODE_SIZE } from '../../constants';
 
 export function MarriageNode() {
   return (
