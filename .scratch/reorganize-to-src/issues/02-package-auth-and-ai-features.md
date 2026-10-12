@@ -14,6 +14,7 @@
 ## Answer
 
 Đã hoàn thành đóng gói Feature Auth và Feature AI thành Deep Modules:
+
 - `src/features/auth/` với public entry point `src/features/auth/index.ts`
 - `src/features/ai/` với public entry point `src/features/ai/index.ts`
 - Cập nhật `app/login/page.tsx` và `app/api/chat/route.ts` sang import từ `@/features/auth` và `@/features/ai`.

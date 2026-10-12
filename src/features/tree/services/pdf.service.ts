@@ -11,7 +11,7 @@ export interface ExportData {
 export const pdfService = {
   // Xuất bản Gia Phả họ tộc sang định dạng PDF.
   async generateLegacyBook(
-    data: ExportData, 
+    data: ExportData,
     treeElement: HTMLElement,
     onProgress?: (current: number, total: number) => void
   ): Promise<void> {
@@ -33,7 +33,7 @@ export const pdfService = {
       currentStep++;
       if (onProgress) onProgress(currentStep, totalPages);
     };
-    
+
     await this.addCapturedPage(doc, pages[0] as HTMLElement);
     updateProgress();
 
@@ -57,23 +57,26 @@ export const pdfService = {
       scale: 2,
       backgroundColor: '#ffffff',
       filter: (node) => {
-        if (node instanceof HTMLElement && node.classList.contains('export-exclude')) {
+        if (
+          node instanceof HTMLElement &&
+          node.classList.contains('export-exclude')
+        ) {
           return false;
         }
         return true;
       },
       features: {
-        removeControlCharacter: true
-      }
+        removeControlCharacter: true,
+      },
     });
-    
+
     const imgData = canvas.toDataURL('image/jpeg', 0.95);
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
-    
+
     let finalWidth = pageWidth;
     let finalHeight = (canvas.height * finalWidth) / canvas.width;
-    
+
     if (finalHeight > pageHeight) {
       finalHeight = pageHeight;
       finalWidth = (canvas.width * finalHeight) / canvas.height;
@@ -82,7 +85,16 @@ export const pdfService = {
     const x = (pageWidth - finalWidth) / 2;
     const y = (pageHeight - finalHeight) / 2;
 
-    doc.addImage(imgData, 'JPEG', x, y, finalWidth, finalHeight, undefined, 'FAST');
+    doc.addImage(
+      imgData,
+      'JPEG',
+      x,
+      y,
+      finalWidth,
+      finalHeight,
+      undefined,
+      'FAST'
+    );
   },
 
   // Chuyển đổi tên sang định dạng slug không dấu cho tên file.

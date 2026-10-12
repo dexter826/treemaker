@@ -1,7 +1,7 @@
-@import "tailwindcss";
-@plugin "@tailwindcss/typography";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -147,7 +147,7 @@
   }
 
   body {
-    @apply bg-background text-foreground antialiased selection:bg-primary/20 selection:text-foreground;
+    @apply bg-background text-foreground selection:bg-primary/20 selection:text-foreground antialiased;
   }
 
   /* Custom Scrollbar */
@@ -185,14 +185,14 @@
   h4,
   h5,
   h6 {
-    @apply font-serif tracking-tight text-foreground;
+    @apply text-foreground font-serif tracking-tight;
   }
 
   button,
   a,
   input,
   textarea,
-  [role="button"] {
-    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+  [role='button'] {
+    @apply focus-visible:ring-primary focus-visible:ring-offset-background focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none;
   }
 }

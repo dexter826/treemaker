@@ -3,10 +3,26 @@ import { motion } from 'framer-motion';
 import { useStore } from '@/lib/store';
 import { Person } from '@/types';
 import { Button } from '@/components/ui/button';
-import { X, UserPlus, Trash2, Loader2, PanelRightOpen, ArrowUp, ArrowDown, Heart } from 'lucide-react';
+import {
+  X,
+  UserPlus,
+  Trash2,
+  Loader2,
+  PanelRightOpen,
+  ArrowUp,
+  ArrowDown,
+  Heart,
+} from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from 'sonner';
-import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogHeader,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select } from '@/components/ui/select';
@@ -28,11 +44,15 @@ export function Sidebar() {
   const addPersonStore = useStore((state) => state.addPerson);
   const updatePersonStore = useStore((state) => state.updatePerson);
   const addRelationship = useStore((state) => state.addRelationship);
-  
+
   const isMobile = useIsMobile();
-  const [isAddingRelative, setIsAddingRelative] = useState<RelativeType | null>(null);
+  const [isAddingRelative, setIsAddingRelative] = useState<RelativeType | null>(
+    null
+  );
   const [newRelativeName, setNewRelativeName] = useState('');
-  const [newRelativeGender, setNewRelativeGender] = useState<'male' | 'female'>('male');
+  const [newRelativeGender, setNewRelativeGender] = useState<'male' | 'female'>(
+    'male'
+  );
   const [newRelativeSiblingOrder, setNewRelativeSiblingOrder] = useState(0);
   const [selectedExistingPersonId, setSelectedExistingPersonId] = useState('');
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -41,11 +61,16 @@ export function Sidebar() {
   const person = persons.find((p) => p.id === selectedPersonId);
   const personId = person?.id;
 
-  const getSpouseId = useCallback((pId: string) => {
-    const rel = relationships.find(r => r.person1_id === pId || r.person2_id === pId);
-    if (!rel) return null;
-    return rel.person1_id === pId ? rel.person2_id : rel.person1_id;
-  }, [relationships]);
+  const getSpouseId = useCallback(
+    (pId: string) => {
+      const rel = relationships.find(
+        (r) => r.person1_id === pId || r.person2_id === pId
+      );
+      if (!rel) return null;
+      return rel.person1_id === pId ? rel.person2_id : rel.person1_id;
+    },
+    [relationships]
+  );
 
   const availablePersons = useMemo(() => {
     if (!isAddingRelative || !personId || !person) return [];
@@ -55,10 +80,18 @@ export function Sidebar() {
       const isChild = p.father_id === person.id || p.mother_id === person.id;
       const currentSpouseId = getSpouseId(personId);
       const isSpouse = currentSpouseId === p.id;
-      
-      if (isAddingRelative === 'father') return p.gender === 'male' && !isChild && !isSpouse;
-      if (isAddingRelative === 'mother') return p.gender === 'female' && !isChild && !isSpouse;
-      if (isAddingRelative === 'spouse') return !getSpouseId(p.id) && !isParent && !isChild && p.gender !== person.gender;
+
+      if (isAddingRelative === 'father')
+        return p.gender === 'male' && !isChild && !isSpouse;
+      if (isAddingRelative === 'mother')
+        return p.gender === 'female' && !isChild && !isSpouse;
+      if (isAddingRelative === 'spouse')
+        return (
+          !getSpouseId(p.id) &&
+          !isParent &&
+          !isChild &&
+          p.gender !== person.gender
+        );
       if (isAddingRelative === 'child') {
         if (isParent || isSpouse) return false;
         if (person.gender === 'male' && p.father_id) return false;
@@ -69,7 +102,11 @@ export function Sidebar() {
   }, [isAddingRelative, personId, persons, person, getSpouseId]);
 
   const childParents = useMemo(() => {
-    if (isAddingRelative !== 'child' || !person) return { fatherId: null as string | null, motherId: null as string | null };
+    if (isAddingRelative !== 'child' || !person)
+      return {
+        fatherId: null as string | null,
+        motherId: null as string | null,
+      };
     let fatherId: string | null = person.gender === 'male' ? person.id : null;
     let motherId: string | null = person.gender === 'female' ? person.id : null;
 
@@ -83,16 +120,28 @@ export function Sidebar() {
   }, [isAddingRelative, person, persons, getSpouseId]);
 
   const hasSiblingOrderConflict = useMemo(() => {
-    if (isAddingRelative !== 'child' || selectedExistingPersonId || !currentTree) return false;
+    if (
+      isAddingRelative !== 'child' ||
+      selectedExistingPersonId ||
+      !currentTree
+    )
+      return false;
     const order = normalizeSiblingOrder(newRelativeSiblingOrder);
     return persons.some(
       (p) =>
         p.tree_id === currentTree.id &&
         p.father_id === childParents.fatherId &&
         p.mother_id === childParents.motherId &&
-        normalizeSiblingOrder(p.sibling_order ?? 0) === order,
+        normalizeSiblingOrder(p.sibling_order ?? 0) === order
     );
-  }, [isAddingRelative, selectedExistingPersonId, newRelativeSiblingOrder, childParents, persons, currentTree]);
+  }, [
+    isAddingRelative,
+    selectedExistingPersonId,
+    newRelativeSiblingOrder,
+    childParents,
+    persons,
+    currentTree,
+  ]);
 
   const resetRelativeState = () => {
     setIsAddingRelative(null);
@@ -112,7 +161,9 @@ export function Sidebar() {
       setSelectedPersonId(null);
       setIsDeleteDialogOpen(false);
     } catch (error: unknown) {
-      toast.error(error instanceof Error ? error.message : 'Lỗi khi xóa hồ sơ.');
+      toast.error(
+        error instanceof Error ? error.message : 'Lỗi khi xóa hồ sơ.'
+      );
     } finally {
       setIsDeleting(false);
     }
@@ -138,23 +189,36 @@ export function Sidebar() {
 
     try {
       if (selectedExistingPersonId) {
-        const existingPerson = persons.find((p) => p.id === selectedExistingPersonId);
+        const existingPerson = persons.find(
+          (p) => p.id === selectedExistingPersonId
+        );
         if (!existingPerson) return;
 
         if (isAddingRelative === 'child') {
           await linkChildToParents(existingPerson.id);
         } else {
-          const rel = await personService.linkRelation(isAddingRelative, person.id, existingPerson.id);
+          const rel = await personService.linkRelation(
+            isAddingRelative,
+            person.id,
+            existingPerson.id
+          );
           if (isAddingRelative === 'spouse' && rel) addRelationship(rel);
-          if (isAddingRelative === 'father') updatePersonStore({ ...person, father_id: existingPerson.id });
-          if (isAddingRelative === 'mother') updatePersonStore({ ...person, mother_id: existingPerson.id });
+          if (isAddingRelative === 'father')
+            updatePersonStore({ ...person, father_id: existingPerson.id });
+          if (isAddingRelative === 'mother')
+            updatePersonStore({ ...person, mother_id: existingPerson.id });
         }
         toast.success(`Đã liên kết ${relationshipMap[isAddingRelative]}.`);
       } else {
         const newPersonData = {
           tree_id: currentTree.id,
           full_name: newRelativeName || 'Khuyết Danh',
-          gender: isAddingRelative === 'father' ? 'male' : (isAddingRelative === 'mother' ? 'female' : newRelativeGender),
+          gender:
+            isAddingRelative === 'father'
+              ? 'male'
+              : isAddingRelative === 'mother'
+                ? 'female'
+                : newRelativeGender,
           sibling_order: normalizeSiblingOrder(newRelativeSiblingOrder),
         };
 
@@ -164,10 +228,16 @@ export function Sidebar() {
         if (isAddingRelative === 'child') {
           await linkChildToParents(newPerson.id, newPerson);
         } else {
-          const rel = await personService.linkRelation(isAddingRelative, person.id, newPerson.id);
+          const rel = await personService.linkRelation(
+            isAddingRelative,
+            person.id,
+            newPerson.id
+          );
           if (isAddingRelative === 'spouse' && rel) addRelationship(rel);
-          if (isAddingRelative === 'father') updatePersonStore({ ...person, father_id: newPerson.id });
-          if (isAddingRelative === 'mother') updatePersonStore({ ...person, mother_id: newPerson.id });
+          if (isAddingRelative === 'father')
+            updatePersonStore({ ...person, father_id: newPerson.id });
+          if (isAddingRelative === 'mother')
+            updatePersonStore({ ...person, mother_id: newPerson.id });
         }
 
         setSelectedPersonId(newPerson.id);
@@ -175,7 +245,9 @@ export function Sidebar() {
       }
       resetRelativeState();
     } catch (error: unknown) {
-      toast.error(error instanceof Error ? error.message : 'Lỗi khi thêm người thân.');
+      toast.error(
+        error instanceof Error ? error.message : 'Lỗi khi thêm người thân.'
+      );
     }
   };
 
@@ -190,29 +262,78 @@ export function Sidebar() {
 
   const panelContent = (
     <>
-      <div className="flex items-center justify-between p-6 border-b-2 border-foreground bg-primary/5">
+      <div className="border-foreground bg-primary/5 flex items-center justify-between border-b-2 p-6">
         <div>
-          <h2 className="font-serif font-black text-xl uppercase tracking-widest">{isReadOnly ? 'Thông tin' : 'Cập nhật'}</h2>
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.16em] mt-1">ID: {person.id.split('-')[0]}</p>
+          <h2 className="font-serif text-xl font-black tracking-widest uppercase">
+            {isReadOnly ? 'Thông tin' : 'Cập nhật'}
+          </h2>
+          <p className="text-muted-foreground mt-1 text-xs font-semibold tracking-[0.16em] uppercase">
+            ID: {person.id.split('-')[0]}
+          </p>
         </div>
-        <Button variant="outline" size="icon" onClick={() => setSelectedPersonId(null)} aria-label="Đóng hồ sơ">
-          <X className="w-6 h-6" />
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => setSelectedPersonId(null)}
+          aria-label="Đóng hồ sơ"
+        >
+          <X className="h-6 w-6" />
         </Button>
       </div>
 
-      <ScrollArea className="flex-1 min-h-0">
+      <ScrollArea className="min-h-0 flex-1">
         <div className="p-4">
           <PersonForm key={person.id} person={person} isReadOnly={isReadOnly} />
           {!isReadOnly && (
-            <div className="mt-4 border-t-2 border-foreground pt-4 space-y-4">
-              <h3 className="font-bold text-xs uppercase tracking-[0.16em] text-foreground bg-primary/10 inline-block px-2 py-1">Thêm người thân</h3>
+            <div className="border-foreground mt-4 space-y-4 border-t-2 pt-4">
+              <h3 className="text-foreground bg-primary/10 inline-block px-2 py-1 text-xs font-bold tracking-[0.16em] uppercase">
+                Thêm người thân
+              </h3>
               <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" className="justify-start h-12" onClick={() => setIsAddingRelative('father')} disabled={!!person.father_id}><ArrowUp className="mr-2 h-4 w-4" /> Cha</Button>
-                <Button variant="outline" className="justify-start h-12" onClick={() => setIsAddingRelative('mother')} disabled={!!person.mother_id}><ArrowUp className="mr-2 h-4 w-4" /> Mẹ</Button>
-                <Button variant="outline" className="justify-start h-12" onClick={() => { setIsAddingRelative('spouse'); setNewRelativeGender(person.gender === 'male' ? 'female' : 'male'); }} disabled={!!getSpouseId(person.id)}><Heart className="mr-2 h-4 w-4" /> Vợ/Chồng</Button>
-                <Button variant="outline" className="justify-start h-12" onClick={() => setIsAddingRelative('child')}><ArrowDown className="mr-2 h-4 w-4" /> Con</Button>
+                <Button
+                  variant="outline"
+                  className="h-12 justify-start"
+                  onClick={() => setIsAddingRelative('father')}
+                  disabled={!!person.father_id}
+                >
+                  <ArrowUp className="mr-2 h-4 w-4" /> Cha
+                </Button>
+                <Button
+                  variant="outline"
+                  className="h-12 justify-start"
+                  onClick={() => setIsAddingRelative('mother')}
+                  disabled={!!person.mother_id}
+                >
+                  <ArrowUp className="mr-2 h-4 w-4" /> Mẹ
+                </Button>
+                <Button
+                  variant="outline"
+                  className="h-12 justify-start"
+                  onClick={() => {
+                    setIsAddingRelative('spouse');
+                    setNewRelativeGender(
+                      person.gender === 'male' ? 'female' : 'male'
+                    );
+                  }}
+                  disabled={!!getSpouseId(person.id)}
+                >
+                  <Heart className="mr-2 h-4 w-4" /> Vợ/Chồng
+                </Button>
+                <Button
+                  variant="outline"
+                  className="h-12 justify-start"
+                  onClick={() => setIsAddingRelative('child')}
+                >
+                  <ArrowDown className="mr-2 h-4 w-4" /> Con
+                </Button>
               </div>
-              <Button variant="destructive" className="w-full h-12" onClick={() => setIsDeleteDialogOpen(true)}><Trash2 className="mr-2 h-4 w-4" /> Xóa hồ sơ</Button>
+              <Button
+                variant="destructive"
+                className="h-12 w-full"
+                onClick={() => setIsDeleteDialogOpen(true)}
+              >
+                <Trash2 className="mr-2 h-4 w-4" /> Xóa hồ sơ
+              </Button>
             </div>
           )}
         </div>
@@ -223,35 +344,57 @@ export function Sidebar() {
   return (
     <>
       {isMobile ? (
-        <Sheet open={!!selectedPersonId} onOpenChange={(open) => !open && setSelectedPersonId(null)}>
-          <SheetContent side="right" showCloseButton={false} className="w-[92vw] max-w-[460px] p-0 border-l-2 border-foreground">
-            <div className="h-full bg-background flex flex-col">{panelContent}</div>
+        <Sheet
+          open={!!selectedPersonId}
+          onOpenChange={(open) => !open && setSelectedPersonId(null)}
+        >
+          <SheetContent
+            side="right"
+            showCloseButton={false}
+            className="border-foreground w-[92vw] max-w-[460px] border-l-2 p-0"
+          >
+            <div className="bg-background flex h-full flex-col">
+              {panelContent}
+            </div>
           </SheetContent>
         </Sheet>
       ) : (
-        <motion.div 
+        <motion.div
           initial={{ x: '100%' }}
           animate={{ x: 0 }}
           exit={{ x: '100%' }}
           transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
-          className="w-[460px] h-full bg-background border-l-2 border-foreground flex flex-col z-50 absolute right-0 top-0 overflow-hidden"
+          className="bg-background border-foreground absolute top-0 right-0 z-50 flex h-full w-[460px] flex-col overflow-hidden border-l-2"
         >
           {panelContent}
         </motion.div>
       )}
 
-      <Dialog open={!!isAddingRelative} onOpenChange={(v) => !v && resetRelativeState()}>
+      <Dialog
+        open={!!isAddingRelative}
+        onOpenChange={(v) => !v && resetRelativeState()}
+      >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Thêm {isAddingRelative ? relationshipMap[isAddingRelative] : ''}</DialogTitle>
+            <DialogTitle>
+              Thêm {isAddingRelative ? relationshipMap[isAddingRelative] : ''}
+            </DialogTitle>
           </DialogHeader>
 
           <div className="space-y-3 p-6">
             {availablePersons.length > 0 && (
               <div className="space-y-2">
-                <Label className="text-xs font-semibold uppercase tracking-[0.16em]">Chọn từ danh sách</Label>
+                <Label className="text-xs font-semibold tracking-[0.16em] uppercase">
+                  Chọn từ danh sách
+                </Label>
                 <Select
-                  options={[{ value: '', label: '-- Chọn người --' }, ...availablePersons.map((p) => ({ value: p.id, label: p.full_name }))]}
+                  options={[
+                    { value: '', label: '-- Chọn người --' },
+                    ...availablePersons.map((p) => ({
+                      value: p.id,
+                      label: p.full_name,
+                    })),
+                  ]}
                   value={selectedExistingPersonId}
                   onChange={(val) => {
                     setSelectedExistingPersonId(val);
@@ -264,8 +407,18 @@ export function Sidebar() {
             )}
 
             <div className="grid grid-cols-3 gap-4">
-              <div className={((isAddingRelative === 'child' || isAddingRelative === 'spouse') && !selectedExistingPersonId) ? 'col-span-2 space-y-2' : 'col-span-3 space-y-2'}>
-                <Label className="text-xs font-semibold uppercase tracking-[0.16em]">Họ và Tên</Label>
+              <div
+                className={
+                  (isAddingRelative === 'child' ||
+                    isAddingRelative === 'spouse') &&
+                  !selectedExistingPersonId
+                    ? 'col-span-2 space-y-2'
+                    : 'col-span-3 space-y-2'
+                }
+              >
+                <Label className="text-xs font-semibold tracking-[0.16em] uppercase">
+                  Họ và Tên
+                </Label>
                 <Input
                   value={newRelativeName}
                   onChange={(e) => {
@@ -275,38 +428,75 @@ export function Sidebar() {
                   placeholder="Nhập tên"
                 />
               </div>
-              {(isAddingRelative === 'child' || isAddingRelative === 'spouse') && !selectedExistingPersonId && (
-                <div className="col-span-1 space-y-2">
-                  <Label className="text-xs font-semibold uppercase tracking-[0.16em]">Giới Tính</Label>
-                  <Select
-                    options={isAddingRelative === 'spouse' 
-                      ? [{ value: person.gender === 'male' ? 'female' : 'male', label: person.gender === 'male' ? 'Nữ' : 'Nam' }]
-                      : [{ value: 'male', label: 'Nam' }, { value: 'female', label: 'Nữ' }]
-                    }
-                    value={newRelativeGender}
-                    onChange={(val) => setNewRelativeGender(val as 'male' | 'female')}
-                    disabled={isAddingRelative === 'spouse'}
-                  />
-                </div>
-              )}
+              {(isAddingRelative === 'child' ||
+                isAddingRelative === 'spouse') &&
+                !selectedExistingPersonId && (
+                  <div className="col-span-1 space-y-2">
+                    <Label className="text-xs font-semibold tracking-[0.16em] uppercase">
+                      Giới Tính
+                    </Label>
+                    <Select
+                      options={
+                        isAddingRelative === 'spouse'
+                          ? [
+                              {
+                                value:
+                                  person.gender === 'male' ? 'female' : 'male',
+                                label: person.gender === 'male' ? 'Nữ' : 'Nam',
+                              },
+                            ]
+                          : [
+                              { value: 'male', label: 'Nam' },
+                              { value: 'female', label: 'Nữ' },
+                            ]
+                      }
+                      value={newRelativeGender}
+                      onChange={(val) =>
+                        setNewRelativeGender(val as 'male' | 'female')
+                      }
+                      disabled={isAddingRelative === 'spouse'}
+                    />
+                  </div>
+                )}
             </div>
 
             {!selectedExistingPersonId && (
               <div className="space-y-2">
-                <Label className="text-xs font-semibold uppercase tracking-[0.16em]">Thứ Tự Sinh</Label>
+                <Label className="text-xs font-semibold tracking-[0.16em] uppercase">
+                  Thứ Tự Sinh
+                </Label>
                 <Input
                   type="number"
                   min={0}
                   value={newRelativeSiblingOrder}
-                  onChange={(e) => setNewRelativeSiblingOrder(normalizeSiblingOrder(Number(e.target.value)))}
+                  onChange={(e) =>
+                    setNewRelativeSiblingOrder(
+                      normalizeSiblingOrder(Number(e.target.value))
+                    )
+                  }
                 />
               </div>
             )}
           </div>
 
           <DialogFooter>
-            <Button variant="outline" className="flex-1 h-12" onClick={resetRelativeState}>Hủy</Button>
-            <Button className="flex-1 h-12" onClick={submitAddRelative} disabled={(!newRelativeName && !selectedExistingPersonId) || hasSiblingOrderConflict}>Lưu</Button>
+            <Button
+              variant="outline"
+              className="h-12 flex-1"
+              onClick={resetRelativeState}
+            >
+              Hủy
+            </Button>
+            <Button
+              className="h-12 flex-1"
+              onClick={submitAddRelative}
+              disabled={
+                (!newRelativeName && !selectedExistingPersonId) ||
+                hasSiblingOrderConflict
+              }
+            >
+              Lưu
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -315,15 +505,35 @@ export function Sidebar() {
         <DialogContent>
           <DialogHeader variant="destructive">
             <DialogTitle>Xóa hồ sơ</DialogTitle>
-            <DialogDescription>Hành động này không thể hoàn tác</DialogDescription>
+            <DialogDescription>
+              Hành động này không thể hoàn tác
+            </DialogDescription>
           </DialogHeader>
           <div className="p-6">
-            <p className="text-sm font-medium">Bạn có chắc chắn muốn xóa <span className="font-bold">{person.full_name}</span>?</p>
+            <p className="text-sm font-medium">
+              Bạn có chắc chắn muốn xóa{' '}
+              <span className="font-bold">{person.full_name}</span>?
+            </p>
           </div>
           <DialogFooter>
-            <Button variant="outline" className="flex-1 h-12" onClick={() => setIsDeleteDialogOpen(false)}>Hủy</Button>
-            <Button variant="destructive" className="flex-1 h-12" onClick={handleDelete} disabled={isDeleting}>
-              {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Xóa'}
+            <Button
+              variant="outline"
+              className="h-12 flex-1"
+              onClick={() => setIsDeleteDialogOpen(false)}
+            >
+              Hủy
+            </Button>
+            <Button
+              variant="destructive"
+              className="h-12 flex-1"
+              onClick={handleDelete}
+              disabled={isDeleting}
+            >
+              {isDeleting ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                'Xóa'
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

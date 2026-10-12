@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { cn } from "@/lib/utils";
+import * as React from 'react';
+import { cn } from '@/lib/utils';
 
 interface OTPInputProps {
   value: string;
@@ -27,14 +27,17 @@ export function OTPInput({
   }, [length]);
 
   // Xử lý khi thay đổi giá trị trong một ô.
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
     const val = e.target.value;
     if (!/^\d*$/.test(val)) return; // Chỉ cho phép nhập số.
 
-    const newValue = value.split("");
+    const newValue = value.split('');
     // Lấy ký tự cuối cùng nếu người dùng nhập đè.
     newValue[index] = val.slice(-1);
-    const combinedValue = newValue.join("");
+    const combinedValue = newValue.join('');
     onChange(combinedValue);
 
     // Tự động chuyển focus sang ô tiếp theo.
@@ -44,8 +47,11 @@ export function OTPInput({
   };
 
   // Xử lý các phím đặc biệt (Backspace).
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
-    if (e.key === "Backspace" && !value[index] && index > 0) {
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    if (e.key === 'Backspace' && !value[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
   };
@@ -53,7 +59,7 @@ export function OTPInput({
   // Xử lý khi paste mã vào ô.
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData("text").slice(0, length);
+    const pastedData = e.clipboardData.getData('text').slice(0, length);
     if (!/^\d+$/.test(pastedData)) return;
     onChange(pastedData);
     // Focus vào ô cuối cùng hoặc ô tiếp theo sau mã paste.
@@ -62,23 +68,28 @@ export function OTPInput({
   };
 
   return (
-    <div className={cn("flex gap-3 justify-center", className)} onPaste={handlePaste}>
+    <div
+      className={cn('flex justify-center gap-3', className)}
+      onPaste={handlePaste}
+    >
       {Array.from({ length }).map((_, i) => (
         <input
           key={i}
-          ref={(el) => { inputRefs.current[i] = el; }}
+          ref={(el) => {
+            inputRefs.current[i] = el;
+          }}
           type="text"
           inputMode="numeric"
           pattern="\d*"
           maxLength={1}
-          value={value[i] || ""}
+          value={value[i] || ''}
           onChange={(e) => handleChange(e, i)}
           onKeyDown={(e) => handleKeyDown(e, i)}
           disabled={disabled}
           className={cn(
-            "size-12 md:size-14 text-center text-xl font-black rounded-none border-4 border-foreground bg-background shadow-brutal-md transition-all",
-            "focus:outline-none focus:bg-primary focus:text-primary-foreground focus:translate-x-[2px] focus:translate-y-[2px] focus:shadow-none",
-            "disabled:opacity-50 disabled:cursor-not-allowed"
+            'border-foreground bg-background shadow-brutal-md size-12 rounded-none border-4 text-center text-xl font-black transition-all md:size-14',
+            'focus:bg-primary focus:text-primary-foreground focus:translate-x-[2px] focus:translate-y-[2px] focus:shadow-none focus:outline-none',
+            'disabled:cursor-not-allowed disabled:opacity-50'
           )}
         />
       ))}

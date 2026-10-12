@@ -1,8 +1,8 @@
-import * as React from "react"
-import { Button as ButtonPrimitive } from "@base-ui/react/button"
-import { cva, type VariantProps } from "class-variance-authority"
+import * as React from 'react';
+import { Button as ButtonPrimitive } from '@base-ui/react/button';
+import { cva, type VariantProps } from 'class-variance-authority';
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
   "group/button inline-flex cursor-pointer shrink-0 items-center justify-center gap-2 rounded-none border-2 border-foreground bg-clip-padding text-sm font-bold uppercase tracking-widest transition-all outline-none select-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
@@ -10,46 +10,57 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "border-primary bg-primary text-primary-foreground hover:bg-foreground hover:border-foreground hover:text-background",
+          'border-primary bg-primary text-primary-foreground hover:bg-foreground hover:border-foreground hover:text-background',
         outline:
-          "bg-background text-foreground hover:bg-foreground hover:text-background",
+          'bg-background text-foreground hover:bg-foreground hover:text-background',
         secondary:
-          "border-secondary bg-secondary text-secondary-foreground hover:bg-foreground hover:border-foreground hover:text-background",
+          'border-secondary bg-secondary text-secondary-foreground hover:bg-foreground hover:border-foreground hover:text-background',
         ghost:
-          "border-transparent bg-transparent text-foreground hover:border-foreground hover:bg-foreground hover:text-background",
+          'border-transparent bg-transparent text-foreground hover:border-foreground hover:bg-foreground hover:text-background',
         destructive:
-          "border-destructive text-destructive bg-background hover:bg-destructive hover:text-destructive-foreground",
-        link:
-          "h-auto border-0 bg-transparent px-0 text-primary underline-offset-4 hover:border-0 hover:bg-transparent hover:text-primary hover:underline",
+          'border-destructive text-destructive bg-background hover:bg-destructive hover:text-destructive-foreground',
+        link: 'h-auto border-0 bg-transparent px-0 text-primary underline-offset-4 hover:border-0 hover:bg-transparent hover:text-primary hover:underline',
       },
       size: {
-        default: "h-12 px-6",
-        xs: "h-8 px-3 text-[10px]",
-        sm: "h-10 px-4",
-        lg: "h-14 px-8 text-base",
-        icon: "size-12",
-        "icon-xs": "size-8",
-        "icon-sm": "size-10",
-        "icon-lg": "size-14",
+        default: 'h-12 px-6',
+        xs: 'h-8 px-3 text-[10px]',
+        sm: 'h-10 px-4',
+        lg: 'h-14 px-8 text-base',
+        icon: 'size-12',
+        'icon-xs': 'size-8',
+        'icon-sm': 'size-10',
+        'icon-lg': 'size-14',
       },
       effect: {
-        none: "",
+        none: '',
         raised:
-          "shadow-brutal-md hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-brutal-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
-        "primary-raised":
-          "shadow-brutal-primary-md hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-brutal-primary-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
+          'shadow-brutal-md hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-brutal-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none',
+        'primary-raised':
+          'shadow-brutal-primary-md hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-brutal-primary-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none',
       },
     },
     defaultVariants: {
-      variant: "default",
-      size: "default",
-      effect: "none",
+      variant: 'default',
+      size: 'default',
+      effect: 'none',
     },
   }
-)
+);
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonPrimitive.Props & VariantProps<typeof buttonVariants>>(
-  ({ className, variant = "default", size = "default", effect = "none", ...props }, ref) => {
+const Button = React.forwardRef<
+  HTMLButtonElement,
+  ButtonPrimitive.Props & VariantProps<typeof buttonVariants>
+>(
+  (
+    {
+      className,
+      variant = 'default',
+      size = 'default',
+      effect = 'none',
+      ...props
+    },
+    ref
+  ) => {
     return (
       <ButtonPrimitive
         ref={ref}
@@ -57,9 +68,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonPrimitive.Props & Varia
         className={cn(buttonVariants({ variant, size, effect, className }))}
         {...props}
       />
-    )
+    );
   }
-)
-Button.displayName = "Button"
+);
+Button.displayName = 'Button';
 
-export { Button, buttonVariants }
+export { Button, buttonVariants };

@@ -16,7 +16,9 @@ export async function middleware(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+          cookiesToSet.forEach(({ name, value }) =>
+            request.cookies.set(name, value)
+          );
           response = NextResponse.next({
             request,
           });
@@ -33,15 +35,18 @@ export async function middleware(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
   const isAuthPage = pathname.startsWith('/login');
-  const isPublicPage = pathname.startsWith('/share') || 
-                       pathname.startsWith('/api') ||
-                       /\.(?:png|jpg|jpeg|svg|gif|ico|webp)$/i.test(pathname);
+  const isPublicPage =
+    pathname.startsWith('/share') ||
+    pathname.startsWith('/api') ||
+    /\.(?:png|jpg|jpeg|svg|gif|ico|webp)$/i.test(pathname);
 
   if (!user && !isAuthPage && !isPublicPage) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     const redirectResponse = NextResponse.redirect(url);
-    response.cookies.getAll().forEach((c) => redirectResponse.cookies.set(c.name, c.value));
+    response.cookies
+      .getAll()
+      .forEach((c) => redirectResponse.cookies.set(c.name, c.value));
     return redirectResponse;
   }
 

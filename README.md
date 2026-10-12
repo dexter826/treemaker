@@ -48,27 +48,32 @@
 ### Các bước cài đặt
 
 1. **Tải mã nguồn:**
+
    ```bash
    git clone https://github.com/dexter826/treemaker.git
    cd treemaker
    ```
 
 2. **Cài đặt thư viện:**
+
    ```bash
    npm install
    ```
 
 3. **Cấu hình biến môi trường:**
    Tạo file `.env` từ file mẫu:
+
    ```bash
    cp .env.example .env
    ```
+
    Cập nhật các thông tin kết nối cần thiết:
-   | Biến | Mô tả |
-   | --- | --- |
-   | `NEXT_PUBLIC_SUPABASE_URL` | URL dự án trên Supabase |
-   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public Anon Key từ Supabase |
-   | `OPENROUTER_API_KEY` | Khóa API từ [OpenRouter](https://openrouter.ai/keys) |
+
+   | Biến                            | Mô tả                                                |
+   | ------------------------------- | ---------------------------------------------------- |
+   | `NEXT_PUBLIC_SUPABASE_URL`      | URL dự án trên Supabase                              |
+   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public Anon Key từ Supabase                          |
+   | `OPENROUTER_API_KEY`            | Khóa API từ [OpenRouter](https://openrouter.ai/keys) |
 
 4. **Khởi tạo cơ sở dữ liệu:**
    Chạy lần lượt các tệp SQL trong thư mục `supabase/migrations/` trên giao diện SQL Editor của Supabase để tạo bảng và chính sách bảo mật RLS.

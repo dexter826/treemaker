@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import Cropper from 'react-easy-crop';
@@ -49,24 +49,37 @@ async function getCroppedImg(
   );
 
   return new Promise((resolve) => {
-    canvas.toBlob((blob) => {
-      if (!blob) throw new Error('Canvas is empty');
-      const file = new File([blob], 'avatar.jpg', { type: 'image/jpeg' });
-      resolve(file);
-    }, 'image/jpeg', 0.9);
+    canvas.toBlob(
+      (blob) => {
+        if (!blob) throw new Error('Canvas is empty');
+        const file = new File([blob], 'avatar.jpg', { type: 'image/jpeg' });
+        resolve(file);
+      },
+      'image/jpeg',
+      0.9
+    );
   });
 }
 
-export function AvatarUpload({ currentUrl, onFileSelect, disabled, error }: AvatarUploadProps) {
+export function AvatarUpload({
+  currentUrl,
+  onFileSelect,
+  disabled,
+  error,
+}: AvatarUploadProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showCropModal, setShowCropModal] = useState(false);
   const [srcForCrop, setSrcForCrop] = useState<string | null>(null);
   const [isCleared, setIsCleared] = useState(false);
-  
 
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-  const [completedCrop, setCompletedCrop] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
+  const [completedCrop, setCompletedCrop] = useState<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  } | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const blobUrlsRef = useRef<Set<string>>(new Set());
@@ -74,7 +87,7 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled, error }: Avat
   useEffect(() => {
     const urls = blobUrlsRef.current;
     return () => {
-      urls.forEach(url => URL.revokeObjectURL(url));
+      urls.forEach((url) => URL.revokeObjectURL(url));
       urls.clear();
     };
   }, []);
@@ -102,9 +115,15 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled, error }: Avat
     setIsCleared(false);
   };
 
-  const onCropComplete = useCallback((_croppedArea: unknown, pixelCrop: { x: number; y: number; width: number; height: number }) => {
-    setCompletedCrop(pixelCrop);
-  }, []);
+  const onCropComplete = useCallback(
+    (
+      _croppedArea: unknown,
+      pixelCrop: { x: number; y: number; width: number; height: number }
+    ) => {
+      setCompletedCrop(pixelCrop);
+    },
+    []
+  );
 
   const handleCropConfirm = async () => {
     if (!srcForCrop || !completedCrop) return;
@@ -158,51 +177,78 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled, error }: Avat
   const displayUrl = previewUrl || (!isCleared ? currentUrl : null);
 
   return (
-    <div className="space-y-2 flex flex-col items-center">
+    <div className="flex flex-col items-center space-y-2">
       <div
         onClick={() => {
           if (!disabled) fileInputRef.current?.click();
         }}
-        className={`relative group w-32 h-32 border-2 ${error ? 'border-destructive shadow-brutal-sm' : 'border-foreground shadow-brutal-md'} bg-muted overflow-hidden cursor-pointer transition-all hover:border-primary ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className={`group relative h-32 w-32 border-2 ${error ? 'border-destructive shadow-brutal-sm' : 'border-foreground shadow-brutal-md'} bg-muted hover:border-primary cursor-pointer overflow-hidden transition-all ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
       >
         {displayUrl ? (
           <>
-            <Image src={displayUrl} alt="Avatar Preview" fill className="object-cover" />
+            <Image
+              src={displayUrl}
+              alt="Avatar Preview"
+              fill
+              className="object-cover"
+            />
             {!disabled && (
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                <Upload className="text-white h-6 w-6" />
+              <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+                <Upload className="h-6 w-6 text-white" />
               </div>
             )}
           </>
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground gap-2">
+          <div className="text-muted-foreground flex h-full w-full flex-col items-center justify-center gap-2">
             <User className="h-10 w-10" />
-            <span className="text-[8px] font-bold uppercase tracking-tighter">Tải ảnh lên</span>
+            <span className="text-[8px] font-bold tracking-tighter uppercase">
+              Tải ảnh lên
+            </span>
           </div>
         )}
 
         {displayUrl && !disabled && (
-          <Button variant="outline" size="icon-xs" onClick={clearImage} className="absolute top-1 right-1 z-10 bg-foreground text-background hover:bg-primary hover:text-primary-foreground">
+          <Button
+            variant="outline"
+            size="icon-xs"
+            onClick={clearImage}
+            className="bg-foreground text-background hover:bg-primary hover:text-primary-foreground absolute top-1 right-1 z-10"
+          >
             <X className="h-3 w-3" />
           </Button>
         )}
       </div>
 
-      {error && <p className="text-[10px] text-destructive font-bold uppercase">{error}</p>}
+      {error && (
+        <p className="text-destructive text-[10px] font-bold uppercase">
+          {error}
+        </p>
+      )}
 
-      <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" disabled={disabled} />
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept="image/*"
+        className="hidden"
+        disabled={disabled}
+      />
 
       {showCropModal && srcForCrop && (
-        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
-          <div className="bg-background p-6 rounded-none max-w-md w-full">
-            <div className="flex items-center justify-between mb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+          <div className="bg-background w-full max-w-md rounded-none p-6">
+            <div className="mb-4 flex items-center justify-between">
               <h3 className="font-bold">Cắt ảnh</h3>
-              <Button variant="outline" size="icon-sm" onClick={handleCropCancel}>
+              <Button
+                variant="outline"
+                size="icon-sm"
+                onClick={handleCropCancel}
+              >
                 <X className="h-5 w-5" />
               </Button>
             </div>
 
-            <div className="relative w-full aspect-square bg-muted rounded-none overflow-hidden mb-4">
+            <div className="bg-muted relative mb-4 aspect-square w-full overflow-hidden rounded-none">
               <Cropper
                 image={srcForCrop}
                 crop={crop}
@@ -228,15 +274,23 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled, error }: Avat
                   step={0.1}
                   value={zoom}
                   onChange={(e) => setZoom(Number(e.target.value))}
-                  className="w-full h-2 bg-muted rounded-none border-2 border-foreground appearance-none cursor-pointer accent-primary"
+                  className="bg-muted border-foreground accent-primary h-2 w-full cursor-pointer appearance-none rounded-none border-2"
                 />
               </div>
 
               <div className="flex gap-3">
-                <Button variant="outline" onClick={handleCropCancel} className="flex-1 h-12">
+                <Button
+                  variant="outline"
+                  onClick={handleCropCancel}
+                  className="h-12 flex-1"
+                >
                   Hủy
                 </Button>
-                <Button onClick={handleCropConfirm} className="flex-1 h-12" disabled={!completedCrop}>
+                <Button
+                  onClick={handleCropConfirm}
+                  className="h-12 flex-1"
+                  disabled={!completedCrop}
+                >
                   Lưu
                 </Button>
               </div>

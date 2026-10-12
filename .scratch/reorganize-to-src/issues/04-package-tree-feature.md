@@ -14,6 +14,7 @@
 ## Answer
 
 Đã hoàn thành đóng gói Feature Tree thành Deep Module:
+
 - `src/features/tree/` (components, canvas, parts, modals, hooks, services, validations, utils, constants)
 - `src/features/tree/index.ts` (public entry point)
 - Feature Tree giao tiếp với Person và AI hoàn toàn thông qua `@/features/person` và `@/features/ai`.

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useEffect } from 'react';
 import { ReactFlowProvider } from '@xyflow/react';
@@ -37,7 +37,8 @@ export default function TreeClient({ treeId }: { treeId: string }) {
       setShowCardActions(null);
 
       try {
-        const { tree, persons, relationships } = await treeService.getTreeData(treeId);
+        const { tree, persons, relationships } =
+          await treeService.getTreeData(treeId);
         setCurrentTree(tree);
         setPersons(persons);
         setRelationships(relationships);
@@ -47,10 +48,9 @@ export default function TreeClient({ treeId }: { treeId: string }) {
         const isOwner = currentUserId === tree.owner_id;
         const canEdit = tree.share_permission === 'edit';
         setIsReadOnly(!isOwner && !canEdit);
-
-
       } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : 'Lỗi truy xuất hệ thống.';
+        const message =
+          error instanceof Error ? error.message : 'Lỗi truy xuất hệ thống.';
         toast.error(message);
       } finally {
         setIsLoading(false);
@@ -58,22 +58,45 @@ export default function TreeClient({ treeId }: { treeId: string }) {
     };
 
     loadTree();
-  }, [treeId, setCurrentTree, setIsReadOnly, setIsLoading, setPersons, setRelationships, setSelectedPersonId, setShowCardActions, setViewPersonId]);
+  }, [
+    treeId,
+    setCurrentTree,
+    setIsReadOnly,
+    setIsLoading,
+    setPersons,
+    setRelationships,
+    setSelectedPersonId,
+    setShowCardActions,
+    setViewPersonId,
+  ]);
 
   return (
     <>
       <SplashScreen isVisible={isLoading} />
-      
+
       {!isLoading && (
-        <div className="w-full h-dvh flex relative overflow-hidden bg-background">
-          <div className="pointer-events-none absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(currentColor 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
+        <div className="bg-background relative flex h-dvh w-full overflow-hidden">
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage:
+                'radial-gradient(currentColor 1px, transparent 1px)',
+              backgroundSize: '20px 20px',
+            }}
+          />
           <ReactFlowProvider>
             <TreeToolbar />
             <FamilyTreeCanvas />
             <Sidebar />
             <ViewPersonModal />
             <TreeChatbot />
-            {currentTree && <LegacyBookTemplate tree={currentTree} persons={persons} relationships={relationships} />}
+            {currentTree && (
+              <LegacyBookTemplate
+                tree={currentTree}
+                persons={persons}
+                relationships={relationships}
+              />
+            )}
           </ReactFlowProvider>
         </div>
       )}

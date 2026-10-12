@@ -15,6 +15,7 @@
 ## Answer
 
 Đã hoàn thành di chuyển tầng Shared vào `src/`:
+
 - `src/components/ui/` (toàn bộ shadcn UI primitives)
 - `src/types/index.ts`
 - `src/hooks/use-mobile.ts`

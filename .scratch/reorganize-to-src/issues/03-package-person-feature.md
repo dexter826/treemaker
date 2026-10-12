@@ -14,6 +14,7 @@
 ## Answer
 
 Đã hoàn thành đóng gói Feature Person thành Deep Module:
+
 - `src/features/person/` (components, services, validations, utils)
 - `src/features/person/index.ts` (public entry point)
 - Cập nhật các module tiêu thụ (`person-node`, `sidebar`, `tree-toolbar`, `tree-client`, `tree.service`) import qua `@/features/person`.

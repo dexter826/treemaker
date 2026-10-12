@@ -15,6 +15,7 @@
 ## Answer
 
 Đã hoàn thành di chuyển toàn bộ App Router vào `src/app/` và dọn dẹp hệ thống:
+
 - `src/app/` (toàn bộ pages, layouts, routing handlers, globals.css)
 - `src/middleware.ts`
 - Xóa bỏ hoàn toàn các thư mục rỗng `components/`, `app/`, `lib/`, `dashboard/` ở root.

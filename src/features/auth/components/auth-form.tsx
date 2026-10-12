@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
@@ -81,46 +81,66 @@ export function AuthForm() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto relative">
-      <div className="absolute inset-0 translate-x-2 translate-y-2 bg-primary/10 border-2 border-foreground -z-10" />
+    <div className="relative mx-auto w-full max-w-md">
+      <div className="bg-primary/10 border-foreground absolute inset-0 -z-10 translate-x-2 translate-y-2 border-2" />
 
-      <div className="border-2 border-foreground bg-background p-6 lg:p-8 relative">
-        <div className="mb-8 text-center border-b-2 border-foreground/10 pb-5">
+      <div className="border-foreground bg-background relative border-2 p-6 lg:p-8">
+        <div className="border-foreground/10 mb-8 border-b-2 pb-5 text-center">
           {mode === 'forgot' && (
             <button
               type="button"
               onClick={() => handleSwitchMode('login')}
-              className="absolute left-6 top-8 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              className="text-muted-foreground hover:text-foreground absolute top-8 left-6 cursor-pointer transition-colors"
               title="Quay lại"
             >
               <ArrowLeft size={20} />
             </button>
           )}
-          <h2 className="text-3xl font-serif font-bold text-foreground mb-1 tracking-wide">
-            {mode === 'signup' ? 'Tạo Tài Khoản' : mode === 'forgot' ? 'Khôi Phục' : 'Đăng Nhập'}
+          <h2 className="text-foreground mb-1 font-serif text-3xl font-bold tracking-wide">
+            {mode === 'signup'
+              ? 'Tạo Tài Khoản'
+              : mode === 'forgot'
+                ? 'Khôi Phục'
+                : 'Đăng Nhập'}
           </h2>
-          <p className="text-xs font-semibold text-muted-foreground tracking-wide">
-            {mode === 'forgot' ? 'Nhập email để nhận hướng dẫn' : 'Hệ thống lưu trữ gia phả'}
+          <p className="text-muted-foreground text-xs font-semibold tracking-wide">
+            {mode === 'forgot'
+              ? 'Nhập email để nhận hướng dẫn'
+              : 'Hệ thống lưu trữ gia phả'}
           </p>
         </div>
 
         <form onSubmit={handleSubmit(handleAuth)} className="space-y-5">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-xs tracking-wide font-semibold text-foreground">Email</Label>
+            <Label
+              htmlFor="email"
+              className="text-foreground text-xs font-semibold tracking-wide"
+            >
+              Email
+            </Label>
             <Input
               id="email"
               type="email"
               placeholder="name@example.com"
               {...register('email')}
               error={!!errors.email}
-              className="font-semibold px-4 bg-transparent"
+              className="bg-transparent px-4 font-semibold"
             />
-            {errors.email && <p className="text-[10px] text-destructive font-bold uppercase">{errors.email.message}</p>}
+            {errors.email && (
+              <p className="text-destructive text-[10px] font-bold uppercase">
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
           {mode !== 'forgot' && (
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-xs tracking-wide font-semibold text-foreground">Mật khẩu</Label>
+              <Label
+                htmlFor="password"
+                className="text-foreground text-xs font-semibold tracking-wide"
+              >
+                Mật khẩu
+              </Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -128,24 +148,35 @@ export function AuthForm() {
                   placeholder="••••••••"
                   {...register('password')}
                   error={!!errors.password}
-                  className="font-semibold pl-4 pr-10 bg-transparent"
+                  className="bg-transparent pr-10 pl-4 font-semibold"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors focus:outline-none cursor-pointer"
-                  aria-label={showPassword ? "Ẩn mật khẩu" : "Hiển thị mật khẩu"}
+                  className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer transition-colors focus:outline-none"
+                  aria-label={
+                    showPassword ? 'Ẩn mật khẩu' : 'Hiển thị mật khẩu'
+                  }
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
-              {errors.password && <p className="text-[10px] text-destructive font-bold uppercase">{errors.password.message}</p>}
+              {errors.password && (
+                <p className="text-destructive text-[10px] font-bold uppercase">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
           )}
 
           {mode === 'signup' && (
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword" className="text-xs tracking-wide font-semibold text-foreground">Xác nhận mật khẩu</Label>
+              <Label
+                htmlFor="confirmPassword"
+                className="text-foreground text-xs font-semibold tracking-wide"
+              >
+                Xác nhận mật khẩu
+              </Label>
               <div className="relative">
                 <Input
                   id="confirmPassword"
@@ -153,18 +184,28 @@ export function AuthForm() {
                   placeholder="••••••••"
                   {...register('confirmPassword')}
                   error={!!errors.confirmPassword}
-                  className="font-semibold pl-4 pr-10 bg-transparent"
+                  className="bg-transparent pr-10 pl-4 font-semibold"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors focus:outline-none cursor-pointer"
-                  aria-label={showConfirmPassword ? "Ẩn mật khẩu" : "Hiển thị mật khẩu"}
+                  className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer transition-colors focus:outline-none"
+                  aria-label={
+                    showConfirmPassword ? 'Ẩn mật khẩu' : 'Hiển thị mật khẩu'
+                  }
                 >
-                  {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showConfirmPassword ? (
+                    <EyeOff size={18} />
+                  ) : (
+                    <Eye size={18} />
+                  )}
                 </button>
               </div>
-              {errors.confirmPassword && <p className="text-[10px] text-destructive font-bold uppercase">{errors.confirmPassword.message}</p>}
+              {errors.confirmPassword && (
+                <p className="text-destructive text-[10px] font-bold uppercase">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
             </div>
           )}
 
@@ -183,11 +224,16 @@ export function AuthForm() {
                     />
                   )}
                 />
-                <Label htmlFor="rememberMe" className="text-xs font-semibold cursor-pointer">Ghi nhớ đăng nhập</Label>
+                <Label
+                  htmlFor="rememberMe"
+                  className="cursor-pointer text-xs font-semibold"
+                >
+                  Ghi nhớ đăng nhập
+                </Label>
               </div>
-              <Button 
-                type="button" 
-                variant="link" 
+              <Button
+                type="button"
+                variant="link"
                 className="h-auto px-0 text-xs font-semibold"
                 onClick={() => handleSwitchMode('forgot')}
               >
@@ -198,18 +244,26 @@ export function AuthForm() {
 
           <Button className="mt-2 h-14 w-full" type="submit" disabled={loading}>
             {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-            {mode === 'signup' ? 'Đăng ký' : mode === 'forgot' ? 'Gửi yêu cầu' : 'Đăng nhập'}
+            {mode === 'signup'
+              ? 'Đăng ký'
+              : mode === 'forgot'
+                ? 'Gửi yêu cầu'
+                : 'Đăng nhập'}
           </Button>
 
           {mode !== 'forgot' && (
-            <div className="pt-5 border-t-2 border-foreground/10 text-center">
-              <Button 
-                type="button" 
-                variant="link" 
-                className="h-auto px-0 text-xs" 
-                onClick={() => handleSwitchMode(mode === 'signup' ? 'login' : 'signup')}
+            <div className="border-foreground/10 border-t-2 pt-5 text-center">
+              <Button
+                type="button"
+                variant="link"
+                className="h-auto px-0 text-xs"
+                onClick={() =>
+                  handleSwitchMode(mode === 'signup' ? 'login' : 'signup')
+                }
               >
-                {mode === 'signup' ? 'Đã có tài khoản? Đăng nhập' : 'Chưa có tài khoản? Tạo mới'}
+                {mode === 'signup'
+                  ? 'Đã có tài khoản? Đăng nhập'
+                  : 'Chưa có tài khoản? Tạo mới'}
               </Button>
             </div>
           )}

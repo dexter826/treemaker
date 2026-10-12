@@ -3,7 +3,17 @@ import { FamilyTree, TreeData } from '@/types';
 
 const mapTreeError = (error: unknown): Error => {
   const raw = error as { message?: string };
-  return error instanceof Error ? error : new Error(String(raw?.message ?? 'Đã xảy ra lỗi cây gia phả.'));
+  const message = String(
+    raw?.message ?? (error instanceof Error ? error.message : '')
+  );
+  if (message.toLowerCase().includes('failed to fetch')) {
+    return new Error(
+      'Không thể kết nối đến máy chủ. Vui lòng kiểm tra đường truyền mạng và thử lại.'
+    );
+  }
+  return error instanceof Error
+    ? error
+    : new Error(message || 'Đã xảy ra lỗi cây gia phả.');
 };
 
 const isFamilyTree = (value: unknown): value is FamilyTree => {
@@ -21,7 +31,11 @@ export const treeService = {
   async getTreeData(treeId: string): Promise<TreeData> {
     const [treeRes, personsRes, relsRes] = await Promise.all([
       supabase.from('family_trees').select('*').eq('id', treeId).single(),
-      supabase.from('persons').select('*').eq('tree_id', treeId).order('sibling_order', { ascending: true }),
+      supabase
+        .from('persons')
+        .select('*')
+        .eq('tree_id', treeId)
+        .order('sibling_order', { ascending: true }),
       supabase.from('relationships').select('*').eq('tree_id', treeId),
     ]);
 
@@ -48,21 +62,28 @@ export const treeService = {
   },
 
   async getById(treeId: string): Promise<FamilyTree> {
-    const { data, error } = await supabase.from('family_trees').select('*').eq('id', treeId).single();
+    const { data, error } = await supabase
+      .from('family_trees')
+      .select('*')
+      .eq('id', treeId)
+      .single();
 
     if (error) throw mapTreeError(error);
     return data;
   },
 
   async getByShareToken(token: string): Promise<FamilyTree | null> {
-    const { data, error } = await supabase.from('family_trees').select('*').eq('share_token', token).single();
+    const { data, error } = await supabase
+      .from('family_trees')
+      .select('*')
+      .eq('share_token', token)
+      .single();
 
     if (error || !data) {
       return null;
     }
     return data;
   },
-
 
   async create(userId: string, name: string): Promise<FamilyTree> {
     const { data, error } = await supabase.rpc('create_tree_with_root', {
@@ -77,7 +98,10 @@ export const treeService = {
     return data;
   },
 
-  async update(treeId: string, updates: Partial<FamilyTree>): Promise<FamilyTree> {
+  async update(
+    treeId: string,
+    updates: Partial<FamilyTree>
+  ): Promise<FamilyTree> {
     const { data, error } = await supabase
       .from('family_trees')
       .update(updates)
@@ -90,7 +114,10 @@ export const treeService = {
   },
 
   async delete(treeId: string): Promise<void> {
-    const { error } = await supabase.from('family_trees').delete().eq('id', treeId);
+    const { error } = await supabase
+      .from('family_trees')
+      .delete()
+      .eq('id', treeId);
     if (error) throw mapTreeError(error);
   },
 };

@@ -9,12 +9,12 @@ export const isDeceased = (person: Person): boolean => {
 // Tính tuổi hiện tại hoặc tuổi khi qua đời.
 export const calculateAge = (person: Person): number | null => {
   if (!person.birth_date) return null;
-  
+
   const birthYear = new Date(person.birth_date).getFullYear();
-  const endYear = person.death_date 
-    ? new Date(person.death_date).getFullYear() 
+  const endYear = person.death_date
+    ? new Date(person.death_date).getFullYear()
     : new Date().getFullYear();
-    
+
   return endYear - birthYear;
 };
 
@@ -23,7 +23,7 @@ export const formatDate = (dateString: string | null | undefined): string => {
   if (!dateString) return '—';
   const date = new Date(dateString);
   if (isNaN(date.getTime())) return '—';
-  
+
   return date.toLocaleDateString('en-GB').replace(/\//g, '/'); // Đảm bảo định dạng DD/MM/YYYY
 };
 
@@ -31,7 +31,7 @@ export const formatDate = (dateString: string | null | undefined): string => {
 export const hasSiblingOrderConflict = (
   person: Pick<Person, 'id' | 'tree_id' | 'father_id' | 'mother_id'>,
   persons: Person[],
-  order: number,
+  order: number
 ): boolean => {
   if (person.father_id === null && person.mother_id === null) return false;
   return persons.some(
@@ -40,6 +40,6 @@ export const hasSiblingOrderConflict = (
       p.tree_id === person.tree_id &&
       p.father_id === person.father_id &&
       p.mother_id === person.mother_id &&
-      normalizeSiblingOrder(p.sibling_order) === order,
+      normalizeSiblingOrder(p.sibling_order) === order
   );
 };

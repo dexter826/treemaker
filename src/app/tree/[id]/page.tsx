@@ -3,12 +3,15 @@ import { createClient } from '@/lib/supabase/server';
 import { TreeClient } from '@/features/tree';
 
 // Chi tiết cây gia phả (Server Component).
-export default async function TreePage({ params }: { params: Promise<{ id: string }> }) {
+export default async function TreePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const supabase = await createClient();
-  
-  try {
 
+  try {
     const { data: tree, error } = await supabase
       .from('family_trees')
       .select('*')

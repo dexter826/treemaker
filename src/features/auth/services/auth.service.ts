@@ -2,18 +2,30 @@ import { supabase } from '@/lib/supabase';
 
 const mapAuthError = (error: unknown): Error => {
   const raw = error as { code?: string; message?: string };
-  const message = String(raw?.message ?? (error instanceof Error ? error.message : 'Lỗi xác thực.'));
+  const message = String(
+    raw?.message ?? (error instanceof Error ? error.message : '')
+  );
 
   const errorMap: Record<string, string> = {
     'invalid login credentials': 'Email hoặc mật khẩu không chính xác.',
-    'user already registered': 'Email này đã được đăng ký tài khoản.',
-    'password should be at least 6 characters': 'Mật khẩu phải có ít nhất 6 ký tự.',
-    'email rate limit exceeded': 'Đã gửi quá nhiều yêu cầu. Vui lòng thử lại sau ít phút.',
-    'over email send rate limit': 'Đã gửi quá nhiều email. Vui lòng thử lại sau ít phút.',
-    'user not found': 'Không tìm thấy tài khoản với email này.',
-    'email not confirmed': 'Email chưa được xác thực. Vui lòng kiểm tra hộp thư.',
-    'signup requires a valid password': 'Vui lòng nhập mật khẩu hợp lệ khi đăng ký.',
-    'failed to fetch': 'Không thể kết nối tới máy chủ Supabase. Dự án Supabase có thể đang bị Tạm dừng (Paused) hoặc URL trong .env không tồn tại.',
+    'user already registered':
+      'Email này đã được sử dụng. Vui lòng đăng nhập hoặc dùng email khác.',
+    'password should be at least 6 characters':
+      'Mật khẩu phải có ít nhất 6 ký tự.',
+    'email rate limit exceeded':
+      'Thao tác quá nhiều lần. Vui lòng thử lại sau ít phút.',
+    'over email send rate limit':
+      'Thao tác quá nhiều lần. Vui lòng thử lại sau ít phút.',
+    'user not found': 'Không tìm thấy tài khoản tương ứng với email này.',
+    'email not confirmed':
+      'Email chưa được kích hoạt. Vui lòng kiểm tra hộp thư của bạn.',
+    'signup requires a valid password':
+      'Vui lòng nhập mật khẩu hợp lệ khi đăng ký.',
+    'failed to fetch':
+      'Không thể kết nối đến máy chủ. Vui lòng kiểm tra đường truyền mạng và thử lại.',
+    networkerror:
+      'Không thể kết nối đến máy chủ. Vui lòng kiểm tra đường truyền mạng và thử lại.',
+    timeout: 'Kết nối quá hạn. Vui lòng thử lại sau.',
   };
 
   const lower = message.toLowerCase();
@@ -21,7 +33,13 @@ const mapAuthError = (error: unknown): Error => {
     if (lower.includes(key)) return new Error(val);
   }
 
-  return error instanceof Error ? error : new Error(message);
+  if (/[a-zA-Z]{4,}/.test(message) && !message.includes('Lỗi')) {
+    return new Error('Không thể hoàn tất xác thực. Vui lòng thử lại sau.');
+  }
+
+  return message
+    ? new Error(message)
+    : new Error('Đã xảy ra lỗi trong quá trình xác thực. Vui lòng thử lại.');
 };
 
 export interface SignInParams {
@@ -68,7 +86,10 @@ export const authService = {
 
   async resetPassword({ email, redirectTo }: ResetPasswordParams) {
     try {
-      const defaultRedirect = typeof window !== 'undefined' ? `${window.location.origin}/login` : undefined;
+      const defaultRedirect =
+        typeof window !== 'undefined'
+          ? `${window.location.origin}/login`
+          : undefined;
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: redirectTo ?? defaultRedirect,
       });

@@ -4,15 +4,16 @@ Status: ready-for-agent
 
 ## Problem Statement
 
-As the TreeMaker codebase has grown, its file structure has remained split across technical layers at the repository root (`components/`, `lib/`, `hooks/`, `types/`, `app/`). Domain logic for core concepts like FamilyTree, Person, Authentication, and AI Assistant is fragmented across multiple unrelated folders (for example, a single change to Person requires touching `components/tree/forms`, `components/tree/modals`, `lib/services`, `lib/store/slices`, `lib/validations`, and `lib/utils`). 
+As the TreeMaker codebase has grown, its file structure has remained split across technical layers at the repository root (`components/`, `lib/`, `hooks/`, `types/`, `app/`). Domain logic for core concepts like FamilyTree, Person, Authentication, and AI Assistant is fragmented across multiple unrelated folders (for example, a single change to Person requires touching `components/tree/forms`, `components/tree/modals`, `lib/services`, `lib/store/slices`, `lib/validations`, and `lib/utils`).
 
 This technical layering creates shallow modules where files lack locality, public boundaries are unenforced, and developers and AI agents must navigate scattered directories for a single cohesive change. Additionally, abandoned empty directories create noise, and root configuration files are intermingled with source code.
 
 ## Solution
 
-Reorganize the entire application source code into a clean, feature-driven architecture housed under a dedicated `src/` directory. 
+Reorganize the entire application source code into a clean, feature-driven architecture housed under a dedicated `src/` directory.
 
 The architecture establishes:
+
 1. Four encapsulated feature modules (`tree`, `person`, `auth`, `ai`), each acting as a Deep Module with a single public entry point (`index.ts`) hiding internal components, hooks, services, and validations.
 2. A Thin Routing Layer in `src/app/` where page and route files only handle URL parameters and mount top-level containers exported by features.
 3. A clearly isolated Shared Layer (`src/components/ui`, `src/lib`, `src/types`, `src/hooks`) for primitives and infrastructure (such as the database client and global state engine), strictly governed by a unidirectional dependency rule: shared code never imports from features.

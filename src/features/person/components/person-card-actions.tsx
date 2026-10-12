@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useStore } from '@/lib/store';
 import { Person } from '@/types';
@@ -7,7 +7,14 @@ import { Pencil, Eye, Trash2, Loader2 } from 'lucide-react';
 import { personService } from '../services/person.service';
 import { toast } from 'sonner';
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogHeader,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import { isDeceased } from '../utils/person-utils';
 
@@ -34,7 +41,8 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
       toast.success('Đã xóa hồ sơ.');
       onClose();
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Lỗi khi xóa hồ sơ.';
+      const message =
+        error instanceof Error ? error.message : 'Lỗi khi xóa hồ sơ.';
       toast.error(message);
     } finally {
       setIsDeleting(false);
@@ -48,12 +56,12 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
   return (
     <div
       className={cn(
-        "absolute inset-0 z-50 flex items-center justify-center bg-background border-2 [backface-visibility:hidden] [transform:rotateY(180deg)] export-exclude",
+        'bg-background export-exclude absolute inset-0 z-50 flex [transform:rotateY(180deg)] items-center justify-center border-2 [backface-visibility:hidden]',
         isSelected
           ? 'border-primary shadow-brutal-primary-lg'
-          : deceased 
-            ? 'border-deceased-border bg-deceased-bg shadow-brutal-sm opacity-95' 
-            : 'border-foreground shadow-brutal-lg',
+          : deceased
+            ? 'border-deceased-border bg-deceased-bg shadow-brutal-sm opacity-95'
+            : 'border-foreground shadow-brutal-lg'
       )}
       onClick={(e) => {
         e.stopPropagation();
@@ -72,7 +80,7 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
           title="Xem chi tiết"
           className="h-12 w-12"
         >
-          <Eye className="w-5 h-5" />
+          <Eye className="h-5 w-5" />
         </Button>
 
         {!isReadOnly && (
@@ -88,7 +96,7 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
               title="Chỉnh sửa"
               className="h-12 w-12"
             >
-              <Pencil className="w-5 h-5" />
+              <Pencil className="h-5 w-5" />
             </Button>
 
             <Button
@@ -102,32 +110,47 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
               title="Xóa hồ sơ"
               className="h-12 w-12"
             >
-              <Trash2 className="w-5 h-5" />
+              <Trash2 className="h-5 w-5" />
             </Button>
           </>
         )}
       </div>
 
-
       <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
         <DialogContent onClick={(e) => e.stopPropagation()}>
           <DialogHeader variant="destructive">
             <DialogTitle>Xóa hồ sơ</DialogTitle>
-            <DialogDescription>Hành động này không thể hoàn tác</DialogDescription>
+            <DialogDescription>
+              Hành động này không thể hoàn tác
+            </DialogDescription>
           </DialogHeader>
 
           <div className="p-6">
-            <p className="text-sm font-medium leading-relaxed">
-              Bạn có chắc chắn muốn xóa hồ sơ của <span className="font-bold">{person.full_name}</span> không?
+            <p className="text-sm leading-relaxed font-medium">
+              Bạn có chắc chắn muốn xóa hồ sơ của{' '}
+              <span className="font-bold">{person.full_name}</span> không?
             </p>
           </div>
 
           <DialogFooter>
-            <Button variant="outline" className="flex-1 h-12" onClick={() => setIsConfirmOpen(false)}>
+            <Button
+              variant="outline"
+              className="h-12 flex-1"
+              onClick={() => setIsConfirmOpen(false)}
+            >
               Hủy
             </Button>
-            <Button variant="destructive" className="flex-1 h-12" onClick={confirmDelete} disabled={isDeleting}>
-              {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Xóa'}
+            <Button
+              variant="destructive"
+              className="h-12 flex-1"
+              onClick={confirmDelete}
+              disabled={isDeleting}
+            >
+              {isDeleting ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                'Xóa'
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

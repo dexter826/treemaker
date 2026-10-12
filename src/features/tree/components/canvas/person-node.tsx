@@ -9,10 +9,18 @@ import { TREE_NODE_WIDTH, TREE_NODE_HEIGHT } from '../../constants';
 import { motion } from 'framer-motion';
 import { getCountryByCode } from '@/lib/constants/countries';
 import Flag from 'react-world-flags';
-import { PersonCardActions, isDeceased, calculateAge, formatDate } from '@/features/person';
+import {
+  PersonCardActions,
+  isDeceased,
+  calculateAge,
+  formatDate,
+} from '@/features/person';
 
-
-export const PersonNode = memo(function PersonNode({ data }: { data: { person: Person } }) {
+export const PersonNode = memo(function PersonNode({
+  data,
+}: {
+  data: { person: Person };
+}) {
   const { person } = data;
   const selectedPersonId = useStore((state) => state.selectedPersonId);
   const isReadOnly = useStore((state) => state.isReadOnly);
@@ -22,7 +30,9 @@ export const PersonNode = memo(function PersonNode({ data }: { data: { person: P
   const setSelectedPersonId = useStore((state) => state.setSelectedPersonId);
 
   const delay = useMemo(() => {
-    const hash = person.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const hash = person.id
+      .split('')
+      .reduce((acc, char) => acc + char.charCodeAt(0), 0);
     return (hash % 20) / 100;
   }, [person.id]);
 
@@ -56,140 +66,199 @@ export const PersonNode = memo(function PersonNode({ data }: { data: { person: P
     <motion.div
       role="button"
       tabIndex={0}
-      style={{ width: TREE_NODE_WIDTH, height: TREE_NODE_HEIGHT, perspective: 1000 }}
+      style={{
+        width: TREE_NODE_WIDTH,
+        height: TREE_NODE_HEIGHT,
+        perspective: 1000,
+      }}
       className={cn(
-        'relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background group transition-transform duration-300',
+        'focus-visible:ring-primary focus-visible:ring-offset-background group relative transition-transform duration-300 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
         isSelected && 'scale-[1.02]'
       )}
       initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ 
-        opacity: 1, 
-        scale: isSelected ? 1.02 : 1 
+      animate={{
+        opacity: 1,
+        scale: isSelected ? 1.02 : 1,
       }}
       transition={{ duration: 0.3, delay }}
       onClick={handleOpen}
       onKeyDown={handleKeyDown}
     >
-      <Handle 
-        id="top" 
-        type="target" 
-        position={Position.Top} 
+      <Handle
+        id="top"
+        type="target"
+        position={Position.Top}
         className={cn(
-          'w-2 h-2 rounded-none border-2 border-background top-0 translate-y-[-50%] z-20 transition-all duration-300 export-exclude',
+          'border-background export-exclude top-0 z-20 h-2 w-2 translate-y-[-50%] rounded-none border-2 transition-all duration-300',
           'opacity-0 group-hover:opacity-100',
-          isSelected ? 'bg-primary opacity-100' : deceased ? 'bg-deceased-fg' : 'bg-foreground'
-        )} 
+          isSelected
+            ? 'bg-primary opacity-100'
+            : deceased
+              ? 'bg-deceased-fg'
+              : 'bg-foreground'
+        )}
       />
-      <Handle 
-        id="bottom" 
-        type="source" 
-        position={Position.Bottom} 
+      <Handle
+        id="bottom"
+        type="source"
+        position={Position.Bottom}
         className={cn(
-          'w-2 h-2 rounded-none border-2 border-background bottom-0 translate-y-[50%] z-20 transition-all duration-300 export-exclude',
+          'border-background export-exclude bottom-0 z-20 h-2 w-2 translate-y-[50%] rounded-none border-2 transition-all duration-300',
           'opacity-0 group-hover:opacity-100',
-          isSelected ? 'bg-primary opacity-100' : deceased ? 'bg-deceased-fg' : 'bg-foreground'
-        )} 
+          isSelected
+            ? 'bg-primary opacity-100'
+            : deceased
+              ? 'bg-deceased-fg'
+              : 'bg-foreground'
+        )}
       />
-      <Handle 
-        id="left" 
-        type="source" 
-        position={Position.Left} 
+      <Handle
+        id="left"
+        type="source"
+        position={Position.Left}
         className={cn(
-          'w-2 h-2 rounded-none border-2 border-background left-0 translate-x-[-50%] z-20 transition-all duration-300 export-exclude',
+          'border-background export-exclude left-0 z-20 h-2 w-2 translate-x-[-50%] rounded-none border-2 transition-all duration-300',
           'opacity-0 group-hover:opacity-100',
-          isSelected ? 'bg-primary opacity-100' : deceased ? 'bg-deceased-fg' : 'bg-foreground'
-        )} 
+          isSelected
+            ? 'bg-primary opacity-100'
+            : deceased
+              ? 'bg-deceased-fg'
+              : 'bg-foreground'
+        )}
       />
-      <Handle 
-        id="right" 
-        type="source" 
-        position={Position.Right} 
+      <Handle
+        id="right"
+        type="source"
+        position={Position.Right}
         className={cn(
-          'w-2 h-2 rounded-none border-2 border-background right-0 translate-x-[50%] z-20 transition-all duration-300 export-exclude',
+          'border-background export-exclude right-0 z-20 h-2 w-2 translate-x-[50%] rounded-none border-2 transition-all duration-300',
           'opacity-0 group-hover:opacity-100',
-          isSelected ? 'bg-primary opacity-100' : deceased ? 'bg-deceased-fg' : 'bg-foreground'
-        )} 
+          isSelected
+            ? 'bg-primary opacity-100'
+            : deceased
+              ? 'bg-deceased-fg'
+              : 'bg-foreground'
+        )}
       />
-      
+
       <motion.div
-        className="w-full h-full relative [transform-style:preserve-3d]"
+        className="relative h-full w-full [transform-style:preserve-3d]"
         animate={{ rotateY: isShowingActions ? 180 : 0 }}
         transition={{ type: 'spring', stiffness: 260, damping: 20 }}
       >
         {/* Front Side */}
-        <div className={cn(
-          'absolute inset-0 bg-background border-2 flex flex-col overflow-hidden [backface-visibility:hidden] transition-shadow duration-150',
-          isSelected
-            ? 'border-primary shadow-brutal-primary-lg'
-            : deceased 
-              ? 'border-deceased-border bg-deceased-bg shadow-brutal-sm opacity-95' 
-              : 'border-foreground shadow-brutal-md hover:shadow-brutal-lg',
-        )}>
+        <div
+          className={cn(
+            'bg-background absolute inset-0 flex flex-col overflow-hidden border-2 transition-shadow duration-150 [backface-visibility:hidden]',
+            isSelected
+              ? 'border-primary shadow-brutal-primary-lg'
+              : deceased
+                ? 'border-deceased-border bg-deceased-bg shadow-brutal-sm opacity-95'
+                : 'border-foreground shadow-brutal-md hover:shadow-brutal-lg'
+          )}
+        >
           {/* Gender Indicator Bar */}
-          <div className={cn(
-            'h-1.5 w-full shrink-0', 
-            deceased ? 'opacity-40' : 'opacity-100',
-            person.gender === 'male' ? 'bg-male' : 'bg-female'
-          )} />
+          <div
+            className={cn(
+              'h-1.5 w-full shrink-0',
+              deceased ? 'opacity-40' : 'opacity-100',
+              person.gender === 'male' ? 'bg-male' : 'bg-female'
+            )}
+          />
 
           {/* Photo Area */}
-          <div className={cn(
-            'relative flex-1 bg-muted overflow-hidden border-b-2', 
-            isSelected ? 'border-primary' : deceased ? 'border-deceased-border' : 'border-foreground'
-          )}>
-            <Avatar className={cn('w-full h-full rounded-none', deceased && 'grayscale-[0.5] opacity-85')}>
-              <AvatarImage src={person.avatar_url || ''} className="object-cover w-full h-full" />
-              <AvatarFallback className="bg-transparent rounded-none flex items-center justify-center">
-                <User className={cn('h-12 w-12 opacity-20', isSelected ? 'text-primary' : deceased ? 'text-deceased-fg' : 'text-foreground')} />
+          <div
+            className={cn(
+              'bg-muted relative flex-1 overflow-hidden border-b-2',
+              isSelected
+                ? 'border-primary'
+                : deceased
+                  ? 'border-deceased-border'
+                  : 'border-foreground'
+            )}
+          >
+            <Avatar
+              className={cn(
+                'h-full w-full rounded-none',
+                deceased && 'opacity-85 grayscale-[0.5]'
+              )}
+            >
+              <AvatarImage
+                src={person.avatar_url || ''}
+                className="h-full w-full object-cover"
+              />
+              <AvatarFallback className="flex items-center justify-center rounded-none bg-transparent">
+                <User
+                  className={cn(
+                    'h-12 w-12 opacity-20',
+                    isSelected
+                      ? 'text-primary'
+                      : deceased
+                        ? 'text-deceased-fg'
+                        : 'text-foreground'
+                  )}
+                />
               </AvatarFallback>
             </Avatar>
 
             {/* Country Flag */}
             {person.country_code && (
-              <div 
+              <div
                 className={cn(
-                  "absolute top-2 right-2 z-20 w-8 h-5 flex items-center justify-center bg-background border border-foreground shadow-brutal-sm overflow-hidden",
-                  deceased && "grayscale-[0.5] opacity-80"
+                  'bg-background border-foreground shadow-brutal-sm absolute top-2 right-2 z-20 flex h-5 w-8 items-center justify-center overflow-hidden border',
+                  deceased && 'opacity-80 grayscale-[0.5]'
                 )}
                 title={getCountryByCode(person.country_code)?.name}
               >
-                <Flag code={person.country_code} className="w-full h-full object-cover" />
+                <Flag
+                  code={person.country_code}
+                  className="h-full w-full object-cover"
+                />
               </div>
             )}
           </div>
 
           {/* Info Area */}
-          <div className={cn('p-3 flex flex-col justify-center min-h-[80px]', deceased ? 'bg-deceased-bg text-deceased-fg' : 'bg-background')}>
-            <h3 
+          <div
+            className={cn(
+              'flex min-h-[80px] flex-col justify-center p-3',
+              deceased ? 'bg-deceased-bg text-deceased-fg' : 'bg-background'
+            )}
+          >
+            <h3
               className={cn(
-                'font-serif font-black text-sm leading-tight line-clamp-2 uppercase tracking-tight', 
-                isSelected ? 'text-primary' : deceased ? 'text-deceased-fg italic' : 'text-foreground'
-              )} 
+                'line-clamp-2 font-serif text-sm leading-tight font-black tracking-tight uppercase',
+                isSelected
+                  ? 'text-primary'
+                  : deceased
+                    ? 'text-deceased-fg italic'
+                    : 'text-foreground'
+              )}
               title={person.full_name}
             >
               {person.full_name}
             </h3>
 
-            <span className="text-[10px] font-bold text-primary/80 uppercase tracking-wide mt-0.5">
+            <span className="text-primary/80 mt-0.5 text-[10px] font-bold tracking-wide uppercase">
               {person.nickname || '—'}
             </span>
-            
-            <div className="mt-2 flex flex-col gap-1 text-[9px] font-bold text-muted-foreground/80 uppercase tracking-wider">
+
+            <div className="text-muted-foreground/80 mt-2 flex flex-col gap-1 text-[9px] font-bold tracking-wider uppercase">
               <div className="flex items-center justify-between">
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-1.5">
-                    <Cake className="w-2.5 h-2.5 text-primary/60" />
+                    <Cake className="text-primary/60 h-2.5 w-2.5" />
                     <span>{formatDate(person.birth_date)}</span>
                   </div>
                   {deceased && (
                     <div className="flex items-center gap-1.5">
-                      <Flower2 className="w-2.5 h-2.5 text-muted-foreground/60" />
+                      <Flower2 className="text-muted-foreground/60 h-2.5 w-2.5" />
                       <span>{formatDate(person.death_date)}</span>
                     </div>
                   )}
                 </div>
                 {age !== null && (
-                  <span className="self-end bg-foreground/5 px-1 py-0.5 border border-foreground/10 text-[9px] text-foreground/70">
+                  <span className="bg-foreground/5 border-foreground/10 text-foreground/70 self-end border px-1 py-0.5 text-[9px]">
                     {age} tuổi
                   </span>
                 )}
@@ -200,15 +269,12 @@ export const PersonNode = memo(function PersonNode({ data }: { data: { person: P
 
         {/* Back Side */}
         {!isReadOnly && (
-          <PersonCardActions 
-            person={person} 
-            onClose={() => setShowCardActions(null)} 
+          <PersonCardActions
+            person={person}
+            onClose={() => setShowCardActions(null)}
           />
         )}
       </motion.div>
     </motion.div>
-
   );
 });
-
-

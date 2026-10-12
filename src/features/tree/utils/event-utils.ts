@@ -20,13 +20,12 @@ export const getSortedEvents = (persons: Person[]): FamilyEvent[] => {
   const currentYear = today.getFullYear();
 
   persons.forEach((person) => {
-
     if (person.birth_date) {
       const date = new Date(person.birth_date);
       if (!isNaN(date.getTime())) {
         const birthYear = date.getFullYear();
         const age = currentYear - birthYear;
-        
+
         let milestone;
         if (age >= 70 && age % 10 === 0) milestone = 'Mừng thọ';
         else if (age === 0) milestone = 'Mới sinh';
@@ -44,13 +43,12 @@ export const getSortedEvents = (persons: Person[]): FamilyEvent[] => {
       }
     }
 
-
     if (person.death_date) {
       const date = new Date(person.death_date);
       if (!isNaN(date.getTime())) {
         const deathYear = date.getFullYear();
         const yearsSinceDeath = currentYear - deathYear;
-        
+
         let milestone;
         if (yearsSinceDeath === 1) milestone = 'Giỗ đầu';
         else if (yearsSinceDeath === 3) milestone = 'Giỗ hết';
@@ -69,7 +67,6 @@ export const getSortedEvents = (persons: Person[]): FamilyEvent[] => {
     }
   });
 
-
   return events.sort((a, b) => {
     if (a.month !== b.month) return a.month - b.month;
     return a.day - b.day;
@@ -79,10 +76,10 @@ export const getSortedEvents = (persons: Person[]): FamilyEvent[] => {
 // Nhóm danh sách sự kiện theo tháng.
 export const groupEventsByMonth = (events: FamilyEvent[]) => {
   const grouped: Record<number, FamilyEvent[]> = {};
-  
+
   for (let i = 1; i <= 12; i++) {
-    grouped[i] = events.filter(e => e.month === i);
+    grouped[i] = events.filter((e) => e.month === i);
   }
-  
+
   return grouped;
 };

@@ -20,7 +20,13 @@ import { normalizeSiblingOrder } from '@/lib/utils';
 import { hasSiblingOrderConflict } from '../utils/person-utils';
 import Flag from 'react-world-flags';
 
-export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly: boolean }) {
+export function PersonForm({
+  person,
+  isReadOnly,
+}: {
+  person: Person;
+  isReadOnly: boolean;
+}) {
   const persons = useStore((state) => state.persons);
   const updatePerson = useStore((state) => state.updatePerson);
   const [isAvatarCleared, setIsAvatarCleared] = useState(false);
@@ -78,54 +84,67 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
       reset(data);
       toast.success('Đã cập nhật thành công.');
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Lỗi khi cập nhật hồ sơ.';
+      const message =
+        error instanceof Error ? error.message : 'Lỗi khi cập nhật hồ sơ.';
       toast.error(message);
     } finally {
       setIsSaving(false);
     }
   };
 
-  const deathDate = useStore((state) => state.persons.find(p => p.id === person.id)?.death_date);
+  const deathDate = useStore(
+    (state) => state.persons.find((p) => p.id === person.id)?.death_date
+  );
   const deceased = !!deathDate;
 
   return (
     <form onSubmit={handleSubmit(onSave)} className="space-y-4">
       <div className="flex flex-col items-center space-y-4">
         <div className="flex flex-col items-center space-y-1">
-          <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground text-center">Ảnh đại diện</Label>
+          <Label className="text-muted-foreground text-center text-xs font-semibold tracking-[0.16em]">
+            Ảnh đại diện
+          </Label>
           <Controller
             name="avatar_file"
             control={control}
             render={({ field }) => (
-              <AvatarUpload 
-                currentUrl={person.avatar_url} 
+              <AvatarUpload
+                currentUrl={person.avatar_url}
                 onFileSelect={(file) => {
                   field.onChange(file);
                   if (file) setIsAvatarCleared(false);
                   else if (!file && isAvatarCleared) setIsAvatarCleared(true);
-                }} 
-                disabled={isReadOnly} 
+                }}
+                disabled={isReadOnly}
                 error={errors.avatar_file?.message as string}
               />
             )}
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
-          <div className="sm:col-span-2 space-y-1">
-            <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Họ và tên</Label>
-            <Input 
-              {...register('full_name')} 
+        <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="space-y-1 sm:col-span-2">
+            <Label className="text-muted-foreground text-xs font-semibold tracking-[0.16em]">
+              Họ và tên
+            </Label>
+            <Input
+              {...register('full_name')}
               error={!!errors.full_name}
-              readOnly={isReadOnly} 
-              placeholder="Ví dụ: Nguyễn Văn A" 
-              className="font-semibold w-full" 
+              readOnly={isReadOnly}
+              placeholder="Ví dụ: Nguyễn Văn A"
+              className="w-full font-semibold"
             />
-            {errors.full_name && <p className="text-[10px] text-destructive font-bold uppercase">{errors.full_name.message}</p>}
+            {errors.full_name && (
+              <p className="text-destructive text-[10px] font-bold uppercase">
+                {errors.full_name.message}
+              </p>
+            )}
           </div>
 
-          <div className="sm:col-span-1 space-y-1">
-            <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Giới tính</Label>
+          <div className="space-y-1 sm:col-span-1">
+            <Label className="text-muted-foreground text-xs font-semibold tracking-[0.16em]">
+              Giới tính
+            </Label>
             <Controller
               name="gender"
               control={control}
@@ -142,19 +161,29 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
                 />
               )}
             />
-            {errors.gender && <p className="text-[10px] text-destructive font-bold uppercase">{errors.gender.message}</p>}
+            {errors.gender && (
+              <p className="text-destructive text-[10px] font-bold uppercase">
+                {errors.gender.message}
+              </p>
+            )}
           </div>
 
-          <div className="sm:col-span-3 space-y-1">
-            <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Tên gọi khác</Label>
-            <Input 
-              {...register('nickname')} 
+          <div className="space-y-1 sm:col-span-3">
+            <Label className="text-muted-foreground text-xs font-semibold tracking-[0.16em]">
+              Tên gọi khác
+            </Label>
+            <Input
+              {...register('nickname')}
               error={!!errors.nickname}
-              readOnly={isReadOnly} 
-              placeholder="Ví dụ: Bé Tí, Tèo..." 
-              className="font-semibold" 
+              readOnly={isReadOnly}
+              placeholder="Ví dụ: Bé Tí, Tèo..."
+              className="font-semibold"
             />
-            {errors.nickname && <p className="text-[10px] text-destructive font-bold uppercase">{errors.nickname.message}</p>}
+            {errors.nickname && (
+              <p className="text-destructive text-[10px] font-bold uppercase">
+                {errors.nickname.message}
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -163,50 +192,68 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
         <Separator className="bg-foreground/20" />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="space-y-1">
-          <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Ngày sinh</Label>
+          <Label className="text-muted-foreground text-xs font-semibold tracking-[0.16em]">
+            Ngày sinh
+          </Label>
           <Controller
             name="birth_date"
             control={control}
             render={({ field }) => (
-              <DatePicker 
-                value={field.value ?? null} 
-                onChange={field.onChange} 
-                disabled={isReadOnly} 
+              <DatePicker
+                value={field.value ?? null}
+                onChange={field.onChange}
+                disabled={isReadOnly}
                 error={!!errors.birth_date}
               />
             )}
           />
-          {errors.birth_date && <p className="text-[10px] text-destructive font-bold uppercase">{errors.birth_date.message}</p>}
+          {errors.birth_date && (
+            <p className="text-destructive text-[10px] font-bold uppercase">
+              {errors.birth_date.message}
+            </p>
+          )}
         </div>
         <div className="space-y-1">
-          <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Ngày mất</Label>
+          <Label className="text-muted-foreground text-xs font-semibold tracking-[0.16em]">
+            Ngày mất
+          </Label>
           <Controller
             name="death_date"
             control={control}
             render={({ field }) => (
-              <DatePicker 
-                value={field.value ?? null} 
-                onChange={field.onChange} 
-                disabled={isReadOnly} 
+              <DatePicker
+                value={field.value ?? null}
+                onChange={field.onChange}
+                disabled={isReadOnly}
               />
             )}
           />
-          {errors.death_date && <p className="text-[10px] text-destructive font-bold uppercase">{errors.death_date.message}</p>}
+          {errors.death_date && (
+            <p className="text-destructive text-[10px] font-bold uppercase">
+              {errors.death_date.message}
+            </p>
+          )}
         </div>
         <div className="space-y-1 md:col-span-2">
-          <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Thứ tự sinh</Label>
-          <Input 
-            type="number" 
-            {...register('sibling_order', { valueAsNumber: true })} 
+          <Label className="text-muted-foreground text-xs font-semibold tracking-[0.16em]">
+            Thứ tự sinh
+          </Label>
+          <Input
+            type="number"
+            {...register('sibling_order', { valueAsNumber: true })}
             error={!!errors.sibling_order}
-            readOnly={isReadOnly} 
-            min={0} 
-            step={1} 
-            className="font-semibold" 
+            readOnly={isReadOnly}
+            min={0}
+            step={1}
+            className="font-semibold"
           />
-          {errors.sibling_order && <p className="text-[10px] text-destructive font-bold uppercase">{errors.sibling_order.message}</p>}
+          {errors.sibling_order && (
+            <p className="text-destructive text-[10px] font-bold uppercase">
+              {errors.sibling_order.message}
+            </p>
+          )}
         </div>
       </div>
 
@@ -214,53 +261,70 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
         <Separator className="bg-foreground/20" />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="space-y-1">
-          <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">
+          <Label className="text-muted-foreground text-xs font-semibold tracking-[0.16em]">
             Nghề nghiệp
           </Label>
-          <Input 
-            {...register('occupation')} 
+          <Input
+            {...register('occupation')}
             error={!!errors.occupation}
-            readOnly={isReadOnly} 
+            readOnly={isReadOnly}
             placeholder="Ví dụ: Bác sĩ, Giáo viên..."
-            className="font-semibold" 
+            className="font-semibold"
           />
-          {errors.occupation && <p className="text-[10px] text-destructive font-bold uppercase">{errors.occupation.message}</p>}
+          {errors.occupation && (
+            <p className="text-destructive text-[10px] font-bold uppercase">
+              {errors.occupation.message}
+            </p>
+          )}
         </div>
         <div className="space-y-1">
-          <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">
+          <Label className="text-muted-foreground text-xs font-semibold tracking-[0.16em]">
             Địa chỉ
           </Label>
-          <Input 
-            {...register('address')} 
+          <Input
+            {...register('address')}
             error={!!errors.address}
-            readOnly={isReadOnly} 
+            readOnly={isReadOnly}
             placeholder="Ví dụ: Hà Nội, Việt Nam"
-            className="font-semibold" 
+            className="font-semibold"
           />
-          {errors.address && <p className="text-[10px] text-destructive font-bold uppercase">{errors.address.message}</p>}
+          {errors.address && (
+            <p className="text-destructive text-[10px] font-bold uppercase">
+              {errors.address.message}
+            </p>
+          )}
         </div>
         <div className="space-y-1 md:col-span-2">
-          <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Quốc gia cư trú</Label>
+          <Label className="text-muted-foreground text-xs font-semibold tracking-[0.16em]">
+            Quốc gia cư trú
+          </Label>
           <Controller
             name="country_code"
             control={control}
             render={({ field }) => (
               <Select
                 options={[
-                  { value: '', label: '--- Không chọn ---', searchText: 'không chọn' },
-                  ...COUNTRIES.map((c) => ({ 
-                    value: c.code, 
+                  {
+                    value: '',
+                    label: '--- Không chọn ---',
+                    searchText: 'không chọn',
+                  },
+                  ...COUNTRIES.map((c) => ({
+                    value: c.code,
                     label: (
                       <div className="flex items-center gap-3">
-                        <div className="w-5 h-3.5 overflow-hidden flex-shrink-0 border border-foreground/20">
-                          <Flag code={c.code} className="w-full h-full object-cover" />
+                        <div className="border-foreground/20 h-3.5 w-5 flex-shrink-0 overflow-hidden border">
+                          <Flag
+                            code={c.code}
+                            className="h-full w-full object-cover"
+                          />
                         </div>
                         <span>{c.name}</span>
                       </div>
                     ),
-                    searchText: `${c.name} ${c.code}`
+                    searchText: `${c.name} ${c.code}`,
                   })),
                 ]}
                 value={field.value || ''}
@@ -279,22 +343,28 @@ export function PersonForm({ person, isReadOnly }: { person: Person; isReadOnly:
       </div>
 
       <div className="space-y-1">
-        <Label className="text-xs font-semibold tracking-[0.16em] text-muted-foreground">Tiểu sử</Label>
-        <Textarea 
-          {...register('bio')} 
+        <Label className="text-muted-foreground text-xs font-semibold tracking-[0.16em]">
+          Tiểu sử
+        </Label>
+        <Textarea
+          {...register('bio')}
           error={!!errors.bio}
-          rows={4} 
-          readOnly={isReadOnly} 
-          className="rounded-none border-2 border-foreground focus:border-primary focus:ring-0 font-medium resize-none p-4" 
+          rows={4}
+          readOnly={isReadOnly}
+          className="border-foreground focus:border-primary resize-none rounded-none border-2 p-4 font-medium focus:ring-0"
         />
-        {errors.bio && <p className="text-[10px] text-destructive font-bold uppercase">{errors.bio.message}</p>}
+        {errors.bio && (
+          <p className="text-destructive text-[10px] font-bold uppercase">
+            {errors.bio.message}
+          </p>
+        )}
       </div>
 
       {!isReadOnly && (
         <div>
-          <Button 
+          <Button
             type="submit"
-            className="w-full relative overflow-hidden" 
+            className="relative w-full overflow-hidden"
             disabled={isSaving || (!isDirty && !isAvatarCleared)}
           >
             {isSaving && <Loader2 className="h-4 w-4 animate-spin" />}

@@ -5,6 +5,7 @@ Status: ready-for-agent
 ## Problem Statement
 
 Codebase TreeMaker đã được tổ chức lại theo mô hình Feature-Based (`src/features`), tuy nhiên chất lượng code nội bộ giữa các module chưa đồng đều và còn tồn tại nợ kỹ thuật:
+
 - Module `auth`: Bị coupling trực tiếp Supabase SDK vào UI component, rò rỉ logic kiểm tra tính hợp lệ ra ngoài schema Zod, tồn tại input chết (`rememberMe`), và lạm dụng non-null assertion.
 - Module `person`: Quản lý hồ sơ nhân khẩu và ảnh đại diện, cần rà soát lại việc tách biệt giữa `person.service.ts` và các form component, xử lý lỗi bất đồng bộ và chuẩn hoá danh pháp miền theo `GLOSSARY.md`.
 - Module `tree`: Là module lõi lớn nhất (19 files bao gồm canvas đồ thị, thuật toán layout, HUD, modal, và xuất PDF LegacyBook). Cần rà soát coupling giữa canvas hooks, service, và store slice để đảm bảo tính độc lập và khả năng bảo trì.
@@ -13,6 +14,7 @@ Codebase TreeMaker đã được tổ chức lại theo mô hình Feature-Based 
 ## Solution
 
 Thực hiện quy trình tái cấu trúc code có kiểm soát theo chu trình Chuẩn A (Review Report theo 7 trục clean code) ➔ Chuẩn C (Refactor Code hoàn chỉnh) cho từng feature độc lập theo thứ tự mức độ phụ thuộc:
+
 1. Feature `auth`
 2. Feature `person`
 3. Feature `tree`
@@ -43,8 +45,8 @@ Mỗi feature được refactor theo mô hình Deep Module (ADR 0001), cô lập
 ## Testing Decisions
 
 - **Testing Seams**:
-  1. *Primary Seam (Feature Public API & Service Layer)*: Kiểm chứng tính đúng đắn của public contracts tại `src/features/*/index.ts` và các phương thức nghiệp vụ trong `services/*`.
-  2. *Verification Gate*: Chạy `npm run lint` và `npm run build` sau mỗi lần hoàn tất một feature để đảm bảo zero type errors và zero lint warnings.
+  1. _Primary Seam (Feature Public API & Service Layer)_: Kiểm chứng tính đúng đắn của public contracts tại `src/features/*/index.ts` và các phương thức nghiệp vụ trong `services/*`.
+  2. _Verification Gate_: Chạy `npm run lint` và `npm run build` sau mỗi lần hoàn tất một feature để đảm bảo zero type errors và zero lint warnings.
 - **Tiêu chí kiểm thử**: Tập trung vào hành vi đối ngoại và tính toàn vẹn kiểu dữ liệu tĩnh; không can thiệp vào các private helper nếu không ảnh hưởng tới public contract.
 
 ## Out of Scope

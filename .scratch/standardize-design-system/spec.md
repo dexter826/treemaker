@@ -11,6 +11,7 @@ The TreeMaker user interface currently suffers from fragmented styling implement
 Completely standardize and overhaul the UI/UX Design System while strictly preserving TreeMaker's signature Neo-Brutalist / Editorial Archive visual identity (2px solid borders, sharp rectangular corners with `rounded-none`, hard offset drop shadows, serif titles, bold uppercase tracking-wide metadata, and 3D flip card interactions).
 
 The solution establishes:
+
 1. A structured 3-tier Design Token architecture in `globals.css` (Primitives, Semantics, Components) with OKLCH color spaces, explicit deceased status tokens (`--deceased-bg`, `--deceased-border`, `--deceased-fg`), and official Hard Elevation Tokens (`shadow-brutal-sm`, `shadow-brutal-md`, `shadow-brutal-lg`, and primary variants).
 2. Fully standardized UI atoms in `src/components/ui/` (`button`, `input`, `dialog`, `sheet`, `card`, `select`, `dropdown-menu`, `popover`, `date-picker`, etc.) with consistent 2px borders, zero radius, bold uppercase typography, and standardized hover/active elevation mechanics.
 3. Ergonomic Canvas Studio HUD upgrade: Refined Floating Toolbar with synchronized brutalist button bounce, streamlined PersonNode front/back layouts with elegant handles, and organized Sidebar sections.

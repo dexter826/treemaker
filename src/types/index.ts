@@ -12,7 +12,6 @@ export interface FamilyTree {
   updated_at: string;
 }
 
-
 export interface Person {
   id: string;
   tree_id: string;

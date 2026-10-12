@@ -10,10 +10,10 @@ export const metadata: Metadata = {
 // Trang đăng nhập hệ thống.
 export default function LoginPage() {
   return (
-    <div className="min-h-dvh flex items-center justify-center bg-background p-6 relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none opacity-5 z-0">
+    <div className="bg-background relative flex min-h-dvh items-center justify-center overflow-hidden p-6">
+      <div className="pointer-events-none absolute inset-0 z-0 opacity-5">
         <div
-          className="w-full h-full"
+          className="h-full w-full"
           style={{
             backgroundImage:
               'linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)',
@@ -22,10 +22,10 @@ export default function LoginPage() {
         />
       </div>
 
-            <div className="w-full max-w-md z-10 space-y-8">
-        <div className="text-center space-y-2">
-          <h1 className="text-4xl font-black font-serif tracking-tight">
-            Tree<span className="text-primary italic font-light">Maker</span>
+      <div className="z-10 w-full max-w-md space-y-8">
+        <div className="space-y-2 text-center">
+          <h1 className="font-serif text-4xl font-black tracking-tight">
+            Tree<span className="text-primary font-light italic">Maker</span>
           </h1>
           <p className="text-muted-foreground text-sm font-medium tracking-wide uppercase">
             Hệ thống quản lý gia phả

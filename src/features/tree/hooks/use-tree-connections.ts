@@ -9,11 +9,11 @@ export function useTreeConnections(
   persons: Person[],
   isReadOnly: boolean,
   updatePerson: (person: Person) => void,
-  setEdges: (updater: (eds: Edge[]) => Edge[]) => void,
+  setEdges: (updater: (eds: Edge[]) => Edge[]) => void
 ) {
   const addRelationship = useStore((state) => state.addRelationship);
   const removeRelationship = useStore((state) => state.removeRelationship);
-  
+
   const [edgeToDelete, setEdgeToDelete] = useState<Edge[] | null>(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
@@ -24,7 +24,7 @@ export function useTreeConnections(
       setIsConfirmOpen(true);
       return false;
     },
-    [isReadOnly],
+    [isReadOnly]
   );
 
   const confirmDelete = async () => {
@@ -53,13 +53,17 @@ export function useTreeConnections(
           removeRelationship(p1Id, p2Id);
         }
       } catch (error: unknown) {
-        toast.error(error instanceof Error ? error.message : 'Không thể xóa kết nối.');
+        toast.error(
+          error instanceof Error ? error.message : 'Không thể xóa kết nối.'
+        );
         setEdgeToDelete(null);
         return;
       }
     }
 
-    setEdges((eds) => eds.filter((e) => !edgeToDelete.some((del) => del.id === e.id)));
+    setEdges((eds) =>
+      eds.filter((e) => !edgeToDelete.some((del) => del.id === e.id))
+    );
     toast.success('Đã xóa kết nối thành công.');
     setEdgeToDelete(null);
   };
@@ -76,26 +80,35 @@ export function useTreeConnections(
 
       try {
         if (sourceHandle === 'bottom' && targetHandle === 'top') {
-          const relationType = sourcePerson.gender === 'male' ? 'father' : 'mother';
+          const relationType =
+            sourcePerson.gender === 'male' ? 'father' : 'mother';
           await personService.linkRelation(relationType, target, source);
-          updatePerson({ 
-            ...targetPerson, 
-            [relationType === 'father' ? 'father_id' : 'mother_id']: source 
+          updatePerson({
+            ...targetPerson,
+            [relationType === 'father' ? 'father_id' : 'mother_id']: source,
           });
-          toast.success(`Đã gán ${relationType === 'father' ? 'Cha' : 'Mẹ'}: ${sourcePerson.full_name}`);
+          toast.success(
+            `Đã gán ${relationType === 'father' ? 'Cha' : 'Mẹ'}: ${sourcePerson.full_name}`
+          );
         } else if (
           (sourceHandle === 'left' || sourceHandle === 'right') &&
           (targetHandle === 'left' || targetHandle === 'right')
         ) {
-          const rel = await personService.linkRelation('spouse', source, target);
+          const rel = await personService.linkRelation(
+            'spouse',
+            source,
+            target
+          );
           if (rel) addRelationship(rel);
           toast.success('Đã kết nối Vợ/Chồng.');
         }
       } catch (error: unknown) {
-        toast.error(error instanceof Error ? error.message : 'Lỗi khi tạo kết nối.');
+        toast.error(
+          error instanceof Error ? error.message : 'Lỗi khi tạo kết nối.'
+        );
       }
     },
-    [persons, isReadOnly, updatePerson, addRelationship],
+    [persons, isReadOnly, updatePerson, addRelationship]
   );
 
   return {

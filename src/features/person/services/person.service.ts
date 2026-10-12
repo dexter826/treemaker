@@ -13,14 +13,21 @@ const mapPersonError = (error: unknown): Error => {
     '23505': 'Dữ liệu đã tồn tại hoặc bị trùng lặp.',
     'Father must be male': 'Người cha phải có giới tính Nam.',
     'Mother must be female': 'Người mẹ phải có giới tính Nữ.',
-    'Spouses must have different genders': 'Vợ và chồng phải có giới tính khác nhau.',
-    'Cannot link a person to themselves': 'Không thể tạo quan hệ với chính mình.',
-    'Circular relationship detected': 'Phát hiện vòng lặp quan hệ (không thể gán tổ tiên làm con).',
+    'Spouses must have different genders':
+      'Vợ và chồng phải có giới tính khác nhau.',
+    'Cannot link a person to themselves':
+      'Không thể tạo quan hệ với chính mình.',
+    'Circular relationship detected':
+      'Phát hiện vòng lặp quan hệ (không thể gán tổ tiên làm con).',
     'Must be in the same tree': 'Chỉ có thể liên kết người trong cùng một cây.',
+    'failed to fetch':
+      'Không thể kết nối đến máy chủ. Vui lòng kiểm tra đường truyền mạng và thử lại.',
   };
 
+  const lower = message.toLowerCase();
   for (const [key, val] of Object.entries(errorMap)) {
-    if (code === key || message.includes(key)) return new Error(val);
+    if (code === key || lower.includes(key.toLowerCase()))
+      return new Error(val);
   }
 
   return error instanceof Error ? error : new Error(message);
@@ -30,8 +37,12 @@ export const personService = {
   async getTreeData(treeId: string): Promise<TreeData> {
     const [treeRes, personsRes, relsRes] = await Promise.all([
       supabase.from('family_trees').select('*').eq('id', treeId).single(),
-      supabase.from('persons').select('*').eq('tree_id', treeId).order('sibling_order', { ascending: true }),
-      supabase.from('relationships').select('*').eq('tree_id', treeId)
+      supabase
+        .from('persons')
+        .select('*')
+        .eq('tree_id', treeId)
+        .order('sibling_order', { ascending: true }),
+      supabase.from('relationships').select('*').eq('tree_id', treeId),
     ]);
 
     if (treeRes.error) throw mapPersonError(treeRes.error);
@@ -41,7 +52,7 @@ export const personService = {
     return {
       tree: treeRes.data,
       persons: personsRes.data ?? [],
-      relationships: relsRes.data ?? []
+      relationships: relsRes.data ?? [],
     };
   },
 
@@ -50,7 +61,11 @@ export const personService = {
       ...person,
       sibling_order: normalizeSiblingOrder(person.sibling_order),
     };
-    const { data, error } = await supabase.from('persons').insert(payload).select().single();
+    const { data, error } = await supabase
+      .from('persons')
+      .insert(payload)
+      .select()
+      .single();
     if (error) throw mapPersonError(error);
     return data;
   },
@@ -60,17 +75,29 @@ export const personService = {
     if ('sibling_order' in updates) {
       payload.sibling_order = normalizeSiblingOrder(updates.sibling_order);
     }
-    const { data, error } = await supabase.from('persons').update(payload).eq('id', personId).select().single();
+    const { data, error } = await supabase
+      .from('persons')
+      .update(payload)
+      .eq('id', personId)
+      .select()
+      .single();
     if (error) throw mapPersonError(error);
     return data;
   },
 
   async delete(personId: string): Promise<void> {
-    const { error } = await supabase.from('persons').delete().eq('id', personId);
+    const { error } = await supabase
+      .from('persons')
+      .delete()
+      .eq('id', personId);
     if (error) throw mapPersonError(error);
   },
 
-  async linkRelation(relationType: RelationType, sourceId: string, targetId: string): Promise<Relationship | null> {
+  async linkRelation(
+    relationType: RelationType,
+    sourceId: string,
+    targetId: string
+  ): Promise<Relationship | null> {
     const { error } = await supabase.rpc('link_person_relation', {
       relation_type: relationType,
       source_id: sourceId,
@@ -79,16 +106,23 @@ export const personService = {
     if (error) throw mapPersonError(error);
 
     if (relationType === 'spouse') {
-      const { data } = await supabase.from('relationships')
+      const { data } = await supabase
+        .from('relationships')
         .select('*')
-        .or(`and(person1_id.eq.${sourceId},person2_id.eq.${targetId}),and(person1_id.eq.${targetId},person2_id.eq.${sourceId})`)
+        .or(
+          `and(person1_id.eq.${sourceId},person2_id.eq.${targetId}),and(person1_id.eq.${targetId},person2_id.eq.${sourceId})`
+        )
         .single();
       return data;
     }
     return null;
   },
 
-  async unlinkRelation(relationType: RelationType, sourceId: string, targetId?: string): Promise<void> {
+  async unlinkRelation(
+    relationType: RelationType,
+    sourceId: string,
+    targetId?: string
+  ): Promise<void> {
     const { error } = await supabase.rpc('unlink_person_relation', {
       relation_type: relationType,
       source_id: sourceId,
@@ -98,15 +132,19 @@ export const personService = {
   },
 
   async uploadAvatar(file: File | Blob): Promise<string> {
-    const fileExt = file instanceof File && file.name ? file.name.split('.').pop() : 'jpg';
+    const fileExt =
+      file instanceof File && file.name ? file.name.split('.').pop() : 'jpg';
     const fileName = `${crypto.randomUUID()}.${fileExt || 'jpg'}`;
     const filePath = `avatars/${fileName}`;
 
-    const { error } = await supabase.storage.from('avatars').upload(filePath, file);
+    const { error } = await supabase.storage
+      .from('avatars')
+      .upload(filePath, file);
     if (error) throw mapPersonError(error);
 
-    const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(filePath);
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from('avatars').getPublicUrl(filePath);
     return publicUrl;
   },
-
 };

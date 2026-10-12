@@ -1,0 +1,20 @@
+# Build & dependencies
+node_modules
+.next
+out
+build
+dist
+
+# Logs & temp
+*.log
+coverage
+*.tsbuildinfo
+.pnpm-store
+
+# Environment variables
+.env*
+!.env.example
+
+# Supabase
+.supabase
+supabase/.temp

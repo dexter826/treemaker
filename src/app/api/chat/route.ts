@@ -17,7 +17,9 @@ export async function POST(req: Request) {
   try {
     if (!process.env.OPENROUTER_API_KEY) {
       return new Response(
-        JSON.stringify({ error: 'Chưa cấu hình API Key OpenRouter (OPENROUTER_API_KEY).' }),
+        JSON.stringify({
+          error: 'Chưa cấu hình API Key OpenRouter (OPENROUTER_API_KEY).',
+        }),
         { status: 500, headers: { 'Content-Type': 'application/json' } }
       );
     }
@@ -41,7 +43,10 @@ export async function POST(req: Request) {
       .map((r) => [r.person1_id, r.person2_id]);
 
     const personList = simplifiedPersons
-      .map((p) => `- ID: ${p.id}, Tên: ${p.name}, Giới tính: ${p.gen}, Cha: ${p.fid || 'Không rõ'}, Mẹ: ${p.mid || 'Không rõ'}, Sinh: ${p.birth || '?'}`)
+      .map(
+        (p) =>
+          `- ID: ${p.id}, Tên: ${p.name}, Giới tính: ${p.gen}, Cha: ${p.fid || 'Không rõ'}, Mẹ: ${p.mid || 'Không rõ'}, Sinh: ${p.birth || '?'}`
+      )
       .join('\n');
 
     const spouseList = spouseRels
@@ -65,16 +70,24 @@ QUY TẮC BẮT BUỘC:
 3. Xưng hô chuẩn Việt Nam (Ông, Bà, Chú, Bác, Cô, Dì...).
 4. Trả lời súc tích bằng Markdown. Nếu không tìm thấy tên, hãy liệt kê một vài cái tên bạn thấy trong danh sách để xác nhận.`,
       messages: (messages || []).map((m) => ({
-        role: m.role === 'data' ? ('system' as const) : (m.role as 'user' | 'assistant' | 'system'),
-        content: typeof m.content === 'string'
-          ? m.content
-          : (m.parts?.filter((p) => p.type === 'text').map((p) => p.text || '').join('') || ' '),
+        role:
+          m.role === 'data'
+            ? ('system' as const)
+            : (m.role as 'user' | 'assistant' | 'system'),
+        content:
+          typeof m.content === 'string'
+            ? m.content
+            : m.parts
+                ?.filter((p) => p.type === 'text')
+                .map((p) => p.text || '')
+                .join('') || ' ',
       })),
     });
 
     return result.toUIMessageStreamResponse();
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Đã xảy ra lỗi không xác định.';
+    const message =
+      error instanceof Error ? error.message : 'Đã xảy ra lỗi không xác định.';
     return new Response(JSON.stringify({ error: `Lỗi AI: ${message}` }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },

@@ -11,10 +11,8 @@ export function FamilyEdge({
   style = {},
   markerEnd,
 }: EdgeProps) {
-
   const verticalDistance = targetY - sourceY;
   const splitY = sourceY + verticalDistance * 0.75;
-
 
   const edgePath = `M ${sourceX},${sourceY} 
                     L ${sourceX},${splitY} 
@@ -22,15 +20,15 @@ export function FamilyEdge({
                     L ${targetX},${targetY}`;
 
   return (
-    <BaseEdge 
-      id={id} 
-      path={edgePath} 
-      markerEnd={markerEnd} 
+    <BaseEdge
+      id={id}
+      path={edgePath}
+      markerEnd={markerEnd}
       style={{
         ...style,
         strokeWidth: 2,
         stroke: style.stroke || 'var(--color-foreground)',
-      }} 
+      }}
     />
   );
 }
