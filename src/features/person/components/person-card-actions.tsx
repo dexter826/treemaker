@@ -51,10 +51,10 @@ export function PersonCardActions({ person, onClose }: PersonCardActionsProps) {
       className={cn(
         "absolute inset-0 z-50 flex items-center justify-center bg-background border-2 [backface-visibility:hidden] [transform:rotateY(180deg)] export-exclude",
         isSelected
-          ? 'border-primary shadow-[6px_6px_0px_0px_var(--color-primary)]'
+          ? 'border-primary shadow-brutal-primary-lg'
           : deceased 
-            ? 'border-muted-foreground/30 opacity-90' 
-            : 'border-foreground shadow-[6px_6px_0px_0px_var(--color-foreground)]',
+            ? 'border-deceased-border bg-deceased-bg shadow-brutal-sm opacity-95' 
+            : 'border-foreground shadow-brutal-lg',
       )}
       onClick={(e) => {
         e.stopPropagation();

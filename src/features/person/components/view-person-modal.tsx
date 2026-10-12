@@ -38,7 +38,7 @@ export function ViewPersonModal() {
         className="sm:max-w-[380px] overflow-hidden flex flex-col h-[440px]"
       >
         {!showFullBio && (
-          <DialogClose render={<Button variant="outline" size="icon-xs" className="absolute top-3 right-3 z-50 bg-background border-2 border-foreground shadow-[2px_2px_0px_0px_var(--color-foreground)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px]" />}>
+          <DialogClose render={<Button variant="outline" size="icon-xs" className="absolute top-3 right-3 z-50 bg-background border-2 border-foreground shadow-brutal-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px]" />}>
             <X size={14} strokeWidth={3} />
           </DialogClose>
         )}
@@ -55,7 +55,7 @@ export function ViewPersonModal() {
                   variant="outline" 
                   size="xs" 
                   onClick={() => setShowFullBio(false)}
-                  className="h-8 px-2 text-[10px] bg-background border-2 border-foreground shadow-[2px_2px_0px_0px_var(--color-foreground)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px] gap-1 font-bold"
+                  className="h-8 px-2 text-[10px] bg-background border-2 border-foreground shadow-brutal-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px] gap-1 font-bold"
                 >
                   <ArrowLeft size={12} strokeWidth={3} />
                   QUAY LẠI
@@ -71,7 +71,7 @@ export function ViewPersonModal() {
 
             <div className="flex flex-col h-full">
               <div className="border-b-2 border-foreground bg-primary/5 p-4 flex items-center gap-4 shrink-0 relative">
-                <Avatar className="h-13 w-13 border-2 border-foreground rounded-none bg-background shadow-[3px_3px_0px_0px_var(--color-foreground)] shrink-0">
+                <Avatar className="h-13 w-13 border-2 border-foreground rounded-none bg-background shadow-brutal-sm shrink-0">
                   <AvatarImage src={person.avatar_url || ''} className="object-cover" />
                   <AvatarFallback className="rounded-none font-serif font-black text-xl" style={{ color: genderColor }}>
                     {person.full_name.charAt(0)}
@@ -112,7 +112,7 @@ export function ViewPersonModal() {
                         variant="outline"
                         size="icon-xs"
                         onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(person.address!)}`, '_blank')}
-                        className="mt-4 shrink-0 bg-background border-2 border-foreground shadow-[2px_2px_0px_0px_var(--color-foreground)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
+                        className="mt-4 shrink-0 bg-background border-2 border-foreground shadow-brutal-sm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
                         title="Xem trên Google Maps"
                       >
                         <Map size={12} strokeWidth={3} />

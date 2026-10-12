@@ -163,7 +163,7 @@ export function AvatarUpload({ currentUrl, onFileSelect, disabled, error }: Avat
         onClick={() => {
           if (!disabled) fileInputRef.current?.click();
         }}
-        className={`relative group w-32 h-32 border-2 ${error ? 'border-red-500 shadow-[4px_4px_0px_0px_var(--color-red-500)]' : 'border-foreground shadow-[4px_4px_0px_0px_var(--color-foreground)]'} bg-muted overflow-hidden cursor-pointer transition-all hover:border-primary ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className={`relative group w-32 h-32 border-2 ${error ? 'border-destructive shadow-brutal-sm' : 'border-foreground shadow-brutal-md'} bg-muted overflow-hidden cursor-pointer transition-all hover:border-primary ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
         {displayUrl ? (
           <>

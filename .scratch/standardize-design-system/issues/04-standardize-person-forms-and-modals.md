@@ -4,9 +4,9 @@
 
 **Blocked by:** 02: Standardize Shared UI Primitives
 
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] Standardize the member form layout with logical sectioning, sharp inputs, and prominent submit buttons.
-- [ ] Upgrade the member view modal to display comprehensive biographical details with editorial serif headings and clean metadata badges.
-- [ ] Update quick action controls on the reverse side of the member card with standardized brutalist buttons.
-- [ ] Align portrait upload dropzones and image cropping dialogs with the zero-radius, 2px border system.
+- [x] Standardize the member form layout with logical sectioning, sharp inputs, and prominent submit buttons.
+- [x] Upgrade the member view modal to display comprehensive biographical details with editorial serif headings and clean metadata badges.
+- [x] Update quick action controls on the reverse side of the member card with standardized brutalist buttons.
+- [x] Align portrait upload dropzones and image cropping dialogs with the zero-radius, 2px border system.
