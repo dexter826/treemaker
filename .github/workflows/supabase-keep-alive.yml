@@ -1,0 +1,43 @@
+name: Supabase Keep-Alive
+
+on:
+  schedule:
+    # Chạy vào lúc 05:00 UTC mỗi 3 ngày một lần
+    - cron: '0 5 */3 * *'
+  workflow_dispatch: # Cho phép nhấn nút "Run workflow" thủ công trên GitHub Actions để kiểm tra
+
+jobs:
+  keep-alive:
+    name: Ping Supabase Database
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send keep-alive query
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL || secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY || secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "::error::Chưa cấu hình Secret SUPABASE_URL hoặc SUPABASE_ANON_KEY trong GitHub repository!"
+            exit 1
+          fi
+
+          # Chuẩn hóa URL, loại bỏ dấu gạch chéo cuối nếu có
+          CLEAN_URL="${SUPABASE_URL%/}"
+
+          echo "Gửi request đến Supabase PostgREST..."
+          RESPONSE=$(curl -s -w "\n%{http_code}" -X GET "${CLEAN_URL}/rest/v1/family_trees?select=id&limit=1" \
+            -H "apikey: ${SUPABASE_ANON_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          echo "Mã phản hồi HTTP: $HTTP_CODE"
+          echo "Dữ liệu phản hồi: $BODY"
+
+          if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
+            echo "Thành công: Database Supabase đã được đánh thức và duy trì hoạt động."
+          else
+            echo "::error::Request thất bại với mã HTTP $HTTP_CODE"
+            exit 1
+          fi
