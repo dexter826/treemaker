@@ -1,7 +1,7 @@
 <div align="center">
   <img src="public/og-image.png" alt="TreeMaker Banner" width="100%" />
 
-**Nền tảng xây dựng gia phả trực quan, tương tác và bảo mật.**
+**Nền tảng xây dựng gia phả trực quan, giàu tính tương tác và bảo mật.**
 
 [![Next.js](https://img.shields.io/badge/Next.js-15+-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-Database-green?style=for-the-badge&logo=supabase)](https://supabase.com/)
@@ -24,12 +24,12 @@
 - **Xuất kỷ yếu PDF**: Tạo và xuất dữ liệu gia phả thành sách kỷ yếu dạng PDF (LegacyBook) bằng jsPDF.
 - **Bảo mật với Supabase RLS**: Toàn bộ dữ liệu được lưu trữ trên PostgreSQL và phân quyền chặt chẽ theo tài khoản qua Row Level Security.
 - **Đồng bộ thời gian thực**: Cập nhật ngay các thay đổi trên sơ đồ giữa các thiết bị.
-- **Quản lý hồ sơ thành viên**: Lưu trữ thông tin ngày sinh, ngày mất, quê quán, quốc kỳ và ảnh chân dung (qua Supabase Storage).
+- **Quản lý hồ sơ thành viên**: Lưu trữ thông tin ngày sinh, ngày mất, quê quán, quốc gia cư trú (kèm cờ hiển thị) và ảnh chân dung (qua Supabase Storage).
 - **Giao diện thích ứng**: Hiển thị mượt mà trên cả máy tính lẫn thiết bị di động.
 
 ## Công nghệ sử dụng
 
-- **Giao diện**: Next.js 15 (App Router), React 19, Tailwind CSS 4, Motion, Lucide Icons, Shadcn UI base.
+- **Giao diện**: Next.js 15 (App Router), React 19, Tailwind CSS 4, Motion, Lucide Icons, Shadcn UI.
 - **Canvas & Layout**: React Flow (`@xyflow/react`), Dagre.
 - **Cơ sở dữ liệu & Backend**: Supabase (PostgreSQL, Auth, Storage, Realtime).
 - **Quản lý trạng thái**: Zustand, Immer.
@@ -59,7 +59,7 @@
    ```
 
 3. **Cấu hình biến môi trường:**
-   Tạo file `.env` từ file mẫu:
+   Tạo tệp `.env` từ tệp mẫu:
 
    ```bash
    cp .env.example .env
@@ -98,11 +98,11 @@ treemaker/
 │   ├── hooks/            # Custom React hooks dùng chung
 │   ├── lib/              # Tiện ích, store trạng thái và client Supabase
 │   └── types/            # Khai báo kiểu TypeScript dùng chung
-└── supabase/             # Cấu hình và migration database
+└── supabase/             # Cấu hình và các bản migration cơ sở dữ liệu
 ```
 
 ---
 
 <div align="center">
-  Phát triển bởi <a href="https://github.com/dexter826">dexter826</a> dành cho gia đình.
+  Do <a href="https://github.com/dexter826">dexter826</a> phát triển dành cho gia đình.
 </div>
