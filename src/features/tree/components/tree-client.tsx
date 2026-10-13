@@ -11,7 +11,6 @@ import { treeService } from '../services/tree.service';
 import { authService } from '@/features/auth';
 import { toast } from 'sonner';
 import { SplashScreen } from '@/components/ui/splash-screen';
-import { TreeChatbot } from '@/features/ai';
 import { LegacyBookTemplate } from './parts/legacy-book-template';
 
 // Thành phần Client quản lý tương tác cây gia phả.
@@ -89,7 +88,6 @@ export default function TreeClient({ treeId }: { treeId: string }) {
             <FamilyTreeCanvas />
             <Sidebar />
             <ViewPersonModal />
-            <TreeChatbot />
             {currentTree && (
               <LegacyBookTemplate
                 tree={currentTree}

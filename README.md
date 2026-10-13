@@ -16,12 +16,11 @@
 
 ## Giới thiệu
 
-**TreeMaker** là ứng dụng web mã nguồn mở dùng để ghi chép, lập sơ đồ và lưu trữ gia phả dòng họ. Ứng dụng hỗ trợ dựng cây phả hệ tương tác trực tiếp trên nền canvas 2D, tích hợp AI hỗ trợ tìm hiểu thông tin thành viên và cho phép xuất toàn bộ dữ liệu ra sách kỷ yếu (PDF).
+**TreeMaker** là ứng dụng web mã nguồn mở dùng để ghi chép, lập sơ đồ và lưu trữ gia phả dòng họ. Ứng dụng hỗ trợ dựng cây phả hệ tương tác trực tiếp trên nền canvas 2D và cho phép xuất toàn bộ dữ liệu ra sách kỷ yếu (PDF).
 
 ## Tính năng chính
 
 - **Canvas tương tác 2D**: Kéo thả, phóng to thu nhỏ và tự động sắp xếp sơ đồ gia phả bằng React Flow (`@xyflow/react`) kết hợp thuật toán Dagre.
-- **Trợ lý AI**: Tích hợp OpenRouter để tóm tắt thông tin thành viên, gợi ý tiểu sử và giải đáp thắc mắc về các thế hệ trong gia đình.
 - **Xuất kỷ yếu PDF**: Tạo và xuất dữ liệu gia phả thành sách kỷ yếu dạng PDF (LegacyBook) bằng jsPDF.
 - **Bảo mật với Supabase RLS**: Toàn bộ dữ liệu được lưu trữ trên PostgreSQL và phân quyền chặt chẽ theo tài khoản qua Row Level Security.
 - **Đồng bộ thời gian thực**: Cập nhật ngay các thay đổi trên sơ đồ giữa các thiết bị.
@@ -34,7 +33,6 @@
 - **Canvas & Layout**: React Flow (`@xyflow/react`), Dagre.
 - **Cơ sở dữ liệu & Backend**: Supabase (PostgreSQL, Auth, Storage, Realtime).
 - **Quản lý trạng thái**: Zustand, Immer.
-- **Trí tuệ nhân tạo**: OpenRouter qua Vercel AI SDK.
 - **Xuất tài liệu**: jsPDF.
 
 ## Cài đặt và chạy thử
@@ -43,7 +41,7 @@
 
 - Node.js 20 trở lên
 - npm, pnpm hoặc yarn
-- Tài khoản [Supabase](https://supabase.com/) và [OpenRouter](https://openrouter.ai/)
+- Tài khoản [Supabase](https://supabase.com/)
 
 ### Các bước cài đặt
 
@@ -73,7 +71,6 @@
    | ------------------------------- | ---------------------------------------------------- |
    | `NEXT_PUBLIC_SUPABASE_URL`      | URL dự án trên Supabase                              |
    | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public Anon Key từ Supabase                          |
-   | `OPENROUTER_API_KEY`            | Khóa API từ [OpenRouter](https://openrouter.ai/keys) |
 
 4. **Khởi tạo cơ sở dữ liệu:**
    Chạy lần lượt các tệp SQL trong thư mục `supabase/migrations/` trên giao diện SQL Editor của Supabase để tạo bảng và chính sách bảo mật RLS.
@@ -95,7 +92,6 @@ treemaker/
 │   ├── app/              # Router và các trang của Next.js (App Router)
 │   ├── components/       # Component giao diện dùng chung (Shadcn UI)
 │   ├── features/         # Các module nghiệp vụ chính (Deep Modules)
-│   │   ├── ai/           # Trợ lý AI và tích hợp OpenRouter
 │   │   ├── auth/         # Đăng nhập và xác thực người dùng
 │   │   ├── person/       # Quản lý thành viên, biểu mẫu và dữ liệu cá nhân
 │   │   └── tree/         # Canvas gia phả, thuật toán layout và xuất PDF kỷ yếu
