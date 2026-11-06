@@ -93,15 +93,15 @@ export function AuthForm() {
         : 'Đăng nhập';
 
   return (
-    <div className="border-border-default bg-surface rounded-card p-xl border">
-      <div className="mb-lg gap-xxs flex flex-col">
+    <div className="border-border-default bg-surface rounded-card border p-6">
+      <div className="mb-5 flex flex-col gap-1">
         {mode === 'forgot' && (
           <Button
             type="button"
-            variant="ghost"
+            variant="inset"
             size="icon"
             aria-label="Quay lại đăng nhập"
-            className="-ml-xs mb-xxs self-start"
+            className="mb-1 -ml-2 self-start"
             onClick={() => handleSwitchMode('login')}
           >
             <ArrowLeft />
@@ -115,10 +115,7 @@ export function AuthForm() {
         </p>
       </div>
 
-      <form
-        onSubmit={handleSubmit(handleAuth)}
-        className="gap-md flex flex-col"
-      >
+      <form onSubmit={handleSubmit(handleAuth)} className="flex flex-col gap-4">
         {formError && (
           <Alert variant="destructive">
             <AlertDescription>{formError}</AlertDescription>
@@ -153,7 +150,7 @@ export function AuthForm() {
               />
               <Button
                 type="button"
-                variant="ghost"
+                variant="inset"
                 size="icon"
                 aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
                 className="absolute top-0 right-0"
@@ -181,7 +178,7 @@ export function AuthForm() {
               />
               <Button
                 type="button"
-                variant="ghost"
+                variant="inset"
                 size="icon"
                 aria-label={
                   showConfirmPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'
@@ -198,7 +195,7 @@ export function AuthForm() {
 
         {mode === 'login' && (
           <div className="flex items-center justify-between">
-            <div className="gap-xs flex items-center">
+            <div className="flex items-center gap-2">
               <Controller
                 name="rememberMe"
                 control={control}
@@ -241,7 +238,7 @@ export function AuthForm() {
         </Button>
 
         {mode !== 'forgot' && (
-          <div className="border-border-default pt-md flex justify-center border-t">
+          <div className="border-border-default flex justify-center border-t pt-4">
             <Button
               type="button"
               variant="link"

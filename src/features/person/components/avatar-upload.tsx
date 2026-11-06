@@ -215,7 +215,7 @@ export function AvatarUpload({
             variant="secondary"
             size="icon"
             onClick={clearImage}
-            className="bg-foreground text-background hover:bg-primary hover:text-on-primary absolute top-1 right-1 z-10"
+            className="bg-primary text-on-primary hover:bg-primary-hover absolute top-1 right-1 z-10"
           >
             <X className="h-3 w-3" />
           </Button>

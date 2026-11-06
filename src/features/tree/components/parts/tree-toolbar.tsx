@@ -241,7 +241,7 @@ export function TreeToolbar() {
       </Link>
 
       <div
-        className={`group/name border-border-default bg-surface-elevated relative flex h-10 min-w-0 flex-1 flex-col justify-center border px-2 md:h-12 md:flex-none md:px-4 ${!isReadOnly ? 'hover:bg-foreground/[0.02] cursor-pointer' : ''}`}
+        className={`group/name border-border-default bg-surface-elevated px-md relative flex h-12 min-w-0 flex-1 flex-col justify-center border md:flex-none ${!isReadOnly ? 'hover:bg-primary-soft cursor-pointer' : ''}`}
         onClick={() => {
           if (!isReadOnly) {
             setEditValue('name', currentTree.name);
@@ -408,7 +408,7 @@ export function TreeToolbar() {
           </DialogHeader>
 
           <DialogBody>
-            <div className="gap-sm grid grid-cols-3">
+            <div className="grid grid-cols-3 gap-3">
               <Field className="col-span-2">
                 <FieldLabel htmlFor="new-person-name">Họ và tên</FieldLabel>
                 <Input
@@ -557,11 +557,11 @@ export function TreeToolbar() {
             </DialogDescription>
           </DialogHeader>
           <DialogBody>
-            <div className="border-border-default bg-surface rounded-control p-md border">
+            <div className="border-border-default bg-surface rounded-control border p-4">
               <p className="text-text-secondary text-caption font-medium">
                 Lưu ý
               </p>
-              <ul className="text-text-secondary mt-xxs text-caption list-inside list-disc">
+              <ul className="text-text-secondary text-caption mt-1 list-inside list-disc">
                 <li>Sơ đồ sẽ tự căn giữa trước khi xuất.</li>
                 <li>Giữ trình duyệt mở cho đến khi hoàn tất.</li>
               </ul>

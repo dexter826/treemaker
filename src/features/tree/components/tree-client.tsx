@@ -67,9 +67,9 @@ export default function TreeClient({ treeId }: { treeId: string }) {
 
   if (isLoading) {
     return (
-      <div className="bg-background gap-md p-md flex h-dvh w-full flex-col">
+      <div className="bg-background flex h-dvh w-full flex-col gap-4 p-4">
         <Skeleton className="h-12 w-72 self-center" />
-        <div className="gap-md grid flex-1 grid-cols-3">
+        <div className="grid flex-1 grid-cols-3 gap-4">
           {Array.from({ length: 6 }).map((_, i) => (
             <Skeleton key={i} className="rounded-node h-16" />
           ))}

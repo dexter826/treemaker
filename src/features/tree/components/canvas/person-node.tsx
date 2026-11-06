@@ -107,7 +107,7 @@ export const PersonNode = memo(function PersonNode({
 
       <div
         className={cn(
-          'border-border-default bg-surface gap-sm rounded-node p-xs flex h-full items-center border transition-colors',
+          'border-border-default bg-surface rounded-node flex h-full items-center gap-3 border p-2 transition-colors',
           isSelected && 'border-primary bg-selected',
           deceased && !isSelected && 'border-deceased bg-deceased-surface'
         )}
@@ -122,8 +122,8 @@ export const PersonNode = memo(function PersonNode({
           </AvatarFallback>
         </Avatar>
 
-        <div className="gap-micro-1 flex min-w-0 flex-col">
-          <div className="gap-xxs flex items-center">
+        <div className="flex min-w-0 flex-col gap-0.5">
+          <div className="flex items-center gap-1">
             <span
               aria-hidden
               className={cn(

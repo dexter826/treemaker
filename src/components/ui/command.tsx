@@ -69,7 +69,7 @@ function CommandInput({
   return (
     <div
       data-slot="command-input-wrapper"
-      className="border-border-default gap-sm p-md flex items-center border-b"
+      className="border-border-default flex items-center gap-3 border-b p-4"
     >
       <SearchIcon className="text-text-muted size-4 shrink-0" />
       <CommandPrimitive.Input
@@ -92,7 +92,7 @@ function CommandList({
     <CommandPrimitive.List
       data-slot="command-list"
       className={cn(
-        'no-scrollbar p-xs max-h-72 scroll-py-1 overflow-x-hidden overflow-y-auto outline-none',
+        'no-scrollbar max-h-72 scroll-py-1 overflow-x-hidden overflow-y-auto p-2 outline-none',
         className
       )}
       {...props}
@@ -108,7 +108,7 @@ function CommandEmpty({
     <CommandPrimitive.Empty
       data-slot="command-empty"
       className={cn(
-        'text-text-secondary p-md text-body-sm text-center',
+        'text-text-secondary text-body-sm p-4 text-center',
         className
       )}
       {...props}
@@ -124,7 +124,7 @@ function CommandGroup({
     <CommandPrimitive.Group
       data-slot="command-group"
       className={cn(
-        'text-text-primary **:[[cmdk-group-heading]]:text-text-secondary **:[[cmdk-group-heading]]:px-sm **:[[cmdk-group-heading]]:py-xxs **:[[cmdk-group-heading]]:text-caption overflow-hidden **:[[cmdk-group-heading]]:font-medium',
+        'text-text-primary **:[[cmdk-group-heading]]:text-text-secondary **:[[cmdk-group-heading]]:text-caption overflow-hidden **:[[cmdk-group-heading]]:px-3 **:[[cmdk-group-heading]]:py-1 **:[[cmdk-group-heading]]:font-medium',
         className
       )}
       {...props}
@@ -154,7 +154,7 @@ function CommandItem({
     <CommandPrimitive.Item
       data-slot="command-item"
       className={cn(
-        "group/command-item text-text-primary data-selected:bg-selected data-selected:text-on-selected gap-sm rounded-control px-sm py-xs text-body-sm relative flex cursor-pointer items-center outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "group/command-item text-text-primary data-selected:bg-selected data-selected:text-on-selected rounded-control text-body-sm relative flex cursor-pointer items-center gap-3 px-3 py-2 outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className
       )}
       {...props}

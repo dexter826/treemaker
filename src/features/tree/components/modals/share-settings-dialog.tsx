@@ -145,7 +145,7 @@ export function ShareSettingsDialog({
                   className={cn(
                     'text-meta flex cursor-pointer items-center justify-center gap-2 border border-transparent py-2 font-semibold transition-all',
                     visibility === 'private'
-                      ? 'bg-primary text-on-primary border-border-default -translate-x-[1px] -translate-y-[1px]'
+                      ? 'bg-primary text-on-primary border-transparent'
                       : 'hover:bg-surface/50'
                   )}
                 >
@@ -156,7 +156,7 @@ export function ShareSettingsDialog({
                   className={cn(
                     'text-meta flex cursor-pointer items-center justify-center gap-2 border border-transparent py-2 font-semibold transition-all',
                     visibility === 'public'
-                      ? 'bg-primary text-on-primary border-border-default -translate-x-[1px] -translate-y-[1px]'
+                      ? 'bg-primary text-on-primary border-transparent'
                       : 'hover:bg-surface/50'
                   )}
                 >
@@ -173,7 +173,7 @@ export function ShareSettingsDialog({
                   className={cn(
                     'text-meta flex cursor-pointer items-center justify-center gap-2 border border-transparent py-2 font-semibold transition-all',
                     permission === 'view'
-                      ? 'bg-foreground text-background border-border-default -translate-x-[1px] -translate-y-[1px]'
+                      ? 'bg-primary text-on-primary border-transparent'
                       : 'hover:bg-surface/50'
                   )}
                 >
@@ -184,7 +184,7 @@ export function ShareSettingsDialog({
                   className={cn(
                     'text-meta flex cursor-pointer items-center justify-center gap-2 border border-transparent py-2 font-semibold transition-all',
                     permission === 'edit'
-                      ? 'bg-foreground text-background border-border-default -translate-x-[1px] -translate-y-[1px]'
+                      ? 'bg-primary text-on-primary border-transparent'
                       : 'hover:bg-surface/50'
                   )}
                 >

@@ -5,6 +5,7 @@ import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 import { getOrderedPersons } from '../../utils/tree-utils';
 import './legacy-book.css';
 
@@ -30,9 +31,12 @@ export function LegacyBookTemplate({
       <div className="lb-cover page-export relative flex h-[297mm] w-[210mm] flex-col items-center justify-center p-[20mm]">
         <div className="lb-cover-frame absolute inset-[5mm]" />
 
-        <img
+        <Image
           src="/brand/roundel.svg"
           alt=""
+          width={174}
+          height={174}
+          unoptimized
           className="z-10 mb-10 size-[46mm]"
         />
 

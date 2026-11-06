@@ -9,9 +9,9 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <div className="bg-background p-md flex min-h-dvh items-center justify-center">
-      <div className="gap-xxl flex w-full max-w-md flex-col">
-        <div className="gap-xs flex flex-col items-center">
+    <div className="bg-background flex min-h-dvh items-center justify-center p-4">
+      <div className="flex w-full max-w-md flex-col gap-8">
+        <div className="flex flex-col items-center gap-2">
           <Image
             src="/brand/lockup-horizontal.svg"
             alt="TreeMaker"

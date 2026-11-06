@@ -61,7 +61,7 @@ export function EventListModal({ isOpen, onClose }: EventListModalProps) {
                 </p>
               </div>
             ) : (
-              <div className="divide-foreground/5 divide-y-2">
+              <div className="divide-border-default divide-y">
                 {Object.entries(groupedEvents).map(([month, events]) => {
                   if (events.length === 0) return null;
 
@@ -73,7 +73,7 @@ export function EventListModal({ isOpen, onClose }: EventListModalProps) {
                         </h3>
                       </div>
 
-                      <div className="divide-foreground/5 divide-y">
+                      <div className="divide-border-default divide-y">
                         {events.map((event, idx) => {
                           const isToday =
                             event.day === todayDay &&
@@ -115,7 +115,7 @@ export function EventListModal({ isOpen, onClose }: EventListModalProps) {
                                       className={`text-meta flex items-center gap-1 border px-1.5 py-0.5 font-semibold tracking-tighter ${
                                         event.type === 'birth'
                                           ? 'bg-male/10 text-male border-male/20'
-                                          : 'bg-foreground/5 text-text-secondary border-border-default/10'
+                                          : 'bg-primary-soft text-text-secondary border-border-default'
                                       } `}
                                     >
                                       {event.type === 'birth' ? (

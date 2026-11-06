@@ -62,7 +62,7 @@ export function OTPInput({
 
   return (
     <div
-      className={cn('gap-xs flex justify-center', className)}
+      className={cn('flex justify-center gap-2', className)}
       onPaste={handlePaste}
     >
       {Array.from({ length }).map((_, i) => (

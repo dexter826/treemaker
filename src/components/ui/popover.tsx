@@ -37,7 +37,7 @@ function PopoverContent({
         <PopoverPrimitive.Popup
           data-slot="popover-content"
           className={cn(
-            'border-border-default bg-surface-elevated text-text-primary data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 gap-sm rounded-card p-md z-50 flex origin-(--transform-origin) flex-col border shadow-md outline-hidden duration-(--motion-overlay)',
+            'border-border-default bg-surface-elevated text-text-primary data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 rounded-card z-50 flex origin-(--transform-origin) flex-col gap-3 border p-4 shadow-md outline-hidden duration-(--motion-overlay)',
             className
           )}
           {...props}
@@ -51,7 +51,7 @@ function PopoverHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="popover-header"
-      className={cn('gap-micro-1 flex flex-col', className)}
+      className={cn('flex flex-col gap-0.5', className)}
       {...props}
     />
   );

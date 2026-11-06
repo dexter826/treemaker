@@ -62,9 +62,9 @@ function DialogContent({
             data-slot="dialog-close"
             render={
               <Button
-                variant="ghost"
+                variant="inset"
                 size="icon"
-                className="top-xs right-xs absolute"
+                className="absolute top-2 right-2"
               />
             }
           >
@@ -82,7 +82,7 @@ function DialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
     <div
       data-slot="dialog-header"
       className={cn(
-        'border-border-default gap-xxs px-xl py-lg flex flex-col border-b',
+        'border-border-default flex flex-col gap-1 border-b px-6 py-5',
         className
       )}
       {...props}
@@ -94,7 +94,7 @@ function DialogBody({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="dialog-body"
-      className={cn('gap-md p-xl flex flex-col', className)}
+      className={cn('flex flex-col gap-4 p-6', className)}
       {...props}
     />
   );
@@ -105,7 +105,7 @@ function DialogFooter({ className, ...props }: React.ComponentProps<'div'>) {
     <div
       data-slot="dialog-footer"
       className={cn(
-        'border-border-default gap-sm px-xl py-md flex border-t',
+        'border-border-default flex gap-3 border-t px-6 py-4',
         className
       )}
       {...props}

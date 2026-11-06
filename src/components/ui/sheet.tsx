@@ -68,9 +68,9 @@ function SheetContent({
             data-slot="sheet-close"
             render={
               <Button
-                variant="ghost"
+                variant="inset"
                 size="icon"
-                className="top-xs right-xs absolute"
+                className="absolute top-2 right-2"
               />
             }
           >
@@ -88,7 +88,7 @@ function SheetHeader({ className, ...props }: React.ComponentProps<'div'>) {
     <div
       data-slot="sheet-header"
       className={cn(
-        'border-border-default gap-micro-1 px-xl py-lg flex flex-col border-b',
+        'border-border-default flex flex-col gap-0.5 border-b px-6 py-5',
         className
       )}
       {...props}
@@ -101,7 +101,7 @@ function SheetFooter({ className, ...props }: React.ComponentProps<'div'>) {
     <div
       data-slot="sheet-footer"
       className={cn(
-        'border-border-default gap-sm px-xl py-md mt-auto flex border-t',
+        'border-border-default mt-auto flex gap-3 border-t px-6 py-4',
         className
       )}
       {...props}

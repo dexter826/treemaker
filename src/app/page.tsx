@@ -180,9 +180,9 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="bg-background gap-xl p-xl lg:px-xxl flex min-h-dvh flex-col">
+      <div className="bg-background flex min-h-dvh flex-col gap-6 p-6 lg:px-8">
         <Skeleton className="h-10 w-64" />
-        <div className="gap-md flex flex-col">
+        <div className="flex flex-col gap-4">
           {Array.from({ length: 3 }).map((_, i) => (
             <Skeleton key={i} className="rounded-card h-24" />
           ))}
@@ -193,19 +193,21 @@ export default function DashboardPage() {
 
   return (
     <div className="bg-background min-h-dvh">
-      <div className="gap-xxl px-md py-xxl lg:px-xxl lg:py-section mx-auto flex w-full max-w-[1120px] flex-col">
-        <header className="border-border-default gap-xl pb-xl flex flex-col justify-between border-b md:flex-row md:items-end">
-          <div className="gap-xs flex flex-col">
+      <div className="mx-auto flex w-full max-w-[1120px] flex-col gap-8 px-4 py-8 lg:px-8 lg:py-16">
+        <header className="border-border-default flex flex-col justify-between gap-6 border-b pb-6 md:flex-row md:items-end">
+          <div className="flex flex-col gap-2">
             <p className="text-text-secondary text-caption">Gia phả của bạn</p>
             <h1 className="text-display-lg font-serif">Cây gia phả</h1>
           </div>
 
-          <div className="gap-xs flex w-full items-stretch md:w-auto">
-            <div className="border-border-default bg-surface gap-micro-1 rounded-card px-md py-xs flex min-w-0 flex-1 flex-col justify-center border md:flex-none">
-              <p className="text-text-secondary text-caption">Tài khoản</p>
-              <p className="text-text-primary text-body-sm truncate">
+          <div className="flex w-full items-center gap-2 md:w-auto">
+            <div className="border-border-default bg-surface rounded-card flex h-11 min-w-0 flex-1 items-center gap-2 border px-4 md:flex-none">
+              <span className="text-text-secondary text-caption shrink-0">
+                Tài khoản
+              </span>
+              <span className="text-text-primary text-body-sm truncate">
                 {user?.email}
-              </p>
+              </span>
             </div>
             <Button
               variant="secondary"
@@ -218,8 +220,8 @@ export default function DashboardPage() {
           </div>
         </header>
 
-        <main className="gap-lg flex flex-1 flex-col">
-          <div className="border-border-default gap-sm pb-md flex items-center justify-between border-b">
+        <main className="flex flex-1 flex-col gap-5">
+          <div className="border-border-default flex items-center justify-between gap-3 border-b pb-4">
             <h2 className="text-title-md font-semibold">Danh sách gia phả</h2>
             <Button onClick={() => setIsCreateOpen(true)}>
               <Plus />
@@ -228,7 +230,7 @@ export default function DashboardPage() {
           </div>
 
           {trees.length === 0 ? (
-            <div className="border-border bg-surface gap-md rounded-card px-xl py-section flex flex-col items-center border border-dashed text-center">
+            <div className="border-border bg-surface rounded-card flex flex-col items-center gap-4 border border-dashed px-6 py-16 text-center">
               <h3 className="text-title-md font-semibold">
                 Chưa có gia phả nào
               </h3>
@@ -241,14 +243,14 @@ export default function DashboardPage() {
               </Button>
             </div>
           ) : (
-            <ul className="gap-md flex flex-col">
+            <ul className="flex flex-col gap-4">
               {trees.map((tree, idx) => (
                 <li
                   key={tree.id}
-                  className="border-border-default bg-surface gap-md rounded-card p-xl flex flex-col items-start justify-between border transition-shadow hover:shadow-xs md:flex-row md:items-center"
+                  className="border-border-default bg-surface rounded-card flex flex-col items-start justify-between gap-4 border p-6 transition-shadow hover:shadow-xs md:flex-row md:items-center"
                 >
                   <div className="min-w-0 flex-1">
-                    <h3 className="name-person-lg truncate font-serif">
+                    <h3 className="text-name-person-lg truncate font-serif">
                       {tree.name}
                     </h3>
                     <p className="text-text-secondary text-meta tabular-nums">
@@ -258,7 +260,7 @@ export default function DashboardPage() {
                     </p>
                   </div>
 
-                  <div className="gap-xs flex w-full flex-wrap items-center md:w-auto">
+                  <div className="flex w-full flex-wrap items-center gap-2 md:w-auto">
                     <Button
                       variant="ghost"
                       size="icon"
@@ -293,10 +295,7 @@ export default function DashboardPage() {
                     >
                       <Trash2 />
                     </Button>
-                    <Link
-                      href={`/tree/${tree.id}`}
-                      className="md:ml-xs ml-auto"
-                    >
+                    <Link href={`/tree/${tree.id}`} className="ml-auto md:ml-2">
                       <Button>
                         Mở
                         <ArrowRight />

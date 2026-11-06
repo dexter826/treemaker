@@ -85,7 +85,7 @@ export function Select({
           sideOffset={4}
         >
           {showSearch && (
-            <div className="border-border-default gap-xs p-xs flex shrink-0 items-center border-b">
+            <div className="border-border-default flex shrink-0 items-center gap-2 border-b p-2">
               <Search className="text-text-muted size-4 shrink-0" />
               <Input
                 placeholder="Tìm kiếm..."
@@ -97,7 +97,7 @@ export function Select({
           )}
 
           <ScrollArea className="max-h-[300px] flex-1">
-            <div className="p-xxs flex flex-col">
+            <div className="flex flex-col p-1">
               {filteredOptions.length > 0 ? (
                 filteredOptions.map((option) => (
                   <button
@@ -106,7 +106,7 @@ export function Select({
                     role="option"
                     aria-selected={value === option.value}
                     className={cn(
-                      'gap-sm rounded-control px-sm py-xs text-body-sm flex cursor-pointer items-center justify-between text-left',
+                      'rounded-control text-body-sm flex cursor-pointer items-center justify-between gap-3 px-3 py-2 text-left',
                       'text-text-primary hover:bg-primary-soft transition-colors',
                       value === option.value && 'bg-selected text-on-selected'
                     )}
@@ -122,7 +122,7 @@ export function Select({
                   </button>
                 ))
               ) : (
-                <div className="text-text-secondary p-md text-caption text-center">
+                <div className="text-text-secondary text-caption p-4 text-center">
                   Không tìm thấy kết quả
                 </div>
               )}

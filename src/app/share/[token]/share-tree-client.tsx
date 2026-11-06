@@ -72,13 +72,13 @@ export function ShareTreeClient({ token }: { token: string }) {
 
   if (loading) {
     return (
-      <div className="bg-background p-md flex min-h-dvh items-center justify-center">
-        <div className="border-border-default bg-surface rounded-card p-xl w-full max-w-sm border">
+      <div className="bg-background flex min-h-dvh items-center justify-center p-4">
+        <div className="border-border-default bg-surface rounded-card w-full max-w-sm border p-6">
           <Skeleton className="rounded-control mx-auto size-12" />
-          <Skeleton className="mt-md mx-auto h-5 w-40" />
-          <Skeleton className="mt-xs mx-auto h-4 w-52" />
-          <Skeleton className="mt-xl mx-auto h-14 w-52" />
-          <Skeleton className="mt-lg rounded-control h-11 w-full" />
+          <Skeleton className="mx-auto mt-4 h-5 w-40" />
+          <Skeleton className="mx-auto mt-2 h-4 w-52" />
+          <Skeleton className="mx-auto mt-6 h-14 w-52" />
+          <Skeleton className="rounded-control mt-5 h-11 w-full" />
         </div>
       </div>
     );
@@ -86,7 +86,7 @@ export function ShareTreeClient({ token }: { token: string }) {
 
   if (error) {
     return (
-      <div className="bg-background gap-md p-xl flex min-h-dvh flex-col items-center justify-center text-center">
+      <div className="bg-background flex min-h-dvh flex-col items-center justify-center gap-4 p-6 text-center">
         <div className="border-border bg-surface rounded-card flex size-14 items-center justify-center border">
           <ShieldAlert className="text-danger size-7" />
         </div>
@@ -104,9 +104,9 @@ export function ShareTreeClient({ token }: { token: string }) {
 
   if (!isAuthorized) {
     return (
-      <div className="bg-background p-md flex min-h-dvh items-center justify-center">
-        <div className="border-border-default bg-surface rounded-card p-xl w-full max-w-sm border">
-          <div className="mb-lg gap-xs flex flex-col items-center text-center">
+      <div className="bg-background flex min-h-dvh items-center justify-center p-4">
+        <div className="border-border-default bg-surface rounded-card w-full max-w-sm border p-6">
+          <div className="mb-5 flex flex-col items-center gap-2 text-center">
             <div className="border-border bg-surface-elevated rounded-card flex size-12 items-center justify-center border">
               <Lock className="text-primary size-6" />
             </div>
@@ -124,13 +124,13 @@ export function ShareTreeClient({ token }: { token: string }) {
           />
 
           {otpError && (
-            <Alert variant="destructive" className="mt-md">
+            <Alert variant="destructive" className="mt-4">
               <AlertDescription>{otpError}</AlertDescription>
             </Alert>
           )}
 
           <Button
-            className="mt-lg w-full"
+            className="mt-5 w-full"
             onClick={() => handleSubmit(password)}
             disabled={password.length < 4}
           >
@@ -145,7 +145,7 @@ export function ShareTreeClient({ token }: { token: string }) {
     <div className="bg-background relative h-dvh w-full">
       {tree && <TreeClient treeId={tree.id} />}
       {isMobile && (
-        <p className="text-text-secondary bottom-md text-caption pointer-events-none absolute left-0 w-full text-center">
+        <p className="text-text-secondary text-caption pointer-events-none absolute bottom-4 left-0 w-full text-center">
           Xem gia phả trên điện thoại. Muốn sửa, hãy mở liên kết này trên máy
           tính.
         </p>

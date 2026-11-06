@@ -61,7 +61,7 @@ export function DatePicker({
   const selectedDate = value ? parseDateValue(value) : null;
 
   const renderHeader = () => (
-    <div className="border-border-default px-xs py-xs flex items-center justify-between border-b">
+    <div className="border-border-default flex items-center justify-between border-b px-2 py-2">
       <Button
         type="button"
         variant="ghost"
@@ -76,7 +76,7 @@ export function DatePicker({
         <ChevronLeft />
       </Button>
 
-      <div className="gap-xxs flex items-center">
+      <div className="flex items-center gap-1">
         <Button
           type="button"
           variant={view === 'months' ? 'secondary' : 'ghost'}
@@ -110,7 +110,7 @@ export function DatePicker({
   );
 
   const renderMonths = () => (
-    <div className="gap-xxs p-xs grid grid-cols-3">
+    <div className="grid grid-cols-3 gap-1 p-2">
       {Array.from({ length: 12 }, (_, m) => {
         const isSelected = getMonth(currentMonth) === m;
         return (
@@ -139,7 +139,7 @@ export function DatePicker({
     const currentYear = getYear(currentMonth);
     const years = Array.from({ length: 12 }, (_, i) => currentYear - 5 + i);
     return (
-      <div className="gap-xxs p-xs grid grid-cols-3">
+      <div className="grid grid-cols-3 gap-1 p-2">
         {years.map((y) => {
           const isSelected = currentYear === y;
           return (
@@ -166,7 +166,7 @@ export function DatePicker({
   };
 
   const renderWeekdays = () => (
-    <div className="px-xs pb-2xxs grid grid-cols-7">
+    <div className="grid grid-cols-7 px-2 pb-1">
       {['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'].map((day) => (
         <div
           key={day}
@@ -218,7 +218,7 @@ export function DatePicker({
       day = addDays(day, 1);
     }
 
-    return <div className="gap-xxs px-xs pb-xs grid grid-cols-7">{cells}</div>;
+    return <div className="grid grid-cols-7 gap-1 px-2 pb-2">{cells}</div>;
   };
 
   return (
@@ -255,7 +255,7 @@ export function DatePicker({
           )}
           {view === 'months' && renderMonths()}
           {view === 'years' && renderYears()}
-          <div className="border-border-default gap-xs p-xs flex border-t">
+          <div className="border-border-default flex gap-2 border-t p-2">
             <Button
               type="button"
               variant="ghost"

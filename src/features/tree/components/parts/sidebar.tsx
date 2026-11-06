@@ -266,8 +266,8 @@ export function Sidebar() {
 
   const panelContent = (
     <>
-      <div className="border-border-default bg-surface gap-sm px-xl py-lg flex items-start justify-between border-b">
-        <div className="gap-micro-1 flex min-w-0 flex-col">
+      <div className="border-border-default bg-surface flex items-start justify-between gap-3 border-b px-6 py-5">
+        <div className="flex min-w-0 flex-col gap-0.5">
           <h2 className="text-title-lg truncate font-semibold">
             {person.full_name}
           </h2>
@@ -276,7 +276,7 @@ export function Sidebar() {
           </p>
         </div>
         <Button
-          variant="ghost"
+          variant="inset"
           size="icon"
           onClick={() => setSelectedPersonId(null)}
           aria-label="Đóng hồ sơ"
@@ -286,13 +286,13 @@ export function Sidebar() {
       </div>
 
       <ScrollArea className="min-h-0 flex-1">
-        <div className="gap-lg p-xl flex flex-col">
+        <div className="flex flex-col gap-5 p-6">
           <PersonForm key={person.id} person={person} isReadOnly={isReadOnly} />
 
           {!isReadOnly && (
-            <div className="border-border-default gap-sm pt-lg flex flex-col border-t">
+            <div className="border-border-default flex flex-col gap-3 border-t pt-5">
               <h3 className="text-title-md font-semibold">Thêm người thân</h3>
-              <div className="gap-xs grid grid-cols-2">
+              <div className="grid grid-cols-2 gap-2">
                 <Button
                   variant="secondary"
                   className="justify-start"
@@ -332,7 +332,7 @@ export function Sidebar() {
               </div>
               <Button
                 variant="danger"
-                className="mt-xs w-full"
+                className="mt-2 w-full"
                 onClick={() => setIsDeleteDialogOpen(true)}
               >
                 <Trash2 /> Xóa hồ sơ
@@ -385,7 +385,7 @@ export function Sidebar() {
           )}
 
           {!selectedExistingPersonId && (
-            <div className="gap-sm grid grid-cols-3">
+            <div className="grid grid-cols-3 gap-3">
               <Field
                 className={
                   (isAddingRelative === 'child' ||

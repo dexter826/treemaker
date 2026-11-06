@@ -48,7 +48,7 @@ export function ViewPersonModal() {
               <Button
                 variant="secondary"
                 size="icon"
-                className="bg-surface border-border-default absolute top-3 right-3 z-50 border hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
+                className="bg-surface border-border-default hover:bg-primary-soft absolute top-3 right-3 z-50 border"
               />
             }
           >
@@ -72,7 +72,7 @@ export function ViewPersonModal() {
                   variant="secondary"
                   size="default"
                   onClick={() => setShowFullBio(false)}
-                  className="bg-surface border-border-default text-meta h-8 gap-1 border px-2 font-bold hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
+                  className="bg-surface border-border-default gap-xs px-md text-body-sm hover:bg-primary-soft h-11 border font-medium"
                 >
                   <ArrowLeft size={12} strokeWidth={3} />
                   QUAY LẠI
@@ -174,7 +174,7 @@ export function ViewPersonModal() {
                             );
                           }
                         }}
-                        className="bg-surface border-border-default mt-4 shrink-0 border hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
+                        className="bg-surface border-border-default hover:bg-primary-soft mt-4 shrink-0 border"
                         title="Xem trên Google Maps"
                       >
                         <Map size={12} strokeWidth={3} />
