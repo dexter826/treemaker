@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-labelledby="title">
+  <title id="title">TreeMaker symbol - reversed cut</title>
+  <!--
+    White-on-dark version, thinned about 2 units per side: reversed type irradiates, so the same
+    geometry drawn at full weight looks heavier when knocked out. Use on ink or brand backgrounds.
+  -->
+  <path fill="#FFF" d="M117 80L139 80L151 224H105Z M52 153H128V175H52Z M128 105H204V127H128Z"/>
+  <circle cx="128" cy="56" r="27" fill="#FFF"/>
+  <circle cx="64" cy="136" r="23" fill="#FFF"/>
+  <circle cx="192" cy="88" r="23" fill="#FFF"/>
+</svg>

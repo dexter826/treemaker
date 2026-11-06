@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-labelledby="title">
+  <title id="title">TreeMaker symbol - small size cut</title>
+  <!--
+    The full mark loses its three canopy nodes at 16px (they merge into one mass). This cut keeps
+    the same idea with every part sized to survive: joins 32 instead of 24, nodes 64-72 instead of
+    48-56, and the canopy overhangs its branches further so the silhouette stays a tree, not a dot.
+    Use under 24px: favicon, app icon, printed spine.
+  -->
+  <path fill="currentColor" d="M112 96L144 96L158 224H98Z M44 152H128V184H44Z M128 96H212V128H128Z"/>
+  <circle cx="128" cy="64" r="36" fill="currentColor"/>
+  <circle cx="56" cy="140" r="32" fill="currentColor"/>
+  <circle cx="200" cy="96" r="32" fill="currentColor"/>
+</svg>
