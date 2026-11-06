@@ -6,7 +6,6 @@ export interface PersonSlice {
   persons: Person[];
   selectedPersonId: string | null;
   viewPersonId: string | null;
-  showCardActions: string | null;
 
   setPersons: (persons: Person[]) => void;
   addPerson: (person: Person) => void;
@@ -14,7 +13,6 @@ export interface PersonSlice {
   removePerson: (id: string) => void;
   setSelectedPersonId: (id: string | null) => void;
   setViewPersonId: (id: string | null) => void;
-  setShowCardActions: (id: string | null) => void;
 }
 
 export const createPersonSlice: StateCreator<
@@ -26,7 +24,6 @@ export const createPersonSlice: StateCreator<
   persons: [],
   selectedPersonId: null,
   viewPersonId: null,
-  showCardActions: null,
 
   setPersons: (persons) =>
     set((state) => {
@@ -53,7 +50,6 @@ export const createPersonSlice: StateCreator<
 
       if (state.selectedPersonId === id) state.selectedPersonId = null;
       if (state.viewPersonId === id) state.viewPersonId = null;
-      if (state.showCardActions === id) state.showCardActions = null;
     }),
   setSelectedPersonId: (id) =>
     set((state) => {
@@ -62,9 +58,5 @@ export const createPersonSlice: StateCreator<
   setViewPersonId: (id) =>
     set((state) => {
       state.viewPersonId = id;
-    }),
-  setShowCardActions: (id) =>
-    set((state) => {
-      state.showCardActions = id;
     }),
 });

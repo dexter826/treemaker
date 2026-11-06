@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import Link from 'next/link';
 import { useStore } from '@/lib/store';
 import { removeVietnameseTones } from '@/lib/utils';
@@ -13,9 +13,10 @@ import {
   Mars,
   Venus,
   Loader2,
-  MoreHorizontal,
   CalendarDays,
   Pencil,
+  ZoomIn,
+  ZoomOut,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
@@ -33,14 +34,15 @@ import {
 } from '@/components/ui/command';
 import {
   Dialog,
+  DialogBody,
   DialogContent,
-  DialogTitle,
-  DialogHeader,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Select } from '@/components/ui/select';
 import { treeService } from '../../services/tree.service';
 import { useRouter } from 'next/navigation';
@@ -56,6 +58,7 @@ import { EventListModal } from '../modals/event-list-modal';
 import { pdfService } from '../../services/pdf.service';
 import { BookOpen } from 'lucide-react';
 import { useReactFlow } from '@xyflow/react';
+import { ANIMATION_DURATION, ANIMATION_DELAY } from '../../constants';
 
 // Thanh công cụ điều khiển cây gia phả.
 export function TreeToolbar() {
@@ -67,7 +70,7 @@ export function TreeToolbar() {
   const setCurrentTree = useStore((state) => state.setCurrentTree);
   const relationships = useStore((state) => state.relationships);
   const router = useRouter();
-  const { fitView } = useReactFlow();
+  const { fitView, zoomIn, zoomOut } = useReactFlow();
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [isAddPersonOpen, setIsAddPersonOpen] = useState(false);
@@ -189,7 +192,10 @@ export function TreeToolbar() {
     const loadingToast = toast.loading('Đang khởi tạo Gia Phả...');
 
     try {
-      await fitView({ padding: 0.2, duration: 400 });
+      await fitView({
+        padding: 0.2,
+        duration: ANIMATION_DURATION.CANVAS_FIT_VIEW,
+      });
       await new Promise((resolve) => setTimeout(resolve, 600));
 
       await pdfService.generateLegacyBook(
@@ -220,16 +226,18 @@ export function TreeToolbar() {
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: 0.1 }}
+      transition={{
+        duration: ANIMATION_DURATION.OVERLAY / 1000,
+        delay: ANIMATION_DELAY.TOOLBAR_ENTRANCE,
+      }}
       className="absolute top-3 right-3 left-3 z-10 flex items-stretch gap-2 md:top-4 md:right-auto md:left-4 md:gap-3"
     >
       <Link
         href="/"
         className={buttonVariants({
-          variant: 'outline',
+          variant: 'secondary',
           size: 'icon',
-          effect: 'raised',
-          className: 'h-10 w-10 shrink-0 rounded-none md:h-12 md:w-12',
+          className: 'shrink-0',
         })}
         aria-label="Quay lại trang chính"
         title="Quay lại trang chính"
@@ -238,7 +246,7 @@ export function TreeToolbar() {
       </Link>
 
       <div
-        className={`group/name border-foreground bg-background shadow-brutal-md relative flex h-10 min-w-0 flex-1 flex-col justify-center border-2 px-2 md:h-12 md:flex-none md:px-4 ${!isReadOnly ? 'hover:bg-foreground/[0.02] cursor-pointer' : ''}`}
+        className={`group/name border-border-default bg-surface-elevated relative flex h-12 min-w-0 flex-1 flex-col justify-center border px-4 md:flex-none ${!isReadOnly ? 'hover:bg-primary-soft cursor-pointer' : ''}`}
         onClick={() => {
           if (!isReadOnly) {
             setEditValue('name', currentTree.name);
@@ -248,15 +256,15 @@ export function TreeToolbar() {
       >
         <div className="flex items-center justify-between gap-2">
           <div className="flex min-w-0 flex-col">
-            <span className="text-muted-foreground truncate text-[8px] font-semibold tracking-wide uppercase md:text-[10px]">
+            <span className="text-text-secondary text-meta md:text-meta truncate font-semibold">
               Gia phả
             </span>
-            <h1 className="truncate font-serif text-xs leading-tight font-black tracking-tight md:text-lg">
+            <h1 className="text-caption truncate font-serif leading-tight font-semibold md:text-lg">
               {currentTree.name}
             </h1>
           </div>
           {!isReadOnly && (
-            <Pencil className="text-muted-foreground group-hover/name:text-primary size-3 shrink-0 transition-colors md:size-3.5" />
+            <Pencil className="text-text-secondary group-hover/name:text-primary size-3 shrink-0 transition-colors md:size-3.5" />
           )}
         </div>
       </div>
@@ -264,10 +272,9 @@ export function TreeToolbar() {
       <Popover open={searchOpen} onOpenChange={setSearchOpen}>
         <PopoverTrigger
           className={buttonVariants({
-            variant: 'outline',
+            variant: 'secondary',
             size: 'icon',
-            effect: 'raised',
-            className: 'h-10 w-10 shrink-0 rounded-none md:h-12 md:w-12',
+            className: 'shrink-0',
           })}
           aria-label="Tìm kiếm cá nhân"
           title="Tìm kiếm cá nhân"
@@ -275,11 +282,11 @@ export function TreeToolbar() {
           <Search className="size-4 md:size-5" />
         </PopoverTrigger>
         <PopoverContent
-          className="border-foreground shadow-brutal-md w-[calc(100vw-32px)] rounded-none border-2 p-0 sm:w-[280px]"
+          className="border-border-default rounded-card w-[calc(100vw-32px)] border p-0 sm:w-[280px]"
           align="start"
         >
           <Command
-            className="rounded-none"
+            className="rounded-card"
             filter={(value, search) => {
               const normalizedValue = removeVietnameseTones(value);
               const normalizedSearch = removeVietnameseTones(search);
@@ -302,13 +309,13 @@ export function TreeToolbar() {
                       setSearchOpen(false);
                       setSelectedPersonId(person.id);
                     }}
-                    className="aria-selected:bg-primary aria-selected:text-primary-foreground cursor-pointer rounded-none py-3 text-xs font-semibold tracking-wide"
+                    className="aria-selected:bg-selected aria-selected:text-on-selected rounded-card text-caption cursor-pointer py-3 font-semibold"
                   >
                     <div className="flex flex-1 items-center gap-2">
                       {person.gender === 'male' ? (
-                        <Mars className="text-male h-3.5 w-3.5" />
+                        <Mars className="text-gender-male h-3.5 w-3.5" />
                       ) : (
-                        <Venus className="text-female h-3.5 w-3.5" />
+                        <Venus className="text-gender-female h-3.5 w-3.5" />
                       )}
                       <span>{person.full_name}</span>
                     </div>
@@ -321,10 +328,30 @@ export function TreeToolbar() {
       </Popover>
 
       <Button
-        variant="outline"
+        variant="secondary"
         size="icon"
-        effect="raised"
-        className="hidden h-10 w-10 shrink-0 rounded-none sm:flex md:h-12 md:w-12"
+        className="shrink-0"
+        aria-label="Phóng to"
+        title="Phóng to"
+        onClick={() => zoomIn({ duration: ANIMATION_DURATION.CANVAS_LAYOUT })}
+      >
+        <ZoomIn className="size-4 md:size-5" />
+      </Button>
+      <Button
+        variant="secondary"
+        size="icon"
+        className="shrink-0"
+        aria-label="Thu nhỏ"
+        title="Thu nhỏ"
+        onClick={() => zoomOut({ duration: ANIMATION_DURATION.CANVAS_LAYOUT })}
+      >
+        <ZoomOut className="size-4 md:size-5" />
+      </Button>
+
+      <Button
+        variant="secondary"
+        size="icon"
+        className="hidden shrink-0"
         onClick={() => setIsEventListOpen(true)}
         title="Danh mục sự kiện"
       >
@@ -332,12 +359,12 @@ export function TreeToolbar() {
       </Button>
 
       <Button
-        variant="outline"
+        variant="secondary"
         size="icon"
-        effect="raised"
-        className="hidden h-10 w-10 shrink-0 rounded-none sm:flex md:h-12 md:w-12"
+        className="hidden shrink-0"
         onClick={() => setIsExportConfirmOpen(true)}
         disabled={isExporting}
+        aria-busy={isExporting}
         title="Xuất Gia Phả (PDF)"
       >
         {isExporting ? (
@@ -352,30 +379,27 @@ export function TreeToolbar() {
           {/* Desktop Actions */}
           <div className="hidden items-stretch gap-2 sm:flex">
             <Button
-              variant="outline"
+              variant="secondary"
               size="icon"
-              effect="raised"
-              className="h-10 w-10 shrink-0 rounded-none md:h-12 md:w-12"
+              className="rounded-card shrink-0 md:h-12 md:w-12"
               onClick={handleShare}
               title="Chia sẻ liên kết"
             >
               <Share2 className="size-4 md:size-5" />
             </Button>
             <Button
-              variant="outline"
+              variant="secondary"
               size="icon"
-              effect="raised"
-              className="h-10 w-10 shrink-0 rounded-none md:h-12 md:w-12"
+              className="rounded-card shrink-0 md:h-12 md:w-12"
               onClick={() => setIsAddPersonOpen(true)}
               title="Thêm người mới"
             >
               <UserPlus className="size-4 md:size-5" />
             </Button>
             <Button
-              variant="destructive"
+              variant="danger"
               size="icon"
-              effect="raised"
-              className="h-10 w-10 shrink-0 rounded-none md:h-12 md:w-12"
+              className="rounded-card shrink-0 md:h-12 md:w-12"
               onClick={() => setIsDeleteDialogOpen(true)}
               aria-label="Xóa gia phả"
               title="Xóa toàn bộ cây"
@@ -383,83 +407,13 @@ export function TreeToolbar() {
               <Trash2 className="size-4" />
             </Button>
           </div>
-
-          {/* Mobile Actions Menu */}
-          <div className="flex items-stretch sm:hidden">
-            <Popover>
-              <PopoverTrigger
-                className={buttonVariants({
-                  variant: 'outline',
-                  size: 'icon',
-                  effect: 'raised',
-                  className: 'h-10 w-10 shrink-0 rounded-none md:h-12 md:w-12',
-                })}
-                aria-label="Thao tác thêm"
-                title="Thêm thao tác"
-              >
-                <MoreHorizontal className="size-4 md:size-5" />
-              </PopoverTrigger>
-              <PopoverContent
-                className="border-foreground shadow-brutal-md flex w-48 flex-col gap-2 rounded-none border-2 p-2"
-                align="end"
-              >
-                <Button
-                  variant="ghost"
-                  className="h-10 justify-start rounded-none px-2 text-xs"
-                  onClick={() => setIsEventListOpen(true)}
-                >
-                  <CalendarDays className="mr-2 h-4 w-4" />
-                  Sự kiện
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="h-10 justify-start rounded-none px-2 text-xs"
-                  onClick={() => setIsExportConfirmOpen(true)}
-                  disabled={isExporting}
-                >
-                  {isExporting ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <BookOpen className="mr-2 h-4 w-4" />
-                  )}
-                  Xuất Gia Phả
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="h-10 justify-start rounded-none px-2 text-xs"
-                  onClick={handleShare}
-                >
-                  <Share2 className="mr-2 h-4 w-4" />
-                  Chia sẻ
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="h-10 justify-start rounded-none px-2 text-xs"
-                  onClick={() => setIsAddPersonOpen(true)}
-                >
-                  <UserPlus className="mr-2 h-4 w-4" />
-                  Thêm người
-                </Button>
-                <div className="border-foreground/10 my-1 border-t-2" />
-                <Button
-                  variant="ghost"
-                  className="text-destructive hover:bg-destructive hover:text-destructive-foreground h-10 justify-start rounded-none px-2 text-xs"
-                  onClick={() => setIsDeleteDialogOpen(true)}
-                >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Xóa gia phả
-                </Button>
-              </PopoverContent>
-            </Popover>
-          </div>
         </>
       ) : (
         <div className="flex items-stretch sm:hidden">
           <Button
-            variant="outline"
+            variant="secondary"
             size="icon"
-            effect="raised"
-            className="h-10 w-10 shrink-0 rounded-none md:h-12 md:w-12"
+            className="rounded-card shrink-0 md:h-12 md:w-12"
             onClick={() => setIsEventListOpen(true)}
             title="Danh mục sự kiện"
           >
@@ -474,33 +428,29 @@ export function TreeToolbar() {
       >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Thêm Người Mới</DialogTitle>
-            <DialogDescription>Vào cây: {currentTree.name}</DialogDescription>
+            <DialogTitle>Thêm người mới</DialogTitle>
+            <DialogDescription>
+              Người mới được thêm vào &ldquo;{currentTree.name}&rdquo;.
+            </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 p-6">
-            <div className="grid grid-cols-3 gap-4">
-              <div className="col-span-2 space-y-2">
-                <Label className="text-xs font-semibold tracking-[0.16em]">
-                  Họ và Tên
-                </Label>
+          <DialogBody>
+            <div className="grid grid-cols-3 gap-3">
+              <Field className="col-span-2">
+                <FieldLabel htmlFor="new-person-name">Họ và tên</FieldLabel>
                 <Input
+                  id="new-person-name"
                   autoFocus
                   {...register('full_name')}
                   error={!!errors.full_name}
                   placeholder="Nhập tên người mới"
-                  className="font-semibold"
                 />
-                {errors.full_name && (
-                  <p className="text-destructive text-[10px] font-bold uppercase">
-                    {errors.full_name.message}
-                  </p>
-                )}
-              </div>
-              <div className="col-span-1 space-y-2">
-                <Label className="text-xs font-semibold tracking-[0.16em]">
-                  Giới Tính
-                </Label>
+                <FieldError>{errors.full_name?.message}</FieldError>
+              </Field>
+              <Field>
+                <span className="text-text-secondary text-caption">
+                  Giới tính
+                </span>
                 <Controller
                   name="gender"
                   control={control}
@@ -516,24 +466,24 @@ export function TreeToolbar() {
                     />
                   )}
                 />
-              </div>
+              </Field>
             </div>
-          </div>
+          </DialogBody>
 
           <DialogFooter>
             <Button
-              variant="outline"
-              className="h-12 flex-1"
+              variant="secondary"
               onClick={() => setIsAddPersonOpen(false)}
             >
-              Hủy
+              Đóng
             </Button>
             <Button
-              className="h-12 flex-1"
               onClick={handleSubmit(handleAddPerson)}
               disabled={isSubmitting}
+              aria-busy={isSubmitting}
             >
-              {isSubmitting ? 'Đang thêm...' : 'Thêm'}
+              {isSubmitting && <Loader2 className="animate-spin" />}
+              Thêm người
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -541,37 +491,34 @@ export function TreeToolbar() {
 
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
-          <DialogHeader variant="destructive">
-            <DialogTitle>Xóa toàn bộ Cây</DialogTitle>
+          <DialogHeader>
+            <DialogTitle>Xóa gia phả</DialogTitle>
             <DialogDescription>
-              Hành động này không thể hoàn tác
+              Hành động này không thể hoàn tác.
             </DialogDescription>
           </DialogHeader>
-          <div className="p-6">
-            <p className="text-sm font-medium">
-              Bạn có chắc chắn muốn xóa toàn bộ cây gia phả này không? Mọi dữ
-              liệu sẽ biến mất vĩnh viễn.
+          <DialogBody>
+            <p className="text-body-sm">
+              Toàn bộ thành viên, mối quan hệ và kỷ yếu của{' '}
+              <span className="font-semibold">{currentTree.name}</span> sẽ bị
+              xóa vĩnh viễn.
             </p>
-          </div>
+          </DialogBody>
           <DialogFooter>
             <Button
-              variant="outline"
-              className="h-12 flex-1"
+              variant="secondary"
               onClick={() => setIsDeleteDialogOpen(false)}
             >
-              Hủy
+              Giữ lại gia phả
             </Button>
             <Button
-              variant="destructive"
-              className="h-12 flex-1"
+              variant="danger"
               onClick={handleDeleteTree}
               disabled={isDeleting}
+              aria-busy={isDeleting}
             >
-              {isDeleting ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                'Xóa'
-              )}
+              {isDeleting && <Loader2 className="animate-spin" />}
+              Xóa gia phả
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -581,52 +528,45 @@ export function TreeToolbar() {
         <DialogContent className="sm:max-w-md">
           <form onSubmit={handleSubmitEdit(handleEditTree)}>
             <DialogHeader>
-              <DialogTitle>Sửa Tên Gia Phả</DialogTitle>
+              <DialogTitle>Sửa tên gia phả</DialogTitle>
               <DialogDescription>
-                Cập nhật tên mới cho cây gia phả này
+                Tên mới hiển thị trên danh sách, liên kết chia sẻ và kỷ yếu.
               </DialogDescription>
             </DialogHeader>
-
-            <div className="space-y-4 p-6">
-              <div className="space-y-2">
-                <Label className="text-xs font-semibold tracking-[0.16em]">
-                  Tên Cây Gia Phả
-                </Label>
+            <DialogBody>
+              <Field>
+                <FieldLabel htmlFor="tree-name">Tên gia phả</FieldLabel>
                 <Input
+                  id="tree-name"
                   autoFocus
                   {...registerEdit('name')}
                   error={!!editErrors.name}
                   placeholder="Nhập tên mới"
-                  className="font-semibold"
                 />
-                {editErrors.name && (
-                  <p className="text-destructive text-[10px] font-bold uppercase">
-                    {editErrors.name.message}
-                  </p>
-                )}
-              </div>
-            </div>
-
+                <FieldError>{editErrors.name?.message}</FieldError>
+              </Field>
+            </DialogBody>
             <DialogFooter>
               <Button
                 type="button"
-                variant="outline"
-                className="h-12 flex-1"
+                variant="secondary"
                 onClick={() => setIsEditTreeOpen(false)}
               >
-                Hủy
+                Giữ tên cũ
               </Button>
               <Button
                 type="submit"
-                className="h-12 flex-1"
                 disabled={isSubmittingEdit}
+                aria-busy={isSubmittingEdit}
               >
-                {isSubmittingEdit ? 'Đang lưu...' : 'Lưu Thay Đổi'}
+                {isSubmittingEdit && <Loader2 className="animate-spin" />}
+                Lưu thay đổi
               </Button>
             </DialogFooter>
           </form>
         </DialogContent>
       </Dialog>
+
       <EventListModal
         isOpen={isEventListOpen}
         onClose={() => setIsEventListOpen(false)}
@@ -635,43 +575,40 @@ export function TreeToolbar() {
       <Dialog open={isExportConfirmOpen} onOpenChange={setIsExportConfirmOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Xuất bản Gia Phả</DialogTitle>
+            <DialogTitle>Xuất kỷ yếu</DialogTitle>
             <DialogDescription>
-              Bao gồm sơ đồ và hồ sơ thành viên.
+              Kỷ yếu gồm sơ đồ cây và hồ sơ từng thành viên.
             </DialogDescription>
           </DialogHeader>
-
-          <div className="space-y-4 p-6">
-            <div className="bg-muted/50 border-foreground/10 space-y-2 border-2 p-4">
-              <p className="text-muted-foreground text-xs font-bold tracking-wider uppercase">
-                Lưu ý:
+          <DialogBody>
+            <div className="border-border-default bg-surface rounded-control border p-4">
+              <p className="text-text-secondary text-caption font-medium">
+                Lưu ý
               </p>
-              <ul className="text-foreground/80 list-inside list-disc space-y-1 text-xs font-medium">
-                <li>Sơ đồ sẽ tự động được căn giữa.</li>
-                <li>Vui lòng giữ trình duyệt cho đến khi hoàn tất.</li>
+              <ul className="text-text-secondary text-caption mt-1 list-inside list-disc">
+                <li>Sơ đồ sẽ tự căn giữa trước khi xuất.</li>
+                <li>Giữ trình duyệt mở cho đến khi hoàn tất.</li>
               </ul>
             </div>
-          </div>
-
+          </DialogBody>
           <DialogFooter>
             <Button
-              variant="outline"
-              className="h-12 flex-1"
+              variant="secondary"
               onClick={() => setIsExportConfirmOpen(false)}
             >
-              Hủy
+              Đóng
             </Button>
             <Button
-              className="h-12 flex-1"
               onClick={handleExportPdf}
               disabled={isExporting}
+              aria-busy={isExporting}
             >
               {isExporting ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="animate-spin" />
               ) : (
-                <BookOpen className="mr-2 h-4 w-4" />
+                <BookOpen />
               )}
-              Xuất ngay
+              Xuất kỷ yếu
             </Button>
           </DialogFooter>
         </DialogContent>

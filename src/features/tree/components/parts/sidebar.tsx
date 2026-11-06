@@ -1,30 +1,29 @@
 import { useMemo, useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
 import { useStore } from '@/lib/store';
 import { Person } from '@/types';
 import { Button } from '@/components/ui/button';
 import {
   X,
-  UserPlus,
   Trash2,
   Loader2,
-  PanelRightOpen,
   ArrowUp,
   ArrowDown,
   Heart,
+  UserPlus,
 } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from 'sonner';
 import {
   Dialog,
+  DialogBody,
   DialogContent,
-  DialogTitle,
-  DialogHeader,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog';
+import { Field, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Select } from '@/components/ui/select';
 import { PersonForm, personService } from '@/features/person';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -32,6 +31,13 @@ import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { normalizeSiblingOrder } from '@/lib/utils';
 
 type RelativeType = 'father' | 'mother' | 'spouse' | 'child';
+
+const relationshipMap: Record<RelativeType, string> = {
+  father: 'cha',
+  mother: 'mẹ',
+  spouse: 'vợ/chồng',
+  child: 'con',
+};
 
 export function Sidebar() {
   const selectedPersonId = useStore((state) => state.selectedPersonId);
@@ -256,64 +262,54 @@ export function Sidebar() {
     }
   };
 
-  const relationshipMap: Record<RelativeType, string> = {
-    father: 'Cha',
-    mother: 'Mẹ',
-    spouse: 'Vợ/Chồng',
-    child: 'Con',
-  };
-
   if (!selectedPersonId || !person || !currentTree) return null;
 
   const panelContent = (
     <>
-      <div className="border-foreground bg-primary/5 flex items-center justify-between border-b-2 p-6">
-        <div>
-          <h2 className="font-serif text-xl font-black tracking-widest uppercase">
-            {isReadOnly ? 'Thông tin' : 'Cập nhật'}
-          </h2>
-          <p className="text-muted-foreground mt-1 text-xs font-semibold tracking-[0.16em] uppercase">
-            ID: {person.id.split('-')[0]}
+      <div className="border-border-default bg-surface flex items-start justify-between gap-3 border-b px-6 py-5">
+        <div className="flex min-w-0 flex-col gap-0.5">
+          <h2 className="text-name-person-lg truncate">{person.full_name}</h2>
+          <p className="text-text-secondary text-caption">
+            {isReadOnly ? 'Hồ sơ chỉ đọc' : 'Cập nhật hồ sơ'}
           </p>
         </div>
         <Button
-          variant="outline"
+          variant="inset"
           size="icon"
           onClick={() => setSelectedPersonId(null)}
           aria-label="Đóng hồ sơ"
         >
-          <X className="h-6 w-6" />
+          <X />
         </Button>
       </div>
 
       <ScrollArea className="min-h-0 flex-1">
-        <div className="p-4">
+        <div className="flex flex-col gap-5 p-6">
           <PersonForm key={person.id} person={person} isReadOnly={isReadOnly} />
+
           {!isReadOnly && (
-            <div className="border-foreground mt-4 space-y-4 border-t-2 pt-4">
-              <h3 className="text-foreground bg-primary/10 inline-block px-2 py-1 text-xs font-bold tracking-[0.16em] uppercase">
-                Thêm người thân
-              </h3>
+            <div className="border-border-default flex flex-col gap-3 border-t pt-5">
+              <h3 className="text-title-md font-semibold">Thêm người thân</h3>
               <div className="grid grid-cols-2 gap-2">
                 <Button
-                  variant="outline"
-                  className="h-12 justify-start"
+                  variant="secondary"
+                  className="justify-start"
                   onClick={() => setIsAddingRelative('father')}
                   disabled={!!person.father_id}
                 >
-                  <ArrowUp className="mr-2 h-4 w-4" /> Cha
+                  <ArrowUp /> Cha
                 </Button>
                 <Button
-                  variant="outline"
-                  className="h-12 justify-start"
+                  variant="secondary"
+                  className="justify-start"
                   onClick={() => setIsAddingRelative('mother')}
                   disabled={!!person.mother_id}
                 >
-                  <ArrowUp className="mr-2 h-4 w-4" /> Mẹ
+                  <ArrowUp /> Mẹ
                 </Button>
                 <Button
-                  variant="outline"
-                  className="h-12 justify-start"
+                  variant="secondary"
+                  className="justify-start"
                   onClick={() => {
                     setIsAddingRelative('spouse');
                     setNewRelativeGender(
@@ -322,22 +318,22 @@ export function Sidebar() {
                   }}
                   disabled={!!getSpouseId(person.id)}
                 >
-                  <Heart className="mr-2 h-4 w-4" /> Vợ/Chồng
+                  <Heart /> Vợ/chồng
                 </Button>
                 <Button
-                  variant="outline"
-                  className="h-12 justify-start"
+                  variant="secondary"
+                  className="justify-start"
                   onClick={() => setIsAddingRelative('child')}
                 >
-                  <ArrowDown className="mr-2 h-4 w-4" /> Con
+                  <ArrowDown /> Con
                 </Button>
               </div>
               <Button
-                variant="destructive"
-                className="h-12 w-full"
+                variant="danger"
+                className="mt-2 w-full"
                 onClick={() => setIsDeleteDialogOpen(true)}
               >
-                <Trash2 className="mr-2 h-4 w-4" /> Xóa hồ sơ
+                <Trash2 /> Xóa hồ sơ
               </Button>
             </div>
           )}
@@ -346,85 +342,60 @@ export function Sidebar() {
     </>
   );
 
-  return (
-    <>
-      {isMobile ? (
-        <Sheet
-          open={!!selectedPersonId}
-          onOpenChange={(open) => !open && setSelectedPersonId(null)}
-        >
-          <SheetContent
-            side="right"
-            showCloseButton={false}
-            className="border-foreground w-[92vw] max-w-[460px] border-l-2 p-0"
-          >
-            <div className="bg-background flex h-full flex-col">
-              {panelContent}
-            </div>
-          </SheetContent>
-        </Sheet>
-      ) : (
-        <motion.div
-          initial={{ x: '100%' }}
-          animate={{ x: 0 }}
-          exit={{ x: '100%' }}
-          transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
-          className="bg-background border-foreground absolute top-0 right-0 z-50 flex h-full w-[460px] flex-col overflow-hidden border-l-2"
-        >
-          {panelContent}
-        </motion.div>
-      )}
+  const relativeDialog = (
+    <Dialog
+      open={!!isAddingRelative}
+      onOpenChange={(v) => !v && resetRelativeState()}
+    >
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>
+            Thêm {isAddingRelative ? relationshipMap[isAddingRelative] : ''}
+          </DialogTitle>
+          <DialogDescription>
+            Chọn người đã có trong gia phả, hoặc nhập hồ sơ mới.
+          </DialogDescription>
+        </DialogHeader>
 
-      <Dialog
-        open={!!isAddingRelative}
-        onOpenChange={(v) => !v && resetRelativeState()}
-      >
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>
-              Thêm {isAddingRelative ? relationshipMap[isAddingRelative] : ''}
-            </DialogTitle>
-          </DialogHeader>
+        <DialogBody>
+          {availablePersons.length > 0 && (
+            <Field>
+              <FieldLabel htmlFor="relative-existing">
+                Chọn từ danh sách
+              </FieldLabel>
+              <Select
+                options={[
+                  { value: '', label: 'Chọn người' },
+                  ...availablePersons.map((p) => ({
+                    value: p.id,
+                    label: p.full_name,
+                  })),
+                ]}
+                value={selectedExistingPersonId}
+                onChange={(val) => {
+                  setSelectedExistingPersonId(val);
+                  if (val) setNewRelativeName('');
+                }}
+                placeholder="Chọn người"
+                showSearch
+              />
+            </Field>
+          )}
 
-          <div className="space-y-3 p-6">
-            {availablePersons.length > 0 && (
-              <div className="space-y-2">
-                <Label className="text-xs font-semibold tracking-[0.16em] uppercase">
-                  Chọn từ danh sách
-                </Label>
-                <Select
-                  options={[
-                    { value: '', label: '-- Chọn người --' },
-                    ...availablePersons.map((p) => ({
-                      value: p.id,
-                      label: p.full_name,
-                    })),
-                  ]}
-                  value={selectedExistingPersonId}
-                  onChange={(val) => {
-                    setSelectedExistingPersonId(val);
-                    if (val) setNewRelativeName('');
-                  }}
-                  placeholder="-- Chọn người --"
-                  showSearch={true}
-                />
-              </div>
-            )}
-
-            <div className="grid grid-cols-3 gap-4">
-              <div
+          {!selectedExistingPersonId && (
+            <div className="grid grid-cols-3 gap-3">
+              <Field
                 className={
                   (isAddingRelative === 'child' ||
                     isAddingRelative === 'spouse') &&
                   !selectedExistingPersonId
-                    ? 'col-span-2 space-y-2'
-                    : 'col-span-3 space-y-2'
+                    ? 'col-span-2'
+                    : 'col-span-3'
                 }
               >
-                <Label className="text-xs font-semibold tracking-[0.16em] uppercase">
-                  Họ và Tên
-                </Label>
+                <FieldLabel htmlFor="relative-name">Họ và tên</FieldLabel>
                 <Input
+                  id="relative-name"
                   value={newRelativeName}
                   onChange={(e) => {
                     setNewRelativeName(e.target.value);
@@ -432,118 +403,148 @@ export function Sidebar() {
                   }}
                   placeholder="Nhập tên"
                 />
-              </div>
+              </Field>
               {(isAddingRelative === 'child' ||
-                isAddingRelative === 'spouse') &&
-                !selectedExistingPersonId && (
-                  <div className="col-span-1 space-y-2">
-                    <Label className="text-xs font-semibold tracking-[0.16em] uppercase">
-                      Giới Tính
-                    </Label>
-                    <Select
-                      options={
-                        isAddingRelative === 'spouse'
-                          ? [
-                              {
-                                value:
-                                  person.gender === 'male' ? 'female' : 'male',
-                                label: person.gender === 'male' ? 'Nữ' : 'Nam',
-                              },
-                            ]
-                          : [
-                              { value: 'male', label: 'Nam' },
-                              { value: 'female', label: 'Nữ' },
-                            ]
-                      }
-                      value={newRelativeGender}
-                      onChange={(val) =>
-                        setNewRelativeGender(val as 'male' | 'female')
-                      }
-                      disabled={isAddingRelative === 'spouse'}
-                    />
-                  </div>
-                )}
-            </div>
-
-            {!selectedExistingPersonId && (
-              <div className="space-y-2">
-                <Label className="text-xs font-semibold tracking-[0.16em] uppercase">
-                  Thứ Tự Sinh
-                </Label>
-                <Input
-                  type="number"
-                  min={0}
-                  value={newRelativeSiblingOrder}
-                  onChange={(e) =>
-                    setNewRelativeSiblingOrder(
-                      normalizeSiblingOrder(Number(e.target.value))
-                    )
-                  }
-                />
-              </div>
-            )}
-          </div>
-
-          <DialogFooter>
-            <Button
-              variant="outline"
-              className="h-12 flex-1"
-              onClick={resetRelativeState}
-            >
-              Hủy
-            </Button>
-            <Button
-              className="h-12 flex-1"
-              onClick={submitAddRelative}
-              disabled={
-                isSubmittingRelative ||
-                (!newRelativeName && !selectedExistingPersonId) ||
-                hasSiblingOrderConflict
-              }
-            >
-              Lưu
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent>
-          <DialogHeader variant="destructive">
-            <DialogTitle>Xóa hồ sơ</DialogTitle>
-            <DialogDescription>
-              Hành động này không thể hoàn tác
-            </DialogDescription>
-          </DialogHeader>
-          <div className="p-6">
-            <p className="text-sm font-medium">
-              Bạn có chắc chắn muốn xóa{' '}
-              <span className="font-bold">{person.full_name}</span>?
-            </p>
-          </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              className="h-12 flex-1"
-              onClick={() => setIsDeleteDialogOpen(false)}
-            >
-              Hủy
-            </Button>
-            <Button
-              variant="destructive"
-              className="h-12 flex-1"
-              onClick={handleDelete}
-              disabled={isDeleting}
-            >
-              {isDeleting ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                'Xóa'
+                isAddingRelative === 'spouse') && (
+                <Field>
+                  <FieldLabel htmlFor="relative-gender">Giới tính</FieldLabel>
+                  <Select
+                    options={
+                      isAddingRelative === 'spouse'
+                        ? [
+                            {
+                              value:
+                                person.gender === 'male' ? 'female' : 'male',
+                              label: person.gender === 'male' ? 'Nữ' : 'Nam',
+                            },
+                          ]
+                        : [
+                            { value: 'male', label: 'Nam' },
+                            { value: 'female', label: 'Nữ' },
+                          ]
+                    }
+                    value={newRelativeGender}
+                    onChange={(val) =>
+                      setNewRelativeGender(val as 'male' | 'female')
+                    }
+                    disabled={isAddingRelative === 'spouse'}
+                  />
+                </Field>
               )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            </div>
+          )}
+
+          {!selectedExistingPersonId && isAddingRelative === 'child' && (
+            <Field>
+              <FieldLabel htmlFor="relative-order">Thứ tự sinh</FieldLabel>
+              <Input
+                id="relative-order"
+                type="number"
+                min={0}
+                value={newRelativeSiblingOrder}
+                onChange={(e) =>
+                  setNewRelativeSiblingOrder(
+                    normalizeSiblingOrder(Number(e.target.value))
+                  )
+                }
+              />
+            </Field>
+          )}
+        </DialogBody>
+
+        <DialogFooter>
+          <Button variant="secondary" onClick={resetRelativeState}>
+            Đóng
+          </Button>
+          <Button
+            onClick={submitAddRelative}
+            disabled={
+              isSubmittingRelative ||
+              (!newRelativeName && !selectedExistingPersonId) ||
+              hasSiblingOrderConflict
+            }
+            aria-busy={isSubmittingRelative}
+          >
+            {isSubmittingRelative ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              <UserPlus />
+            )}
+            Thêm người thân
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+
+  const deleteDialog = (
+    <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Xóa hồ sơ</DialogTitle>
+          <DialogDescription>
+            Hành động này không thể hoàn tác.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogBody>
+          <p className="text-body-sm">
+            <span className="font-semibold">{person.full_name}</span> sẽ bị gỡ
+            khỏi gia phả cùng mọi mối quan hệ liên quan.
+          </p>
+        </DialogBody>
+        <DialogFooter>
+          <Button
+            variant="secondary"
+            onClick={() => setIsDeleteDialogOpen(false)}
+          >
+            Giữ lại hồ sơ
+          </Button>
+          <Button
+            variant="danger"
+            onClick={handleDelete}
+            disabled={isDeleting}
+            aria-busy={isDeleting}
+          >
+            {isDeleting && <Loader2 className="animate-spin" />}
+            Xóa hồ sơ
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+
+  if (isMobile) {
+    return (
+      <>
+        <Sheet
+          open={!!selectedPersonId}
+          onOpenChange={(open) => !open && setSelectedPersonId(null)}
+        >
+          <SheetContent
+            side="right"
+            showCloseButton={false}
+            className="gap-0 p-0"
+          >
+            <div className="bg-surface flex h-full flex-col">
+              {panelContent}
+            </div>
+          </SheetContent>
+        </Sheet>
+
+        {relativeDialog}
+        {deleteDialog}
+      </>
+    );
+  }
+
+  return (
+    <>
+      <aside className="border-border-default bg-surface flex h-full w-[420px] shrink-0 flex-col overflow-hidden border-l">
+        {panelContent}
+      </aside>
+
+      {relativeDialog}
+      {deleteDialog}
     </>
   );
 }

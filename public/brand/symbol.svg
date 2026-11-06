@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-labelledby="title">
+  <title id="title">TreeMaker symbol</title>
+  <!--
+    Final geometry. Branches thickened 20 -> 24 to match the trunk's top width so the tree has one
+    weight, and the canopy spread widened to 176 so the footprint is near-square instead of tall.
+    The trunk flares 12 units each side over its length; that flare is what makes it read as a tree
+    once the ground bar (which made it read as an object on a stand) was removed.
+  -->
+  <path fill="currentColor" d="M116 80L140 80L152 224H104Z M52 152H128V176H52Z M128 104H204V128H128Z"/>
+  <circle cx="128" cy="56" r="28" fill="currentColor"/>
+  <circle cx="64" cy="136" r="24" fill="currentColor"/>
+  <circle cx="192" cy="88" r="24" fill="currentColor"/>
+</svg>

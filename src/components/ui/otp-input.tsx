@@ -9,44 +9,39 @@ interface OTPInputProps {
   length?: number;
   className?: string;
   disabled?: boolean;
+  error?: boolean;
 }
 
-// Thành phần nhập mã PIN/OTP với phong cách Neo-brutalism.
 export function OTPInput({
   value,
   onChange,
   length = 4,
   className,
   disabled = false,
+  error = false,
 }: OTPInputProps) {
   const inputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
 
-  // Khởi tạo mảng ref cho các ô nhập.
   React.useEffect(() => {
     inputRefs.current = inputRefs.current.slice(0, length);
   }, [length]);
 
-  // Xử lý khi thay đổi giá trị trong một ô.
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
     const val = e.target.value;
-    if (!/^\d*$/.test(val)) return; // Chỉ cho phép nhập số.
+    if (!/^\d*$/.test(val)) return;
 
     const newValue = value.split('');
-    // Lấy ký tự cuối cùng nếu người dùng nhập đè.
     newValue[index] = val.slice(-1);
-    const combinedValue = newValue.join('');
-    onChange(combinedValue);
+    onChange(newValue.join(''));
 
-    // Tự động chuyển focus sang ô tiếp theo.
     if (val && index < length - 1) {
       inputRefs.current[index + 1]?.focus();
     }
   };
 
-  // Xử lý các phím đặc biệt (Backspace).
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
     index: number
@@ -56,20 +51,18 @@ export function OTPInput({
     }
   };
 
-  // Xử lý khi paste mã vào ô.
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData('text').slice(0, length);
     if (!/^\d+$/.test(pastedData)) return;
     onChange(pastedData);
-    // Focus vào ô cuối cùng hoặc ô tiếp theo sau mã paste.
     const nextIndex = Math.min(pastedData.length, length - 1);
     inputRefs.current[nextIndex]?.focus();
   };
 
   return (
     <div
-      className={cn('flex justify-center gap-3', className)}
+      className={cn('flex justify-center gap-2', className)}
       onPaste={handlePaste}
     >
       {Array.from({ length }).map((_, i) => (
@@ -86,9 +79,11 @@ export function OTPInput({
           onChange={(e) => handleChange(e, i)}
           onKeyDown={(e) => handleKeyDown(e, i)}
           disabled={disabled}
+          aria-invalid={error || undefined}
           className={cn(
-            'border-foreground bg-background shadow-brutal-md size-12 rounded-none border-4 text-center text-xl font-black transition-all md:size-14',
-            'focus:bg-primary focus:text-primary-foreground focus:translate-x-[2px] focus:translate-y-[2px] focus:shadow-none focus:outline-none',
+            'border-border bg-surface rounded-control text-body h-14 w-12 border text-center font-medium tabular-nums transition-colors outline-none',
+            'focus:border-primary focus:bg-primary-soft',
+            error && 'border-danger',
             'disabled:cursor-not-allowed disabled:opacity-50'
           )}
         />

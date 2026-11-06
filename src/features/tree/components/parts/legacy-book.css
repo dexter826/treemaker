@@ -1,0 +1,125 @@
+/* Bảng biến in của LegacyBook. Độc lập với token giao diện: đổi màu app không làm vỡ PDF.
+   Giá trị lấy từ DESIGN.md mục print; đơn vị pt vì trang in tính bằng pt, không bằng px. */
+
+.legacy-book {
+  --print-page: #ffffff;
+  --print-ink: #0f0d0b;
+  --print-accent: #8c1f2a;
+  --print-muted: #595549;
+  --print-rule: rgb(15 13 11 / 0.18);
+  --print-male: #005e82;
+  --print-female: #9e427b;
+  --print-serif: 'Cormorant Garamond', 'Times New Roman', serif;
+  --print-sans: 'Be Vietnam Pro', system-ui, sans-serif;
+
+  background-color: var(--print-page);
+  color: var(--print-ink);
+  font-family: var(--print-sans);
+  font-weight: 400;
+}
+
+.lb-cover {
+  border: 3pt double var(--print-ink);
+}
+
+.lb-cover-frame {
+  border: 0.75pt solid var(--print-rule);
+}
+
+.lb-display {
+  font-family: var(--print-serif);
+  font-size: 54pt;
+  font-weight: 600;
+  line-height: 1.05;
+}
+
+.lb-subtitle {
+  font-family: var(--print-serif);
+  font-size: 18pt;
+  font-weight: 500;
+  color: var(--print-muted);
+}
+
+.lb-tree-name {
+  font-family: var(--print-serif);
+  font-size: 30pt;
+  font-weight: 600;
+  color: var(--print-accent);
+}
+
+.lb-cover-rule {
+  height: 2pt;
+  background-color: var(--print-ink);
+}
+
+.lb-footer {
+  font-size: 9pt;
+  color: var(--print-muted);
+}
+
+.lb-page-rule {
+  border-top: 0.75pt solid var(--print-rule);
+}
+
+.lb-avatar {
+  border: 0.75pt solid var(--print-rule);
+  border-radius: 3pt;
+}
+
+.lb-avatar-fallback {
+  font-family: var(--print-serif);
+  font-size: 40pt;
+  font-weight: 600;
+}
+
+.lb-gender-band {
+  height: 6pt;
+}
+
+.lb-name {
+  font-family: var(--print-serif);
+  font-size: 28pt;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.lb-nickname {
+  font-family: var(--print-serif);
+  font-size: 14pt;
+  font-style: italic;
+  color: var(--print-muted);
+}
+
+.lb-section-title {
+  border-bottom: 1.5pt solid var(--print-rule);
+  font-size: 10pt;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--print-muted);
+}
+
+.lb-label {
+  font-size: 8pt;
+  color: var(--print-muted);
+}
+
+.lb-value {
+  font-size: 12pt;
+  font-weight: 500;
+}
+
+.lb-value-muted {
+  color: var(--print-muted);
+}
+
+.lb-bio {
+  font-family: var(--print-serif);
+  font-size: 12pt;
+  line-height: 1.6;
+}
+
+.lb-chip {
+  border: 0.75pt solid var(--print-rule);
+  border-radius: 2pt;
+  padding: 4pt 8pt;
+}

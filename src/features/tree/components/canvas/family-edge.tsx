@@ -6,10 +6,9 @@ export function FamilyEdge({
   sourceY,
   targetX,
   targetY,
-  sourcePosition,
-  targetPosition,
   style = {},
   markerEnd,
+  selected,
 }: EdgeProps) {
   const verticalDistance = targetY - sourceY;
   const splitY = sourceY + verticalDistance * 0.75;
@@ -26,8 +25,8 @@ export function FamilyEdge({
       markerEnd={markerEnd}
       style={{
         ...style,
-        strokeWidth: 2,
-        stroke: style.stroke || 'var(--color-foreground)',
+        strokeWidth: selected ? 3 : 2,
+        stroke: selected ? 'var(--color-primary)' : 'var(--color-text-primary)',
       }}
     />
   );

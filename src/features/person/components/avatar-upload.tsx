@@ -185,7 +185,7 @@ export function AvatarUpload({
         onClick={() => {
           if (!disabled) fileInputRef.current?.click();
         }}
-        className={`group relative h-32 w-32 border-2 ${error ? 'border-destructive shadow-brutal-sm' : 'border-foreground shadow-brutal-md'} bg-muted hover:border-primary cursor-pointer overflow-hidden transition-all ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
+        className={`group relative h-32 w-32 border ${error ? 'border-danger' : 'border-border'} bg-surface hover:border-primary cursor-pointer overflow-hidden transition-all ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
       >
         {displayUrl ? (
           <>
@@ -197,36 +197,30 @@ export function AvatarUpload({
             />
             {!disabled && (
               <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
-                <Upload className="h-6 w-6 text-white" />
+                <Upload className="text-on-primary h-6 w-6" />
               </div>
             )}
           </>
         ) : (
-          <div className="text-muted-foreground flex h-full w-full flex-col items-center justify-center gap-2">
+          <div className="text-text-secondary flex h-full w-full flex-col items-center justify-center gap-2">
             <User className="h-10 w-10" />
-            <span className="text-[8px] font-bold tracking-tighter uppercase">
-              Tải ảnh lên
-            </span>
+            <span className="text-meta font-semibold">Tải ảnh lên</span>
           </div>
         )}
 
         {displayUrl && !disabled && (
           <Button
-            variant="outline"
-            size="icon-xs"
+            variant="secondary"
+            size="icon"
             onClick={clearImage}
-            className="bg-foreground text-background hover:bg-primary hover:text-primary-foreground absolute top-1 right-1 z-10"
+            className="bg-primary text-on-primary hover:bg-primary-hover absolute top-1 right-1 z-10"
           >
             <X className="h-3 w-3" />
           </Button>
         )}
       </div>
 
-      {error && (
-        <p className="text-destructive text-[10px] font-bold uppercase">
-          {error}
-        </p>
-      )}
+      {error && <p className="text-danger text-meta font-semibold">{error}</p>}
 
       <input
         type="file"
@@ -239,19 +233,19 @@ export function AvatarUpload({
 
       {showCropModal && srcForCrop && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
-          <div className="bg-background w-full max-w-md rounded-none p-6">
+          <div className="bg-surface rounded-control w-full max-w-md p-6">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="font-bold">Cắt ảnh</h3>
+              <h3 className="font-semibold">Cắt ảnh</h3>
               <Button
-                variant="outline"
-                size="icon-sm"
+                variant="secondary"
+                size="icon"
                 onClick={handleCropCancel}
               >
                 <X className="h-5 w-5" />
               </Button>
             </div>
 
-            <div className="bg-muted relative mb-4 aspect-square w-full overflow-hidden rounded-none">
+            <div className="bg-surface rounded-control relative mb-4 aspect-square w-full overflow-hidden">
               <Cropper
                 image={srcForCrop}
                 crop={crop}
@@ -277,24 +271,24 @@ export function AvatarUpload({
                   step={0.1}
                   value={zoom}
                   onChange={(e) => setZoom(Number(e.target.value))}
-                  className="bg-muted border-foreground accent-primary h-2 w-full cursor-pointer appearance-none rounded-none border-2"
+                  className="bg-surface border-border-default accent-primary rounded-control h-2 w-full cursor-pointer appearance-none border"
                 />
               </div>
 
               <div className="flex gap-3">
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   onClick={handleCropCancel}
-                  className="h-12 flex-1"
+                  className="flex-1"
                 >
-                  Hủy
+                  Bỏ ảnh này
                 </Button>
                 <Button
                   onClick={handleCropConfirm}
-                  className="h-12 flex-1"
+                  className="flex-1"
                   disabled={!completedCrop}
                 >
-                  Lưu
+                  Dùng ảnh này
                 </Button>
               </div>
             </div>

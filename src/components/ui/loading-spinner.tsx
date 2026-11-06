@@ -2,17 +2,16 @@ import { Loader2 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 interface LoadingSpinnerProps {
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg';
   className?: string;
   text?: string;
   textClassName?: string;
 }
 
 const sizeClasses = {
-  sm: 'w-4 h-4',
-  md: 'w-6 h-6',
-  lg: 'w-10 h-10',
-  xl: 'w-16 h-16',
+  sm: 'size-4',
+  md: 'size-6',
+  lg: 'size-8',
 };
 
 export function LoadingSpinner({
@@ -25,18 +24,13 @@ export function LoadingSpinner({
     <div className="flex flex-col items-center justify-center gap-3">
       <Loader2
         className={cn(
-          'text-primary animate-spin',
+          'text-primary motion-safe:animate-spin',
           sizeClasses[size],
           className
         )}
       />
       {text && (
-        <p
-          className={cn(
-            'text-muted-foreground font-serif text-sm tracking-widest uppercase italic',
-            textClassName
-          )}
-        >
+        <p className={cn('text-text-secondary text-caption', textClassName)}>
           {text}
         </p>
       )}

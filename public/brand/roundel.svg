@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-labelledby="title">
+  <title id="title">TreeMaker roundel</title>
+  <!--
+    The tree contained: a 20-unit ring for the LegacyBook cover and for app icons that should not
+    be square. The tree inside is scaled 0.78 so its widest part clears the ring by about 16 units.
+  -->
+  <path fill="currentColor" fill-rule="evenodd" d="M128 16A112 112 0 1 1 127.9 16Z M128 36A92 92 0 1 0 128.1 36Z"/>
+  <g transform="translate(128 126) scale(0.78) translate(-128 -126)">
+    <path fill="currentColor" d="M116 80L140 80L152 224H104Z M52 152H128V176H52Z M128 104H204V128H128Z"/>
+    <circle cx="128" cy="56" r="28" fill="currentColor"/>
+    <circle cx="64" cy="136" r="24" fill="currentColor"/>
+    <circle cx="192" cy="88" r="24" fill="currentColor"/>
+  </g>
+</svg>

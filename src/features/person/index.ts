@@ -1,6 +1,5 @@
 export { PersonForm } from './components/person-form';
 export { ViewPersonModal } from './components/view-person-modal';
-export { PersonCardActions } from './components/person-card-actions';
 export { personService, type RelationType } from './services/person.service';
 export {
   personSchema,

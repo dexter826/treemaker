@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Person } from '@/types';
 import { useStore } from '@/lib/store';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { FieldLabel, FieldError } from '@/components/ui/field';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
@@ -101,9 +101,7 @@ export function PersonForm({
     <form onSubmit={handleSubmit(onSave)} className="space-y-4">
       <div className="flex flex-col items-center space-y-4">
         <div className="flex flex-col items-center space-y-1">
-          <Label className="text-muted-foreground text-center text-xs font-semibold tracking-[0.16em]">
-            Ảnh đại diện
-          </Label>
+          <FieldLabel>Ảnh đại diện</FieldLabel>
           <Controller
             name="avatar_file"
             control={control}
@@ -124,9 +122,7 @@ export function PersonForm({
 
         <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-3">
           <div className="space-y-1 sm:col-span-2">
-            <Label className="text-muted-foreground text-xs font-semibold tracking-[0.16em]">
-              Họ và tên
-            </Label>
+            <FieldLabel>Họ và tên</FieldLabel>
             <Input
               {...register('full_name')}
               error={!!errors.full_name}
@@ -134,17 +130,11 @@ export function PersonForm({
               placeholder="Ví dụ: Nguyễn Văn A"
               className="w-full font-semibold"
             />
-            {errors.full_name && (
-              <p className="text-destructive text-[10px] font-bold uppercase">
-                {errors.full_name.message}
-              </p>
-            )}
+            <FieldError>{errors.full_name?.message}</FieldError>
           </div>
 
           <div className="space-y-1 sm:col-span-1">
-            <Label className="text-muted-foreground text-xs font-semibold tracking-[0.16em]">
-              Giới tính
-            </Label>
+            <FieldLabel>Giới tính</FieldLabel>
             <Controller
               name="gender"
               control={control}
@@ -161,17 +151,11 @@ export function PersonForm({
                 />
               )}
             />
-            {errors.gender && (
-              <p className="text-destructive text-[10px] font-bold uppercase">
-                {errors.gender.message}
-              </p>
-            )}
+            <FieldError>{errors.gender?.message}</FieldError>
           </div>
 
           <div className="space-y-1 sm:col-span-3">
-            <Label className="text-muted-foreground text-xs font-semibold tracking-[0.16em]">
-              Tên gọi khác
-            </Label>
+            <FieldLabel>Tên gọi khác</FieldLabel>
             <Input
               {...register('nickname')}
               error={!!errors.nickname}
@@ -179,24 +163,18 @@ export function PersonForm({
               placeholder="Ví dụ: Bé Tí, Tèo..."
               className="font-semibold"
             />
-            {errors.nickname && (
-              <p className="text-destructive text-[10px] font-bold uppercase">
-                {errors.nickname.message}
-              </p>
-            )}
+            <FieldError>{errors.nickname?.message}</FieldError>
           </div>
         </div>
       </div>
 
       <div>
-        <Separator className="bg-foreground/20" />
+        <Separator className="bg-border-default" />
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="space-y-1">
-          <Label className="text-muted-foreground text-xs font-semibold tracking-[0.16em]">
-            Ngày sinh
-          </Label>
+          <FieldLabel>Ngày sinh</FieldLabel>
           <Controller
             name="birth_date"
             control={control}
@@ -209,16 +187,10 @@ export function PersonForm({
               />
             )}
           />
-          {errors.birth_date && (
-            <p className="text-destructive text-[10px] font-bold uppercase">
-              {errors.birth_date.message}
-            </p>
-          )}
+          <FieldError>{errors.birth_date?.message}</FieldError>
         </div>
         <div className="space-y-1">
-          <Label className="text-muted-foreground text-xs font-semibold tracking-[0.16em]">
-            Ngày mất
-          </Label>
+          <FieldLabel>Ngày mất</FieldLabel>
           <Controller
             name="death_date"
             control={control}
@@ -230,16 +202,10 @@ export function PersonForm({
               />
             )}
           />
-          {errors.death_date && (
-            <p className="text-destructive text-[10px] font-bold uppercase">
-              {errors.death_date.message}
-            </p>
-          )}
+          <FieldError>{errors.death_date?.message}</FieldError>
         </div>
         <div className="space-y-1 md:col-span-2">
-          <Label className="text-muted-foreground text-xs font-semibold tracking-[0.16em]">
-            Thứ tự sinh
-          </Label>
+          <FieldLabel>Thứ tự sinh</FieldLabel>
           <Input
             type="number"
             {...register('sibling_order', { valueAsNumber: true })}
@@ -249,23 +215,17 @@ export function PersonForm({
             step={1}
             className="font-semibold"
           />
-          {errors.sibling_order && (
-            <p className="text-destructive text-[10px] font-bold uppercase">
-              {errors.sibling_order.message}
-            </p>
-          )}
+          <FieldError>{errors.sibling_order?.message}</FieldError>
         </div>
       </div>
 
       <div>
-        <Separator className="bg-foreground/20" />
+        <Separator className="bg-border-default" />
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="space-y-1">
-          <Label className="text-muted-foreground text-xs font-semibold tracking-[0.16em]">
-            Nghề nghiệp
-          </Label>
+          <FieldLabel>Nghề nghiệp</FieldLabel>
           <Input
             {...register('occupation')}
             error={!!errors.occupation}
@@ -273,16 +233,10 @@ export function PersonForm({
             placeholder="Ví dụ: Bác sĩ, Giáo viên..."
             className="font-semibold"
           />
-          {errors.occupation && (
-            <p className="text-destructive text-[10px] font-bold uppercase">
-              {errors.occupation.message}
-            </p>
-          )}
+          <FieldError>{errors.occupation?.message}</FieldError>
         </div>
         <div className="space-y-1">
-          <Label className="text-muted-foreground text-xs font-semibold tracking-[0.16em]">
-            Địa chỉ
-          </Label>
+          <FieldLabel>Địa chỉ</FieldLabel>
           <Input
             {...register('address')}
             error={!!errors.address}
@@ -290,16 +244,10 @@ export function PersonForm({
             placeholder="Ví dụ: Hà Nội, Việt Nam"
             className="font-semibold"
           />
-          {errors.address && (
-            <p className="text-destructive text-[10px] font-bold uppercase">
-              {errors.address.message}
-            </p>
-          )}
+          <FieldError>{errors.address?.message}</FieldError>
         </div>
         <div className="space-y-1 md:col-span-2">
-          <Label className="text-muted-foreground text-xs font-semibold tracking-[0.16em]">
-            Quốc gia cư trú
-          </Label>
+          <FieldLabel>Quốc gia cư trú</FieldLabel>
           <Controller
             name="country_code"
             control={control}
@@ -315,7 +263,7 @@ export function PersonForm({
                     value: c.code,
                     label: (
                       <div className="flex items-center gap-3">
-                        <div className="border-foreground/20 h-3.5 w-5 flex-shrink-0 overflow-hidden border">
+                        <div className="border-border-default h-3.5 w-5 flex-shrink-0 overflow-hidden border">
                           <Flag
                             code={c.code}
                             className="h-full w-full object-cover"
@@ -339,25 +287,19 @@ export function PersonForm({
       </div>
 
       <div>
-        <Separator className="bg-foreground/20" />
+        <Separator className="bg-border-default" />
       </div>
 
       <div className="space-y-1">
-        <Label className="text-muted-foreground text-xs font-semibold tracking-[0.16em]">
-          Tiểu sử
-        </Label>
+        <FieldLabel>Tiểu sử</FieldLabel>
         <Textarea
           {...register('bio')}
           error={!!errors.bio}
           rows={4}
           readOnly={isReadOnly}
-          className="border-foreground focus:border-primary resize-none rounded-none border-2 p-4 font-medium focus:ring-0"
+          className="border-border-default focus:border-primary rounded-control resize-none border p-4 font-medium focus:ring-0"
         />
-        {errors.bio && (
-          <p className="text-destructive text-[10px] font-bold uppercase">
-            {errors.bio.message}
-          </p>
-        )}
+        <FieldError>{errors.bio?.message}</FieldError>
       </div>
 
       {!isReadOnly && (
