@@ -212,8 +212,8 @@ export function AvatarUpload({
 
         {displayUrl && !disabled && (
           <Button
-            variant="outline"
-            size="icon-xs"
+            variant="secondary"
+            size="icon"
             onClick={clearImage}
             className="bg-foreground text-background hover:bg-primary hover:text-primary-foreground absolute top-1 right-1 z-10"
           >
@@ -243,8 +243,8 @@ export function AvatarUpload({
             <div className="mb-4 flex items-center justify-between">
               <h3 className="font-bold">Cắt ảnh</h3>
               <Button
-                variant="outline"
-                size="icon-sm"
+                variant="secondary"
+                size="icon"
                 onClick={handleCropCancel}
               >
                 <X className="h-5 w-5" />
@@ -283,7 +283,7 @@ export function AvatarUpload({
 
               <div className="flex gap-3">
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   onClick={handleCropCancel}
                   className="h-12 flex-1"
                 >

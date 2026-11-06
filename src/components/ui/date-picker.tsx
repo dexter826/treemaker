@@ -34,6 +34,9 @@ const parseDateValue = (value: string): Date | null => {
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 };
 
+const cellBase =
+  'flex h-11 w-full cursor-pointer items-center justify-center rounded-control text-body-sm tabular-nums transition-colors';
+
 export function DatePicker({
   value,
   onChange,
@@ -57,94 +60,86 @@ export function DatePicker({
 
   const selectedDate = value ? parseDateValue(value) : null;
 
-  const renderHeader = () => {
-    return (
-      <div className="border-foreground bg-primary/5 flex items-center justify-between border-b-2 px-2 py-3">
+  const renderHeader = () => (
+    <div className="border-border-default px-xs py-xs flex items-center justify-between border-b">
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        aria-label="Tháng trước"
+        onClick={() => {
+          if (view === 'days') setCurrentMonth(subMonths(currentMonth, 1));
+          else if (view === 'years')
+            setCurrentMonth(subMonths(currentMonth, 120));
+        }}
+      >
+        <ChevronLeft />
+      </Button>
+
+      <div className="gap-xxs flex items-center">
         <Button
           type="button"
-          variant="outline"
-          size="icon-xs"
-          onClick={() => {
-            if (view === 'days') setCurrentMonth(subMonths(currentMonth, 1));
-            else if (view === 'years')
-              setCurrentMonth(subMonths(currentMonth, 120));
-          }}
+          variant={view === 'months' ? 'secondary' : 'ghost'}
+          onClick={() => setView(view === 'months' ? 'days' : 'months')}
         >
-          <ChevronLeft className="h-4 w-4" />
+          {format(currentMonth, 'MMMM', { locale: vi })}
         </Button>
-
-        <div className="flex items-center gap-1">
-          <Button
-            type="button"
-            variant={view === 'months' ? 'default' : 'ghost'}
-            size="xs"
-            onClick={() => setView(view === 'months' ? 'days' : 'months')}
-            className="h-8 capitalize"
-          >
-            {format(currentMonth, 'MMMM', { locale: vi })}
-          </Button>
-          <Button
-            type="button"
-            variant={view === 'years' ? 'default' : 'ghost'}
-            size="xs"
-            onClick={() => setView(view === 'years' ? 'days' : 'years')}
-            className="h-8"
-          >
-            {format(currentMonth, 'yyyy')}
-          </Button>
-        </div>
-
         <Button
           type="button"
-          variant="outline"
-          size="icon-xs"
-          onClick={() => {
-            if (view === 'days') setCurrentMonth(addMonths(currentMonth, 1));
-            else if (view === 'years')
-              setCurrentMonth(addMonths(currentMonth, 120));
-          }}
+          variant={view === 'years' ? 'secondary' : 'ghost'}
+          onClick={() => setView(view === 'years' ? 'days' : 'years')}
         >
-          <ChevronRight className="h-4 w-4" />
+          {format(currentMonth, 'yyyy')}
         </Button>
       </div>
-    );
-  };
 
-  const renderMonths = () => {
-    const months = Array.from({ length: 12 }, (_, i) => i);
-    return (
-      <div className="bg-background grid h-[282px] grid-cols-3 gap-2 p-2">
-        {months.map((m) => {
-          const isSelected = getMonth(currentMonth) === m;
-          return (
-            <button
-              key={m}
-              type="button"
-              onClick={() => {
-                setCurrentMonth(setMonth(currentMonth, m));
-                setView('days');
-              }}
-              className={cn(
-                'border-foreground focus-visible:ring-primary focus-visible:ring-offset-background flex items-center justify-center border-2 text-xs font-bold tracking-widest uppercase transition-colors focus-visible:ring-2 focus-visible:ring-offset-2',
-                isSelected
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-background hover:bg-primary/10 cursor-pointer'
-              )}
-            >
-              Th. {m + 1}
-            </button>
-          );
-        })}
-      </div>
-    );
-  };
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        aria-label="Tháng sau"
+        onClick={() => {
+          if (view === 'days') setCurrentMonth(addMonths(currentMonth, 1));
+          else if (view === 'years')
+            setCurrentMonth(addMonths(currentMonth, 120));
+        }}
+      >
+        <ChevronRight />
+      </Button>
+    </div>
+  );
+
+  const renderMonths = () => (
+    <div className="gap-xxs p-xs grid grid-cols-3">
+      {Array.from({ length: 12 }, (_, m) => {
+        const isSelected = getMonth(currentMonth) === m;
+        return (
+          <button
+            key={m}
+            type="button"
+            onClick={() => {
+              setCurrentMonth(setMonth(currentMonth, m));
+              setView('days');
+            }}
+            className={cn(
+              cellBase,
+              isSelected
+                ? 'bg-primary text-on-primary font-semibold'
+                : 'text-text-primary hover:bg-primary-soft'
+            )}
+          >
+            Th. {m + 1}
+          </button>
+        );
+      })}
+    </div>
+  );
 
   const renderYears = () => {
     const currentYear = getYear(currentMonth);
-    const startYear = currentYear - 5;
-    const years = Array.from({ length: 12 }, (_, i) => startYear + i);
+    const years = Array.from({ length: 12 }, (_, i) => currentYear - 5 + i);
     return (
-      <div className="bg-background grid h-[282px] grid-cols-3 gap-2 p-2">
+      <div className="gap-xxs p-xs grid grid-cols-3">
         {years.map((y) => {
           const isSelected = currentYear === y;
           return (
@@ -156,10 +151,10 @@ export function DatePicker({
                 setView('months');
               }}
               className={cn(
-                'border-foreground focus-visible:ring-primary focus-visible:ring-offset-background flex items-center justify-center border-2 text-xs font-bold transition-colors focus-visible:ring-2 focus-visible:ring-offset-2',
+                cellBase,
                 isSelected
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-background hover:bg-primary/10 cursor-pointer'
+                  ? 'bg-primary text-on-primary font-semibold'
+                  : 'text-text-primary hover:bg-primary-soft'
               )}
             >
               {y}
@@ -170,123 +165,111 @@ export function DatePicker({
     );
   };
 
-  const renderDays = () => {
-    const days = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
-    return (
-      <div className="border-foreground bg-muted/50 grid grid-cols-7 border-b-2">
-        {days.map((day, i) => (
-          <div
-            key={i}
-            className="text-muted-foreground border-foreground border-r-2 py-2 text-center text-[10px] font-bold tracking-wider uppercase last:border-r-0"
-          >
-            {day}
-          </div>
-        ))}
-      </div>
-    );
-  };
+  const renderWeekdays = () => (
+    <div className="px-xs pb-2xxs grid grid-cols-7">
+      {['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'].map((day) => (
+        <div
+          key={day}
+          className="text-text-secondary text-caption h-8 text-center"
+        >
+          {day}
+        </div>
+      ))}
+    </div>
+  );
 
   const renderCells = () => {
     const monthStart = startOfMonth(currentMonth);
-    const monthEnd = endOfMonth(monthStart);
     const startDate = startOfWeek(monthStart);
-    const endDate = endOfWeek(monthEnd);
+    const endDate = endOfWeek(endOfMonth(monthStart));
 
-    const rows = [];
-    let days = [];
+    const cells = [];
     let day = startDate;
-    let formattedDate = '';
 
     while (day <= endDate) {
-      for (let i = 0; i < 7; i++) {
-        formattedDate = format(day, 'd');
-        const cloneDay = day;
-        const isSelected = selectedDate && isSameDay(day, selectedDate);
-        const isCurrentMonth = isSameMonth(day, monthStart);
+      const cloneDay = day;
+      const isSelected = selectedDate && isSameDay(day, selectedDate);
+      const isCurrentMonth = isSameMonth(day, monthStart);
+      const isToday = isSameDay(day, new Date());
 
-        days.push(
-          <button
-            key={day.toString()}
-            type="button"
-            className={cn(
-              'focus-visible:ring-primary focus-visible:ring-offset-background border-foreground bg-background flex h-10 w-full items-center justify-center border-r-2 border-b-2 text-xs font-medium transition-all focus-visible:ring-2 focus-visible:ring-offset-2',
-              !isCurrentMonth && 'text-muted-foreground/20',
-              isSelected
-                ? 'bg-primary text-primary-foreground cursor-default font-bold'
-                : 'hover:bg-primary/10 cursor-pointer',
-              isSameDay(day, new Date()) &&
-                !isSelected &&
-                'text-foreground ring-foreground font-bold ring-2 ring-inset'
-            )}
-            onClick={() => {
-              onChange(format(cloneDay, 'yyyy-MM-dd'));
-              setOpen(false);
-            }}
-          >
-            {formattedDate}
-          </button>
-        );
-        day = addDays(day, 1);
-      }
-      rows.push(
-        <div className="grid grid-cols-7" key={day.toString()}>
-          {days}
-        </div>
+      cells.push(
+        <button
+          key={day.toString()}
+          type="button"
+          aria-pressed={!!isSelected}
+          className={cn(
+            cellBase,
+            isSelected
+              ? 'bg-primary text-on-primary font-semibold'
+              : 'text-text-primary hover:bg-primary-soft',
+            !isCurrentMonth && 'text-text-faint',
+            isToday &&
+              !isSelected &&
+              'border-primary text-primary border font-semibold'
+          )}
+          onClick={() => {
+            onChange(format(cloneDay, 'yyyy-MM-dd'));
+            setOpen(false);
+          }}
+        >
+          {format(day, 'd')}
+        </button>
       );
-      days = [];
+      day = addDays(day, 1);
     }
-    return (
-      <div className="border-foreground flex flex-col overflow-hidden border-t-2 border-l-2">
-        {rows}
-      </div>
-    );
+
+    return <div className="gap-xxs px-xs pb-xs grid grid-cols-7">{cells}</div>;
   };
 
   return (
     <div className="relative w-full">
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger disabled={disabled} className="w-full">
+        <PopoverTrigger
+          disabled={disabled}
+          className="w-full cursor-pointer disabled:cursor-not-allowed"
+        >
           <div
             className={cn(
-              buttonVariants({ variant: 'outline', size: 'default' }),
-              'w-full justify-between',
-              open && 'bg-foreground text-background',
-              error && 'border-destructive ring-destructive',
+              buttonVariants({ variant: 'secondary', size: 'default' }),
+              'w-full justify-between text-left font-normal',
+              open && 'border-primary bg-primary-soft',
+              error && 'border-danger',
               className
             )}
           >
-            <span className="truncate">
+            <span
+              className={cn('truncate', !selectedDate && 'text-text-muted')}
+            >
               {selectedDate ? format(selectedDate, 'dd/MM/yyyy') : placeholder}
             </span>
-            <CalendarIcon className="h-4 w-4" />
+            <CalendarIcon className="size-4 shrink-0" />
           </div>
         </PopoverTrigger>
-        <PopoverContent className="w-72 p-0" align="start">
+        <PopoverContent className="w-[336px] gap-0 p-0" align="start">
           {renderHeader()}
           {view === 'days' && (
             <>
-              {renderDays()}
+              {renderWeekdays()}
               {renderCells()}
             </>
           )}
           {view === 'months' && renderMonths()}
           {view === 'years' && renderYears()}
-          <div className="border-foreground flex gap-2 border-t-2 p-2">
+          <div className="border-border-default gap-xs p-xs flex border-t">
             <Button
               type="button"
-              variant="destructive"
-              size="xs"
+              variant="ghost"
               className="flex-1"
               onClick={() => {
                 onChange(null);
                 setOpen(false);
               }}
             >
-              Xóa
+              Xóa ngày
             </Button>
             <Button
               type="button"
-              size="xs"
+              variant="primary"
               className="flex-1"
               onClick={() => {
                 onChange(format(new Date(), 'yyyy-MM-dd'));

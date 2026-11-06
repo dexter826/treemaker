@@ -26,9 +26,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import { SplashScreen } from '@/components/ui/splash-screen';
 import { FamilyTree } from '@/types';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -188,13 +187,11 @@ export default function DashboardPage() {
 
   return (
     <>
-      <SplashScreen isVisible={loading} />
-
       {!loading && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: ANIMATION_DURATION.FADE / 1000 }}
+          transition={{ duration: ANIMATION_DURATION.OVERLAY / 1000 }}
           className="bg-background selection:bg-primary/20 relative min-h-dvh"
         >
           <div className="mx-auto flex max-w-5xl flex-col px-4 py-8 lg:px-8 lg:py-10">
@@ -223,7 +220,7 @@ export default function DashboardPage() {
                   </p>
                 </div>
                 <Button
-                  variant="destructive"
+                  variant="danger"
                   size="icon"
                   className="h-auto w-10 shrink-0 rounded-none border-2 md:w-12"
                   onClick={() => setIsLogoutOpen(true)}
@@ -240,9 +237,8 @@ export default function DashboardPage() {
                   Danh Sách Gia Phả
                 </h3>
                 <Button
-                  variant="default"
-                  effect="raised"
-                  size="sm"
+                  variant="primary"
+                  size="default"
                   onClick={() => setIsCreateOpen(true)}
                   className="h-9 px-4 text-[10px] font-bold tracking-wider uppercase sm:text-xs"
                 >
@@ -258,9 +254,8 @@ export default function DashboardPage() {
                   </p>
                   <Button
                     onClick={() => setIsCreateOpen(true)}
-                    variant="outline"
-                    effect="raised"
-                    size="sm"
+                    variant="secondary"
+                    size="default"
                   >
                     Tạo Gia Phả Đầu Tiên
                   </Button>
@@ -290,9 +285,8 @@ export default function DashboardPage() {
 
                       <div className="mt-3 flex w-full flex-wrap items-center gap-2 md:mt-0 md:w-auto">
                         <Button
-                          variant="outline"
-                          effect="raised"
-                          size="sm"
+                          variant="secondary"
+                          size="default"
                           onClick={() => {
                             setTreeToShare(tree);
                             setIsShareOpen(true);
@@ -304,9 +298,8 @@ export default function DashboardPage() {
                         </Button>
 
                         <Button
-                          variant="outline"
-                          effect="raised"
-                          size="sm"
+                          variant="secondary"
+                          size="default"
                           onClick={() => {
                             setTreeToEdit(tree);
                             setEditValue('name', tree.name);
@@ -319,9 +312,8 @@ export default function DashboardPage() {
                         </Button>
 
                         <Button
-                          variant="destructive"
-                          effect="raised"
-                          size="sm"
+                          variant="danger"
+                          size="default"
                           onClick={() => {
                             setTreeToDelete(tree);
                             setIsDeleteOpen(true);
@@ -337,9 +329,8 @@ export default function DashboardPage() {
                           className="flex-1 md:flex-none"
                         >
                           <Button
-                            variant="default"
-                            effect="raised"
-                            size="sm"
+                            variant="primary"
+                            size="default"
                             className="h-9 w-9 p-0"
                             title="Mở Gia Phả"
                           >
@@ -387,7 +378,7 @@ export default function DashboardPage() {
                 <DialogFooter>
                   <Button
                     type="button"
-                    variant="outline"
+                    variant="secondary"
                     className="h-12 flex-1"
                     onClick={() => setIsCreateOpen(false)}
                   >
@@ -411,7 +402,7 @@ export default function DashboardPage() {
 
           <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
             <DialogContent>
-              <DialogHeader variant="destructive">
+              <DialogHeader>
                 <DialogTitle>Xóa Gia Phả</DialogTitle>
                 <DialogDescription>
                   Hành động này không thể hoàn tác
@@ -429,14 +420,14 @@ export default function DashboardPage() {
               </div>
               <DialogFooter>
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   className="h-12 flex-1"
                   onClick={() => setIsDeleteOpen(false)}
                 >
                   Hủy
                 </Button>
                 <Button
-                  variant="destructive"
+                  variant="danger"
                   className="h-12 flex-1"
                   onClick={handleDeleteTree}
                   disabled={deleting}
@@ -466,14 +457,14 @@ export default function DashboardPage() {
               </div>
               <DialogFooter>
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   className="h-12 flex-1"
                   onClick={() => setIsLogoutOpen(false)}
                 >
                   Hủy
                 </Button>
                 <Button
-                  variant="destructive"
+                  variant="danger"
                   className="h-12 flex-1"
                   onClick={async () => {
                     setLoading(true);
@@ -531,7 +522,7 @@ export default function DashboardPage() {
                 <DialogFooter>
                   <Button
                     type="button"
-                    variant="outline"
+                    variant="secondary"
                     className="h-12 flex-1"
                     onClick={() => setIsEditOpen(false)}
                   >

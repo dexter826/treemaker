@@ -46,8 +46,8 @@ export function ViewPersonModal() {
           <DialogClose
             render={
               <Button
-                variant="outline"
-                size="icon-xs"
+                variant="secondary"
+                size="icon"
                 className="bg-background border-foreground shadow-brutal-sm absolute top-3 right-3 z-50 border-2 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
               />
             }
@@ -69,8 +69,8 @@ export function ViewPersonModal() {
                   Tiểu sử chi tiết
                 </span>
                 <Button
-                  variant="outline"
-                  size="xs"
+                  variant="secondary"
+                  size="default"
                   onClick={() => setShowFullBio(false)}
                   className="bg-background border-foreground shadow-brutal-sm h-8 gap-1 border-2 px-2 text-[10px] font-bold hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
                 >
@@ -164,8 +164,8 @@ export function ViewPersonModal() {
                     />
                     {person.address && (
                       <Button
-                        variant="outline"
-                        size="icon-xs"
+                        variant="secondary"
+                        size="icon"
                         onClick={() => {
                           if (person.address) {
                             window.open(

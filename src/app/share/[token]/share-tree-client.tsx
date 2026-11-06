@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { TreeClient, treeService } from '@/features/tree';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { Button } from '@/components/ui/button';
@@ -86,7 +86,7 @@ export function ShareTreeClient({ token }: { token: string }) {
         </p>
         <Link href="/">
           <Button
-            variant="outline"
+            variant="secondary"
             className="shadow-brutal-md h-12 border-2 px-8"
           >
             <Home className="mr-2 size-4" />

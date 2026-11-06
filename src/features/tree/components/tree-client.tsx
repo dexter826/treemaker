@@ -10,10 +10,9 @@ import { ViewPersonModal } from '@/features/person';
 import { treeService } from '../services/tree.service';
 import { authService } from '@/features/auth';
 import { toast } from 'sonner';
-import { SplashScreen } from '@/components/ui/splash-screen';
 import { LegacyBookTemplate } from './parts/legacy-book-template';
+import { Skeleton } from '@/components/ui/skeleton';
 
-// Thành phần Client quản lý tương tác cây gia phả.
 export default function TreeClient({ treeId }: { treeId: string }) {
   const setCurrentTree = useStore((state) => state.setCurrentTree);
   const setPersons = useStore((state) => state.setPersons);
@@ -21,7 +20,6 @@ export default function TreeClient({ treeId }: { treeId: string }) {
   const setIsReadOnly = useStore((state) => state.setIsReadOnly);
   const setSelectedPersonId = useStore((state) => state.setSelectedPersonId);
   const setViewPersonId = useStore((state) => state.setViewPersonId);
-  const setShowCardActions = useStore((state) => state.setShowCardActions);
   const isLoading = useStore((state) => state.isLoading);
   const setRelationships = useStore((state) => state.setRelationships);
   const currentTree = useStore((state) => state.currentTree);
@@ -33,7 +31,6 @@ export default function TreeClient({ treeId }: { treeId: string }) {
       setIsLoading(true);
       setSelectedPersonId(null);
       setViewPersonId(null);
-      setShowCardActions(null);
 
       try {
         const { tree, persons, relationships } =
@@ -65,39 +62,41 @@ export default function TreeClient({ treeId }: { treeId: string }) {
     setPersons,
     setRelationships,
     setSelectedPersonId,
-    setShowCardActions,
     setViewPersonId,
   ]);
 
-  return (
-    <>
-      <SplashScreen isVisible={isLoading} />
+  if (isLoading) {
+    return (
+      <div className="bg-background gap-md p-md flex h-dvh w-full flex-col">
+        <Skeleton className="h-12 w-72 self-center" />
+        <div className="gap-md grid flex-1 grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="rounded-node h-16" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
-      {!isLoading && (
-        <div className="bg-background relative flex h-dvh w-full overflow-hidden">
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.03]"
-            style={{
-              backgroundImage:
-                'radial-gradient(currentColor 1px, transparent 1px)',
-              backgroundSize: '20px 20px',
-            }}
-          />
-          <ReactFlowProvider>
+  return (
+    <div className="bg-background flex h-dvh w-full overflow-hidden">
+      <ReactFlowProvider>
+        <div className="relative flex min-w-0 flex-1">
+          <div className="relative min-w-0 flex-1">
             <TreeToolbar />
             <FamilyTreeCanvas />
-            <Sidebar />
-            <ViewPersonModal />
-            {currentTree && (
-              <LegacyBookTemplate
-                tree={currentTree}
-                persons={persons}
-                relationships={relationships}
-              />
-            )}
-          </ReactFlowProvider>
+          </div>
+          <Sidebar />
         </div>
-      )}
-    </>
+        <ViewPersonModal />
+        {currentTree && (
+          <LegacyBookTemplate
+            tree={currentTree}
+            persons={persons}
+            relationships={relationships}
+          />
+        )}
+      </ReactFlowProvider>
+    </div>
   );
 }

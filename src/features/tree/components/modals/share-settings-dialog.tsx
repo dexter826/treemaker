@@ -124,7 +124,7 @@ export function ShareSettingsDialog({
                 className="border-foreground bg-muted/50 h-11 rounded-none border-2 font-mono text-[10px]"
               />
               <Button
-                variant="outline"
+                variant="secondary"
                 size="icon"
                 onClick={handleCopy}
                 className="border-foreground hover:bg-primary hover:text-primary-foreground h-11 w-11 shrink-0 border-2"
@@ -232,7 +232,7 @@ export function ShareSettingsDialog({
 
         <DialogFooter className="bg-muted/30 border-foreground gap-2 border-t-2 p-6">
           <Button
-            variant="outline"
+            variant="secondary"
             className="h-12 flex-1 font-black"
             onClick={() => onOpenChange(false)}
           >

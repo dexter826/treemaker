@@ -30,16 +30,16 @@ export class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         this.props.fallback || (
-          <div className="bg-background flex h-screen w-full items-center justify-center">
-            <div className="max-w-md text-center">
-              <h1 className="mb-4 text-2xl font-bold">Có lỗi xảy ra</h1>
-              <p className="text-muted-foreground mb-6 text-sm">
+          <div className="bg-background p-xl flex min-h-dvh items-center justify-center">
+            <div className="gap-md flex max-w-md flex-col items-center text-center">
+              <h1 className="text-title-lg font-semibold">Có lỗi xảy ra</h1>
+              <p className="text-text-secondary text-body-sm">
                 {this.state.error?.message ||
                   'Đã xảy ra lỗi không mong muốn. Vui lòng tải lại trang.'}
               </p>
               <button
                 onClick={() => window.location.reload()}
-                className="bg-primary text-primary-foreground rounded px-4 py-2 hover:opacity-90"
+                className="bg-primary text-on-primary rounded-control px-xl text-button h-11 font-semibold"
               >
                 Tải lại trang
               </button>

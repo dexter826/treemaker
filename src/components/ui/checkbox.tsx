@@ -6,14 +6,13 @@ import { Check } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
-// Component Checkbox chuẩn UI theo kiến trúc Base UI.
 function Checkbox({ className, ...props }: CheckboxPrimitive.Root.Props) {
   return (
     <CheckboxPrimitive.Root
       data-slot="checkbox"
       className={cn(
-        'peer border-foreground bg-background size-4 shrink-0 rounded-none border-2 transition-all outline-none disabled:cursor-not-allowed disabled:opacity-50',
-        'data-checked:bg-primary data-checked:border-primary data-checked:text-primary-foreground',
+        'border-border bg-surface rounded-control size-5 shrink-0 border transition-colors outline-none disabled:cursor-not-allowed disabled:opacity-50',
+        'data-checked:border-primary data-checked:bg-primary data-checked:text-on-primary',
         className
       )}
       {...props}
@@ -22,7 +21,7 @@ function Checkbox({ className, ...props }: CheckboxPrimitive.Root.Props) {
         data-slot="checkbox-indicator"
         className="flex h-full w-full items-center justify-center text-current"
       >
-        <Check className="size-3 stroke-[3.5px]" />
+        <Check className="size-3.5 stroke-[3px]" />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   );

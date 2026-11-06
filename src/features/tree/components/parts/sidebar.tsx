@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { useStore } from '@/lib/store';
 import { Person } from '@/types';
 import { Button } from '@/components/ui/button';
@@ -277,7 +277,7 @@ export function Sidebar() {
           </p>
         </div>
         <Button
-          variant="outline"
+          variant="secondary"
           size="icon"
           onClick={() => setSelectedPersonId(null)}
           aria-label="Đóng hồ sơ"
@@ -296,7 +296,7 @@ export function Sidebar() {
               </h3>
               <div className="grid grid-cols-2 gap-2">
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   className="h-12 justify-start"
                   onClick={() => setIsAddingRelative('father')}
                   disabled={!!person.father_id}
@@ -304,7 +304,7 @@ export function Sidebar() {
                   <ArrowUp className="mr-2 h-4 w-4" /> Cha
                 </Button>
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   className="h-12 justify-start"
                   onClick={() => setIsAddingRelative('mother')}
                   disabled={!!person.mother_id}
@@ -312,7 +312,7 @@ export function Sidebar() {
                   <ArrowUp className="mr-2 h-4 w-4" /> Mẹ
                 </Button>
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   className="h-12 justify-start"
                   onClick={() => {
                     setIsAddingRelative('spouse');
@@ -325,7 +325,7 @@ export function Sidebar() {
                   <Heart className="mr-2 h-4 w-4" /> Vợ/Chồng
                 </Button>
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   className="h-12 justify-start"
                   onClick={() => setIsAddingRelative('child')}
                 >
@@ -333,7 +333,7 @@ export function Sidebar() {
                 </Button>
               </div>
               <Button
-                variant="destructive"
+                variant="danger"
                 className="h-12 w-full"
                 onClick={() => setIsDeleteDialogOpen(true)}
               >
@@ -486,7 +486,7 @@ export function Sidebar() {
 
           <DialogFooter>
             <Button
-              variant="outline"
+              variant="secondary"
               className="h-12 flex-1"
               onClick={resetRelativeState}
             >
@@ -509,7 +509,7 @@ export function Sidebar() {
 
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
-          <DialogHeader variant="destructive">
+          <DialogHeader>
             <DialogTitle>Xóa hồ sơ</DialogTitle>
             <DialogDescription>
               Hành động này không thể hoàn tác
@@ -523,14 +523,14 @@ export function Sidebar() {
           </div>
           <DialogFooter>
             <Button
-              variant="outline"
+              variant="secondary"
               className="h-12 flex-1"
               onClick={() => setIsDeleteDialogOpen(false)}
             >
               Hủy
             </Button>
             <Button
-              variant="destructive"
+              variant="danger"
               className="h-12 flex-1"
               onClick={handleDelete}
               disabled={isDeleting}

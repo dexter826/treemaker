@@ -58,74 +58,76 @@ export function Select({
         >
           <div
             className={cn(
-              buttonVariants({ variant: 'outline', size: 'default' }),
-              'w-full justify-between',
-              open && 'bg-foreground text-background',
-              error && 'border-destructive ring-destructive',
+              buttonVariants({ variant: 'secondary', size: 'default' }),
+              'w-full justify-between text-left font-normal',
+              open && 'border-primary bg-primary-soft',
+              error && 'border-danger',
               className
             )}
           >
-            <span className="truncate">
+            <span
+              className={cn('truncate', !selectedOption && 'text-text-muted')}
+            >
               {selectedOption ? selectedOption.label : placeholder}
             </span>
             <ChevronDown
               className={cn(
-                'h-4 w-4 transition-transform',
+                'size-4 shrink-0 transition-transform',
                 open && 'rotate-180'
               )}
             />
           </div>
         </PopoverTrigger>
         <PopoverContent
-          className="z-50 w-(--anchor-width) p-0"
+          className="w-(--anchor-width) gap-0 overflow-hidden p-0"
           align="start"
           side="bottom"
-          sideOffset={0}
+          sideOffset={4}
         >
-          <div className="flex max-h-[300px] flex-col overflow-hidden">
-            {showSearch && (
-              <div className="border-foreground bg-primary/5 flex-shrink-0 border-b-2">
-                <div className="relative flex items-center">
-                  <Search className="text-foreground/70 absolute left-3 h-4 w-4" />
-                  <Input
-                    placeholder="Tìm kiếm..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="h-12 rounded-none border-0 bg-transparent pr-4 pl-10 text-xs focus-visible:ring-0"
-                  />
-                </div>
-              </div>
-            )}
+          {showSearch && (
+            <div className="border-border-default gap-xs p-xs flex shrink-0 items-center border-b">
+              <Search className="text-text-muted size-4 shrink-0" />
+              <Input
+                placeholder="Tìm kiếm..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="text-body-sm h-9 border-0 bg-transparent px-0 focus-visible:ring-0"
+              />
+            </div>
+          )}
 
-            <ScrollArea className="flex-1 overflow-y-auto">
-              <div className="flex flex-col py-1">
-                {filteredOptions.length > 0 ? (
-                  filteredOptions.map((option) => (
-                    <button
-                      key={option.value}
-                      type="button"
-                      className={cn(
-                        'focus-visible:ring-primary flex cursor-pointer items-center justify-between border-2 border-transparent px-4 py-3 text-left text-xs font-bold tracking-wide uppercase transition-colors focus-visible:ring-2 focus-visible:outline-none',
-                        'hover:bg-primary hover:text-primary-foreground',
-                        value === option.value && 'bg-primary/10 text-primary'
-                      )}
-                      onClick={() => {
-                        onChange(option.value);
-                        setOpen(false);
-                      }}
-                    >
-                      {option.label}
-                      {value === option.value && <Check className="h-4 w-4" />}
-                    </button>
-                  ))
-                ) : (
-                  <div className="text-muted-foreground px-4 py-6 text-center text-xs font-medium tracking-widest uppercase">
-                    Không tìm thấy kết quả
-                  </div>
-                )}
-              </div>
-            </ScrollArea>
-          </div>
+          <ScrollArea className="max-h-[300px] flex-1">
+            <div className="p-xxs flex flex-col">
+              {filteredOptions.length > 0 ? (
+                filteredOptions.map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    role="option"
+                    aria-selected={value === option.value}
+                    className={cn(
+                      'gap-sm rounded-control px-sm py-xs text-body-sm flex cursor-pointer items-center justify-between text-left',
+                      'text-text-primary hover:bg-primary-soft transition-colors',
+                      value === option.value && 'bg-selected text-on-selected'
+                    )}
+                    onClick={() => {
+                      onChange(option.value);
+                      setOpen(false);
+                    }}
+                  >
+                    <span className="truncate">{option.label}</span>
+                    {value === option.value && (
+                      <Check className="size-4 shrink-0" />
+                    )}
+                  </button>
+                ))
+              ) : (
+                <div className="text-text-secondary p-md text-caption text-center">
+                  Không tìm thấy kết quả
+                </div>
+              )}
+            </div>
+          </ScrollArea>
         </PopoverContent>
       </Popover>
     </div>

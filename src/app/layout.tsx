@@ -1,18 +1,19 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { Inter, Cormorant_Garamond } from 'next/font/google';
+import { Be_Vietnam_Pro, Cormorant_Garamond } from 'next/font/google';
 import { Toaster } from '@/components/ui/sonner';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { cn } from '@/lib/utils';
 
-const inter = Inter({
+const beVietnamPro = Be_Vietnam_Pro({
   subsets: ['latin', 'vietnamese'],
-  variable: '--font-sans',
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-be-vietnam-pro',
 });
 const cormorantGaramond = Cormorant_Garamond({
   subsets: ['latin', 'vietnamese'],
-  weight: ['300', '400', '600', '700'],
-  variable: '--font-serif',
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-cormorant-garamond',
 });
 
 const appUrl =
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
   description:
     'Nền tảng hiện đại để lưu giữ và kết nối các thế hệ trong gia đình bạn.',
   icons: {
-    icon: '/favicon.ico',
+    icon: ['/favicon.svg', '/favicon.ico'],
     apple: '/apple-touch-icon.png',
   },
   openGraph: {
@@ -61,14 +62,18 @@ export default function RootLayout({
   return (
     <html
       lang="vi"
-      className={cn('font-sans', inter.variable, cormorantGaramond.variable)}
+      className={cn(
+        'font-sans',
+        beVietnamPro.variable,
+        cormorantGaramond.variable
+      )}
     >
       <body
-        className="bg-background text-foreground min-h-screen font-sans antialiased"
+        className="bg-background text-text-primary min-h-screen font-sans antialiased"
         suppressHydrationWarning
       >
         <ErrorBoundary>{children}</ErrorBoundary>
-        <Toaster position="top-center" theme="light" closeButton />
+        <Toaster position="top-center" closeButton />
       </body>
     </html>
   );

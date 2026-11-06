@@ -1,18 +1,14 @@
 import {
   Dialog,
+  DialogBody,
   DialogContent,
   DialogTitle,
-  DialogHeader,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import {
-  ReactFlow,
-  Controls,
-  Background,
-  BackgroundVariant,
-} from '@xyflow/react';
+import { ReactFlow, Background, BackgroundVariant } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useStore } from '@/lib/store';
 import { PersonNode } from './person-node';
@@ -20,6 +16,7 @@ import { MarriageNode } from './marriage-node';
 import { useTreeFlow } from '../../hooks/use-tree-flow';
 import { useTreeConnections } from '../../hooks/use-tree-connections';
 import { FamilyEdge } from './family-edge';
+import { CANVAS_ZOOM } from '../../constants';
 
 const nodeTypes = {
   personNode: PersonNode,
@@ -30,13 +27,13 @@ const edgeTypes = {
   familyEdge: FamilyEdge,
 };
 
-// Vùng hiển thị cây gia phả tương tác.
 export function FamilyTreeCanvas() {
   const persons = useStore((state) => state.persons);
   const relationships = useStore((state) => state.relationships);
   const isReadOnly = useStore((state) => state.isReadOnly);
   const selectedPersonId = useStore((state) => state.selectedPersonId);
   const updatePerson = useStore((state) => state.updatePerson);
+  const setSelectedPersonId = useStore((state) => state.setSelectedPersonId);
 
   const { nodes, edges, onNodesChange, onEdgesChange, setEdges } = useTreeFlow(
     persons,
@@ -50,83 +47,62 @@ export function FamilyTreeCanvas() {
     isConfirmOpen,
     setIsConfirmOpen,
   } = useTreeConnections(persons, isReadOnly, updatePerson, setEdges);
-  const setShowCardActions = useStore((state) => state.setShowCardActions);
 
   return (
-    <div className="bg-background relative h-full w-full">
+    <>
       <ReactFlow
         nodes={nodes}
-        edges={edges.map((edge) => ({
-          ...edge,
-          animated: edge.selected,
-          style: {
-            ...edge.style,
-            stroke: edge.selected ? 'var(--primary)' : edge.style?.stroke,
-            strokeWidth: edge.selected ? 3 : 2,
-          },
-        }))}
+        edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         onBeforeDelete={onBeforeDelete}
-        onPaneClick={() => setShowCardActions(null)}
-        onNodeClick={(_, node) => {
-          if (node.type !== 'personNode') setShowCardActions(null);
-        }}
+        onPaneClick={() => setSelectedPersonId(null)}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         deleteKeyCode={['Backspace', 'Delete']}
         nodesDraggable={false}
         fitView
-        minZoom={0.1}
-        maxZoom={2}
+        minZoom={CANVAS_ZOOM.min}
+        maxZoom={CANVAS_ZOOM.max}
         proOptions={{ hideAttribution: true }}
       >
         <Background
           variant={BackgroundVariant.Lines}
-          color="var(--color-foreground)"
+          color="var(--color-border-default)"
           gap={40}
           size={1}
-          className="opacity-[0.05]"
-        />
-        <Controls
-          showInteractive={false}
-          className="bg-background border-foreground shadow-brutal-md !fill-foreground export-exclude overflow-hidden rounded-none border-2"
         />
       </ReactFlow>
 
       <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
         <DialogContent>
-          <DialogHeader variant="destructive">
+          <DialogHeader>
             <DialogTitle>Xóa kết nối</DialogTitle>
             <DialogDescription>
-              Hành động này không thể hoàn tác
+              Hành động này không thể hoàn tác.
             </DialogDescription>
           </DialogHeader>
-          <div className="p-6">
-            <p className="text-sm leading-relaxed font-medium">
+          <DialogBody>
+            <p className="text-body-sm">
               Bạn có chắc chắn muốn xóa kết nối này không? Các thông tin quan hệ
               gia đình liên quan sẽ bị loại bỏ khỏi hồ sơ.
             </p>
-          </div>
+          </DialogBody>
           <DialogFooter>
             <Button
-              variant="outline"
-              className="h-12 flex-1"
+              variant="secondary"
+              className="flex-1"
               onClick={() => setIsConfirmOpen(false)}
             >
-              Hủy
+              Giữ lại kết nối
             </Button>
-            <Button
-              variant="destructive"
-              className="h-12 flex-1"
-              onClick={confirmDelete}
-            >
-              Xóa
+            <Button variant="danger" className="flex-1" onClick={confirmDelete}>
+              Xóa kết nối
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 }

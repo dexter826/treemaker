@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import Link from 'next/link';
 import { useStore } from '@/lib/store';
 import { removeVietnameseTones } from '@/lib/utils';
@@ -226,10 +226,9 @@ export function TreeToolbar() {
       <Link
         href="/"
         className={buttonVariants({
-          variant: 'outline',
+          variant: 'secondary',
           size: 'icon',
-          effect: 'raised',
-          className: 'h-10 w-10 shrink-0 rounded-none md:h-12 md:w-12',
+          className: 'shrink-0',
         })}
         aria-label="Quay lại trang chính"
         title="Quay lại trang chính"
@@ -264,10 +263,9 @@ export function TreeToolbar() {
       <Popover open={searchOpen} onOpenChange={setSearchOpen}>
         <PopoverTrigger
           className={buttonVariants({
-            variant: 'outline',
+            variant: 'secondary',
             size: 'icon',
-            effect: 'raised',
-            className: 'h-10 w-10 shrink-0 rounded-none md:h-12 md:w-12',
+            className: 'shrink-0',
           })}
           aria-label="Tìm kiếm cá nhân"
           title="Tìm kiếm cá nhân"
@@ -321,9 +319,8 @@ export function TreeToolbar() {
       </Popover>
 
       <Button
-        variant="outline"
+        variant="secondary"
         size="icon"
-        effect="raised"
         className="hidden h-10 w-10 shrink-0 rounded-none sm:flex md:h-12 md:w-12"
         onClick={() => setIsEventListOpen(true)}
         title="Danh mục sự kiện"
@@ -332,9 +329,8 @@ export function TreeToolbar() {
       </Button>
 
       <Button
-        variant="outline"
+        variant="secondary"
         size="icon"
-        effect="raised"
         className="hidden h-10 w-10 shrink-0 rounded-none sm:flex md:h-12 md:w-12"
         onClick={() => setIsExportConfirmOpen(true)}
         disabled={isExporting}
@@ -352,9 +348,8 @@ export function TreeToolbar() {
           {/* Desktop Actions */}
           <div className="hidden items-stretch gap-2 sm:flex">
             <Button
-              variant="outline"
+              variant="secondary"
               size="icon"
-              effect="raised"
               className="h-10 w-10 shrink-0 rounded-none md:h-12 md:w-12"
               onClick={handleShare}
               title="Chia sẻ liên kết"
@@ -362,9 +357,8 @@ export function TreeToolbar() {
               <Share2 className="size-4 md:size-5" />
             </Button>
             <Button
-              variant="outline"
+              variant="secondary"
               size="icon"
-              effect="raised"
               className="h-10 w-10 shrink-0 rounded-none md:h-12 md:w-12"
               onClick={() => setIsAddPersonOpen(true)}
               title="Thêm người mới"
@@ -372,9 +366,8 @@ export function TreeToolbar() {
               <UserPlus className="size-4 md:size-5" />
             </Button>
             <Button
-              variant="destructive"
+              variant="danger"
               size="icon"
-              effect="raised"
               className="h-10 w-10 shrink-0 rounded-none md:h-12 md:w-12"
               onClick={() => setIsDeleteDialogOpen(true)}
               aria-label="Xóa gia phả"
@@ -389,10 +382,9 @@ export function TreeToolbar() {
             <Popover>
               <PopoverTrigger
                 className={buttonVariants({
-                  variant: 'outline',
+                  variant: 'secondary',
                   size: 'icon',
-                  effect: 'raised',
-                  className: 'h-10 w-10 shrink-0 rounded-none md:h-12 md:w-12',
+                  className: 'shrink-0',
                 })}
                 aria-label="Thao tác thêm"
                 title="Thêm thao tác"
@@ -456,9 +448,8 @@ export function TreeToolbar() {
       ) : (
         <div className="flex items-stretch sm:hidden">
           <Button
-            variant="outline"
+            variant="secondary"
             size="icon"
-            effect="raised"
             className="h-10 w-10 shrink-0 rounded-none md:h-12 md:w-12"
             onClick={() => setIsEventListOpen(true)}
             title="Danh mục sự kiện"
@@ -522,7 +513,7 @@ export function TreeToolbar() {
 
           <DialogFooter>
             <Button
-              variant="outline"
+              variant="secondary"
               className="h-12 flex-1"
               onClick={() => setIsAddPersonOpen(false)}
             >
@@ -541,7 +532,7 @@ export function TreeToolbar() {
 
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
-          <DialogHeader variant="destructive">
+          <DialogHeader>
             <DialogTitle>Xóa toàn bộ Cây</DialogTitle>
             <DialogDescription>
               Hành động này không thể hoàn tác
@@ -555,14 +546,14 @@ export function TreeToolbar() {
           </div>
           <DialogFooter>
             <Button
-              variant="outline"
+              variant="secondary"
               className="h-12 flex-1"
               onClick={() => setIsDeleteDialogOpen(false)}
             >
               Hủy
             </Button>
             <Button
-              variant="destructive"
+              variant="danger"
               className="h-12 flex-1"
               onClick={handleDeleteTree}
               disabled={isDeleting}
@@ -610,7 +601,7 @@ export function TreeToolbar() {
             <DialogFooter>
               <Button
                 type="button"
-                variant="outline"
+                variant="secondary"
                 className="h-12 flex-1"
                 onClick={() => setIsEditTreeOpen(false)}
               >
@@ -655,7 +646,7 @@ export function TreeToolbar() {
 
           <DialogFooter>
             <Button
-              variant="outline"
+              variant="secondary"
               className="h-12 flex-1"
               onClick={() => setIsExportConfirmOpen(false)}
             >

@@ -5,44 +5,30 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  "group/button inline-flex cursor-pointer shrink-0 items-center justify-center gap-2 rounded-none border-2 border-foreground bg-clip-padding text-sm font-bold uppercase tracking-widest transition-all outline-none select-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex cursor-pointer shrink-0 items-center justify-center gap-micro-2 rounded-control border text-button font-semibold outline-none select-none transition-[background-color,border-color,color,transform] duration-(--motion-press) ease-(--ease-standard) disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
-        default:
-          'border-primary bg-primary text-primary-foreground hover:bg-foreground hover:border-foreground hover:text-background',
-        outline:
-          'bg-background text-foreground hover:bg-foreground hover:text-background',
+        primary:
+          'border-transparent bg-primary text-on-primary hover:bg-primary-hover active:translate-y-px',
         secondary:
-          'border-secondary bg-secondary text-secondary-foreground hover:bg-foreground hover:border-foreground hover:text-background',
+          'border-border bg-transparent text-text-primary hover:bg-primary-soft',
         ghost:
-          'border-transparent bg-transparent text-foreground hover:border-foreground hover:bg-foreground hover:text-background',
-        destructive:
-          'border-destructive text-destructive bg-background hover:bg-destructive hover:text-destructive-foreground',
-        link: 'h-auto border-0 bg-transparent px-0 text-primary underline-offset-4 hover:border-0 hover:bg-transparent hover:text-primary hover:underline',
+          'border-transparent bg-transparent text-text-primary hover:bg-primary-soft',
+        danger:
+          'border-transparent bg-danger text-on-danger hover:brightness-95 active:translate-y-px',
+        link: 'h-auto border-0 bg-transparent px-0 text-primary underline-offset-4 hover:underline',
       },
       size: {
-        default: 'h-12 px-6',
-        xs: 'h-8 px-3 text-[10px]',
-        sm: 'h-10 px-4',
-        lg: 'h-14 px-8 text-base',
-        icon: 'size-12',
-        'icon-xs': 'size-8',
-        'icon-sm': 'size-10',
-        'icon-lg': 'size-14',
-      },
-      effect: {
-        none: '',
-        raised:
-          'shadow-brutal-md hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-brutal-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none',
-        'primary-raised':
-          'shadow-brutal-primary-md hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-brutal-primary-sm active:translate-x-[2px] active:translate-y-[2px] active:shadow-none',
+        default: 'h-11 px-lg',
+        lg: 'h-huge px-xl text-body-sm',
+        icon: 'size-11 px-0',
+        'icon-lg': 'size-12 px-0',
       },
     },
     defaultVariants: {
-      variant: 'default',
+      variant: 'primary',
       size: 'default',
-      effect: 'none',
     },
   }
 );
@@ -50,27 +36,16 @@ const buttonVariants = cva(
 const Button = React.forwardRef<
   HTMLButtonElement,
   ButtonPrimitive.Props & VariantProps<typeof buttonVariants>
->(
-  (
-    {
-      className,
-      variant = 'default',
-      size = 'default',
-      effect = 'none',
-      ...props
-    },
-    ref
-  ) => {
-    return (
-      <ButtonPrimitive
-        ref={ref}
-        data-slot="button"
-        className={cn(buttonVariants({ variant, size, effect, className }))}
-        {...props}
-      />
-    );
-  }
-);
+>(({ className, variant, size, ...props }, ref) => {
+  return (
+    <ButtonPrimitive
+      ref={ref}
+      data-slot="button"
+      className={cn(buttonVariants({ variant, size, className }))}
+      {...props}
+    />
+  );
+});
 Button.displayName = 'Button';
 
 export { Button, buttonVariants };
