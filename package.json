@@ -1,6 +1,8 @@
 {
   "name": "treemaker",
   "version": "0.1.0",
+  "description": "Nền tảng xây dựng và lưu trữ gia phả dòng họ.",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "dev": "next dev",
