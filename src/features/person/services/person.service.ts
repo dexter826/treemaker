@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase';
-import { Person, Relationship, TreeData } from '@/types';
+import { Person, Relationship } from '@/types';
 import { normalizeSiblingOrder } from '@/lib/utils';
 
 export type RelationType = 'father' | 'mother' | 'spouse';
@@ -34,28 +34,6 @@ const mapPersonError = (error: unknown): Error => {
 };
 
 export const personService = {
-  async getTreeData(treeId: string): Promise<TreeData> {
-    const [treeRes, personsRes, relsRes] = await Promise.all([
-      supabase.from('family_trees').select('*').eq('id', treeId).single(),
-      supabase
-        .from('persons')
-        .select('*')
-        .eq('tree_id', treeId)
-        .order('sibling_order', { ascending: true }),
-      supabase.from('relationships').select('*').eq('tree_id', treeId),
-    ]);
-
-    if (treeRes.error) throw mapPersonError(treeRes.error);
-    if (personsRes.error) throw mapPersonError(personsRes.error);
-    if (relsRes.error) throw mapPersonError(relsRes.error);
-
-    return {
-      tree: treeRes.data,
-      persons: personsRes.data ?? [],
-      relationships: relsRes.data ?? [],
-    };
-  },
-
   async create(person: Partial<Person>): Promise<Person> {
     const payload = {
       ...person,

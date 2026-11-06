@@ -8,6 +8,12 @@ import {
   LAYOUT_CONFIG,
 } from '../constants';
 
+// Loại liên kết mà một edge biểu diễn, để tầng xoá kết nối không phải đoán từ id.
+export type TreeEdgeMeta =
+  | { kind: 'parent'; role: 'father' | 'mother'; personId: string }
+  | { kind: 'spouse'; personIds: [string, string] }
+  | { kind: 'couple-child'; personId: string };
+
 // Tạo danh sách nodes và edges từ dữ liệu người và quan hệ.
 export const generateNodesAndEdges = (
   persons: Person[],
@@ -51,6 +57,10 @@ export const generateNodesAndEdges = (
           source: rel.person1_id,
           target: mNodeId,
           type: 'straight',
+          data: {
+            kind: 'spouse',
+            personIds: [rel.person1_id, rel.person2_id],
+          } satisfies TreeEdgeMeta,
           style: { stroke: 'var(--color-foreground)', strokeWidth: 2 },
         });
         edges.push({
@@ -58,6 +68,10 @@ export const generateNodesAndEdges = (
           source: rel.person2_id,
           target: mNodeId,
           type: 'straight',
+          data: {
+            kind: 'spouse',
+            personIds: [rel.person1_id, rel.person2_id],
+          } satisfies TreeEdgeMeta,
           style: { stroke: 'var(--color-foreground)', strokeWidth: 2 },
         });
       }
@@ -79,6 +93,10 @@ export const generateNodesAndEdges = (
         sourceHandle: 'bottom',
         targetHandle: 'top',
         type: 'familyEdge',
+        data: {
+          kind: 'couple-child',
+          personId: person.id,
+        } satisfies TreeEdgeMeta,
         style: { stroke: 'var(--color-foreground)', strokeWidth: 2 },
       });
     } else {
@@ -90,6 +108,11 @@ export const generateNodesAndEdges = (
           sourceHandle: 'bottom',
           targetHandle: 'top',
           type: 'familyEdge',
+          data: {
+            kind: 'parent',
+            role: 'father',
+            personId: person.id,
+          } satisfies TreeEdgeMeta,
           style: { stroke: 'var(--color-foreground)', strokeWidth: 2 },
         });
       }
@@ -101,6 +124,11 @@ export const generateNodesAndEdges = (
           sourceHandle: 'bottom',
           targetHandle: 'top',
           type: 'familyEdge',
+          data: {
+            kind: 'parent',
+            role: 'mother',
+            personId: person.id,
+          } satisfies TreeEdgeMeta,
           style: { stroke: 'var(--color-foreground)', strokeWidth: 2 },
         });
       }

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { FamilyTree } from '@/types';
 import { treeService } from '../../services/tree.service';
+import { shareSchema } from '../../validations/share';
 import {
   Dialog,
   DialogContent,
@@ -62,18 +63,37 @@ export function ShareSettingsDialog({
 
   // Lưu các thay đổi vào database.
   const handleSave = async () => {
+    const sharePassword = usePassword ? password : null;
+
+    const parsed = shareSchema.safeParse({
+      visibility,
+      share_permission: permission,
+      share_password: sharePassword,
+    });
+
+    if (!parsed.success) {
+      toast.error(
+        parsed.error.issues[0]?.message ?? 'Mật khẩu phải có 4 chữ số.'
+      );
+      return;
+    }
+
     setLoading(true);
     try {
       await treeService.update(tree.id, {
         visibility,
         share_permission: permission,
-        share_password: usePassword ? password : null,
+        share_password: sharePassword,
       });
       toast.success('Đã cập nhật cài đặt chia sẻ');
       onUpdate?.();
       onOpenChange(false);
-    } catch (error) {
-      toast.error('Không thể cập nhật cài đặt');
+    } catch (error: unknown) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : 'Không thể cập nhật cài đặt chia sẻ.'
+      );
     } finally {
       setLoading(false);
     }

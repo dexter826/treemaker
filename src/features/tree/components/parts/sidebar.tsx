@@ -55,6 +55,7 @@ export function Sidebar() {
   );
   const [newRelativeSiblingOrder, setNewRelativeSiblingOrder] = useState(0);
   const [selectedExistingPersonId, setSelectedExistingPersonId] = useState('');
+  const [isSubmittingRelative, setIsSubmittingRelative] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -182,11 +183,13 @@ export function Sidebar() {
 
   const submitAddRelative = async () => {
     if (!isAddingRelative || isReadOnly || !person || !currentTree) return;
+    if (isSubmittingRelative) return;
     if (!selectedExistingPersonId && hasSiblingOrderConflict) {
       toast.error('Thứ tự sinh đã tồn tại trong cùng nhóm anh/chị/em.');
       return;
     }
 
+    setIsSubmittingRelative(true);
     try {
       if (selectedExistingPersonId) {
         const existingPerson = persons.find(
@@ -248,6 +251,8 @@ export function Sidebar() {
       toast.error(
         error instanceof Error ? error.message : 'Lỗi khi thêm người thân.'
       );
+    } finally {
+      setIsSubmittingRelative(false);
     }
   };
 
@@ -491,6 +496,7 @@ export function Sidebar() {
               className="h-12 flex-1"
               onClick={submitAddRelative}
               disabled={
+                isSubmittingRelative ||
                 (!newRelativeName && !selectedExistingPersonId) ||
                 hasSiblingOrderConflict
               }

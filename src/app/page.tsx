@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { authService } from '@/features/auth';
 import { useStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
 import {
@@ -74,19 +74,24 @@ export default function DashboardPage() {
   };
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setUser(session.user);
-        setUserId(session.user.id);
-        fetchTrees(session.user.id);
-      } else {
+    authService
+      .getSession()
+      .then((session) => {
+        if (session?.user) {
+          setUser(session.user);
+          setUserId(session.user.id);
+          fetchTrees(session.user.id);
+        } else {
+          window.location.href = '/login';
+        }
+      })
+      .catch(() => {
         window.location.href = '/login';
-      }
-    });
+      });
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = authService.onAuthStateChange((session) => {
       if (session?.user) {
         setUser(session.user);
         setUserId(session.user.id);
@@ -472,7 +477,13 @@ export default function DashboardPage() {
                   className="h-12 flex-1"
                   onClick={async () => {
                     setLoading(true);
-                    await supabase.auth.signOut();
+                    try {
+                      await authService.signOut();
+                    } catch {
+                      setLoading(false);
+                      toast.error('Chưa đăng xuất được. Vui lòng thử lại sau.');
+                      return;
+                    }
                     window.location.href = '/login';
                   }}
                   disabled={loading}

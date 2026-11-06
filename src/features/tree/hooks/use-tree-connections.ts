@@ -4,6 +4,12 @@ import { Person } from '@/types';
 import { useStore } from '@/lib/store';
 import { personService } from '@/features/person';
 import { toast } from 'sonner';
+import { TreeEdgeMeta } from '../utils/layout';
+
+const isTreeEdgeMeta = (data: unknown): data is TreeEdgeMeta => {
+  const kind = (data as { kind?: unknown } | undefined)?.kind;
+  return kind === 'parent' || kind === 'spouse' || kind === 'couple-child';
+};
 
 export function useTreeConnections(
   persons: Person[],
@@ -27,31 +33,48 @@ export function useTreeConnections(
     [isReadOnly]
   );
 
+  const severEdge = async (edge: Edge): Promise<void> => {
+    const meta = edge.data as TreeEdgeMeta;
+
+    if (meta.kind === 'spouse') {
+      const [personId, spouseId] = meta.personIds;
+      await personService.unlinkRelation('spouse', personId, spouseId);
+      removeRelationship(personId, spouseId);
+      return;
+    }
+
+    if (meta.kind === 'parent') {
+      await personService.unlinkRelation(meta.role, meta.personId);
+      const person = persons.find((p) => p.id === meta.personId);
+      if (person)
+        updatePerson({
+          ...person,
+          [meta.role === 'father' ? 'father_id' : 'mother_id']: null,
+        });
+      return;
+    }
+
+    // Node hôn phối nối người con với cả cặp, nên một edge ở đây cắt
+    // cả liên kết cha lẫn liên kết mẹ.
+    await personService.unlinkRelation('father', meta.personId);
+    await personService.unlinkRelation('mother', meta.personId);
+    const person = persons.find((p) => p.id === meta.personId);
+    if (person) updatePerson({ ...person, father_id: null, mother_id: null });
+  };
+
   const confirmDelete = async () => {
     if (!edgeToDelete) return;
     setIsConfirmOpen(false);
 
-    for (const edge of edgeToDelete) {
-      const parts = edge.id.split(':');
-      const type = parts[1];
+    if (edgeToDelete.some((edge) => !isTreeEdgeMeta(edge.data))) {
+      toast.error('Không nhận diện được loại kết nối, nên chưa xoá gì.');
+      setEdgeToDelete(null);
+      return;
+    }
 
+    for (const edge of edgeToDelete) {
       try {
-        if (type === 'father') {
-          const personId = parts[3];
-          await personService.unlinkRelation('father', personId);
-          const person = persons.find((p) => p.id === personId);
-          if (person) updatePerson({ ...person, father_id: null });
-        } else if (type === 'mother') {
-          const personId = parts[3];
-          await personService.unlinkRelation('mother', personId);
-          const person = persons.find((p) => p.id === personId);
-          if (person) updatePerson({ ...person, mother_id: null });
-        } else if (type === 'spouse') {
-          const p1Id = parts[2];
-          const p2Id = parts[3];
-          await personService.unlinkRelation('spouse', p1Id, p2Id);
-          removeRelationship(p1Id, p2Id);
-        }
+        await severEdge(edge);
       } catch (error: unknown) {
         toast.error(
           error instanceof Error ? error.message : 'Không thể xóa kết nối.'

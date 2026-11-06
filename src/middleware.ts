@@ -44,9 +44,7 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     const redirectResponse = NextResponse.redirect(url);
-    response.cookies
-      .getAll()
-      .forEach((c) => redirectResponse.cookies.set(c.name, c.value));
+    response.cookies.getAll().forEach((c) => redirectResponse.cookies.set(c));
     return redirectResponse;
   }
 

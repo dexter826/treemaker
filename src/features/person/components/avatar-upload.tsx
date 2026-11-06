@@ -31,7 +31,7 @@ async function getCroppedImg(
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
 
-  if (!ctx) throw new Error('No 2d context');
+  if (!ctx) throw new Error('Không xử lý được ảnh. Vui lòng thử lại.');
 
   canvas.width = pixelCrop.width;
   canvas.height = pixelCrop.height;
@@ -48,10 +48,13 @@ async function getCroppedImg(
     pixelCrop.height
   );
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     canvas.toBlob(
       (blob) => {
-        if (!blob) throw new Error('Canvas is empty');
+        if (!blob) {
+          reject(new Error('Không cắt được ảnh. Vui lòng thử lại.'));
+          return;
+        }
         const file = new File([blob], 'avatar.jpg', { type: 'image/jpeg' });
         resolve(file);
       },

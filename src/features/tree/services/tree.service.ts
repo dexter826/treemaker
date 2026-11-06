@@ -1,3 +1,4 @@
+import { SupabaseClient } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
 import { FamilyTree, TreeData } from '@/types';
 
@@ -61,8 +62,12 @@ export const treeService = {
     return data ?? [];
   },
 
-  async getById(treeId: string): Promise<FamilyTree> {
-    const { data, error } = await supabase
+  // Server Component phải truyền client đọc được cookie; thiếu client thì truy vấn ẩn danh.
+  async getById(
+    treeId: string,
+    client: SupabaseClient = supabase
+  ): Promise<FamilyTree> {
+    const { data, error } = await client
       .from('family_trees')
       .select('*')
       .eq('id', treeId)
@@ -72,8 +77,11 @@ export const treeService = {
     return data;
   },
 
-  async getByShareToken(token: string): Promise<FamilyTree | null> {
-    const { data, error } = await supabase
+  async getByShareToken(
+    token: string,
+    client: SupabaseClient = supabase
+  ): Promise<FamilyTree | null> {
+    const { data, error } = await client
       .from('family_trees')
       .select('*')
       .eq('share_token', token)

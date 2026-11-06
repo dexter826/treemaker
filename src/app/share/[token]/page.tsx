@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { createClient } from '@/lib/supabase/server';
 import { treeService } from '@/features/tree';
 import { ShareTreeClient } from './share-tree-client';
 
@@ -10,7 +11,7 @@ export async function generateMetadata({
   params: Promise<{ token: string }>;
 }): Promise<Metadata> {
   const { token } = await params;
-  const tree = await treeService.getByShareToken(token);
+  const tree = await treeService.getByShareToken(token, await createClient());
 
   const title = tree
     ? `${tree.name} | TreeMaker`
@@ -50,8 +51,8 @@ export default async function SharePage({
 }) {
   const { token } = await params;
 
-  const treeId = await treeService.getByShareToken(token);
-  if (!treeId) notFound();
+  const tree = await treeService.getByShareToken(token, await createClient());
+  if (!tree) notFound();
 
   return <ShareTreeClient token={token} />;
 }

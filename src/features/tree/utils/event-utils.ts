@@ -13,18 +13,24 @@ export interface FamilyEvent {
   originalDate: string;
 }
 
+// PostgREST trả cột DATE dưới chuỗi 'YYYY-MM-DD'. Ném chuỗi đó cho new Date()
+// sẽ hiểu là nửa đêm UTC, rồi getDate()/getMonth() đọc lại theo giờ máy, làm
+// ngày lùi một bậc với người dùng west-of-UTC.
+const parseDateParts = (value: string) => {
+  const [year, month, day] = value.slice(0, 10).split('-').map(Number);
+  return year && month && day ? { year, month, day } : null;
+};
+
 // Sắp xếp sự kiện theo tháng và ngày dương lịch.
 export const getSortedEvents = (persons: Person[]): FamilyEvent[] => {
   const events: FamilyEvent[] = [];
-  const today = new Date();
-  const currentYear = today.getFullYear();
+  const currentYear = new Date().getFullYear();
 
   persons.forEach((person) => {
     if (person.birth_date) {
-      const date = new Date(person.birth_date);
-      if (!isNaN(date.getTime())) {
-        const birthYear = date.getFullYear();
-        const age = currentYear - birthYear;
+      const birth = parseDateParts(person.birth_date);
+      if (birth) {
+        const age = currentYear - birth.year;
 
         let milestone;
         if (age >= 70 && age % 10 === 0) milestone = 'Mừng thọ';
@@ -34,8 +40,8 @@ export const getSortedEvents = (persons: Person[]): FamilyEvent[] => {
           personId: person.id,
           fullName: person.full_name,
           type: 'birth',
-          day: date.getDate(),
-          month: date.getMonth() + 1,
+          day: birth.day,
+          month: birth.month,
           yearsCount: age,
           milestone,
           originalDate: person.birth_date,
@@ -44,10 +50,9 @@ export const getSortedEvents = (persons: Person[]): FamilyEvent[] => {
     }
 
     if (person.death_date) {
-      const date = new Date(person.death_date);
-      if (!isNaN(date.getTime())) {
-        const deathYear = date.getFullYear();
-        const yearsSinceDeath = currentYear - deathYear;
+      const death = parseDateParts(person.death_date);
+      if (death) {
+        const yearsSinceDeath = currentYear - death.year;
 
         let milestone;
         if (yearsSinceDeath === 1) milestone = 'Giỗ đầu';
@@ -57,8 +62,8 @@ export const getSortedEvents = (persons: Person[]): FamilyEvent[] => {
           personId: person.id,
           fullName: person.full_name,
           type: 'death',
-          day: date.getDate(),
-          month: date.getMonth() + 1,
+          day: death.day,
+          month: death.month,
           yearsCount: yearsSinceDeath,
           milestone,
           originalDate: person.death_date,

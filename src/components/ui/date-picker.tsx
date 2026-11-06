@@ -27,6 +27,13 @@ import {
 } from 'date-fns';
 import { vi } from 'date-fns/locale';
 
+// parseISO trả Invalid Date (một object truthy) cho chuỗi không chuẩn; nếu để
+// lọt thì format() ném RangeError và làm sập toàn bộ cây render.
+const parseDateValue = (value: string): Date | null => {
+  const parsed = parseISO(value);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+};
+
 export function DatePicker({
   value,
   onChange,
@@ -43,12 +50,12 @@ export function DatePicker({
   error?: boolean;
 }) {
   const [open, setOpen] = React.useState(false);
-  const [currentMonth, setCurrentMonth] = React.useState(
-    value ? parseISO(value) : new Date()
+  const [currentMonth, setCurrentMonth] = React.useState(() =>
+    value ? (parseDateValue(value) ?? new Date()) : new Date()
   );
   const [view, setView] = React.useState<'days' | 'months' | 'years'>('days');
 
-  const selectedDate = value ? parseISO(value) : null;
+  const selectedDate = value ? parseDateValue(value) : null;
 
   const renderHeader = () => {
     return (

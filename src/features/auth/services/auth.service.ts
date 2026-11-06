@@ -1,6 +1,12 @@
+import { Session } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
 
+// Lỗi đã đổi sang câu tiếng Việt cho người dùng; nhận diện để không dịch lại lần hai.
+class AuthMessageError extends Error {}
+
 const mapAuthError = (error: unknown): Error => {
+  if (error instanceof AuthMessageError) return error;
+
   const raw = error as { code?: string; message?: string };
   const message = String(
     raw?.message ?? (error instanceof Error ? error.message : '')
@@ -30,16 +36,20 @@ const mapAuthError = (error: unknown): Error => {
 
   const lower = message.toLowerCase();
   for (const [key, val] of Object.entries(errorMap)) {
-    if (lower.includes(key)) return new Error(val);
+    if (lower.includes(key)) return new AuthMessageError(val);
   }
 
   if (/[a-zA-Z]{4,}/.test(message) && !message.includes('Lỗi')) {
-    return new Error('Không thể hoàn tất xác thực. Vui lòng thử lại sau.');
+    return new AuthMessageError(
+      'Không thể hoàn tất xác thực. Vui lòng thử lại sau.'
+    );
   }
 
   return message
-    ? new Error(message)
-    : new Error('Đã xảy ra lỗi trong quá trình xác thực. Vui lòng thử lại.');
+    ? new AuthMessageError(message)
+    : new AuthMessageError(
+        'Đã xảy ra lỗi trong quá trình xác thực. Vui lòng thử lại.'
+      );
 };
 
 export interface SignInParams {
@@ -117,5 +127,11 @@ export const authService = {
     } catch (error) {
       throw mapAuthError(error);
     }
+  },
+
+  onAuthStateChange(callback: (session: Session | null) => void) {
+    return supabase.auth.onAuthStateChange((_event, session) =>
+      callback(session)
+    );
   },
 };

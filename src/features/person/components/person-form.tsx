@@ -113,7 +113,7 @@ export function PersonForm({
                 onFileSelect={(file) => {
                   field.onChange(file);
                   if (file) setIsAvatarCleared(false);
-                  else if (!file && isAvatarCleared) setIsAvatarCleared(true);
+                  else setIsAvatarCleared(true);
                 }}
                 disabled={isReadOnly}
                 error={errors.avatar_file?.message as string}
