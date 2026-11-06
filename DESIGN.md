@@ -165,6 +165,17 @@ components:
     padding: 0 12px
     gap: '{spacing.micro-2}'
     border: transparent
+  button-inset:
+    backgroundColor: transparent
+    textColor: '{colors.text-secondary}'
+    typography: '{typography.button}'
+    rounded: '{rounded.control}'
+    height: 44px
+    padding: 0 12px
+    gap: '{spacing.micro-2}'
+    border: transparent
+    hoverTextColor: '{colors.primary}'
+    hoverBackgroundColor: transparent
   button-danger:
     backgroundColor: '{colors.danger}'
     textColor: '{colors.on-danger}'
@@ -428,10 +439,29 @@ Bố cục theo tỷ lệ 4px, ưu tiên khoảng thở; phân chia vùng bằng
 
 ### Thang khoảng cách
 
-- **Micro Spacing:** `micro-1` (2px), `micro-2` (6px), `micro-3` (10px) — khoảng cách giữa biểu tượng
-  và nhãn, giữa các nút trong toolbar.
-- **Layout Spacing:** `xxs` (4px), `xs` (8px), `sm` (12px), `md` (16px), `lg` (20px), `xl` (24px),
-  `xxl` (32px), `xxxl` (40px), `huge` (48px), `section` (64px).
+Token giữ vai trò từ vựng. Triển khai dùng thang số gốc 4px của Tailwind (`--spacing: 0.25rem`),
+không khai báo token khoảng cách có tên trong `@theme`.
+
+| Token     | Giá trị | Class Tailwind | Phạm vi dùng                              |
+| :-------- | :------ | :------------- | :---------------------------------------- |
+| `micro-1` | 2px     | `0.5`          | Giữa biểu tượng và chữ trong badge, chip  |
+| `micro-2` | 6px     | `1.5`          | Khe giữa các nút trong toolbar            |
+| `micro-3` | 10px    | `2.5`          | Nhãn trường và ô nhập trong mật ngữ OTP   |
+| `xxs`     | 4px     | `1`            | Nhãn với control, chữ phụ sát tiêu đề     |
+| `xs`      | 8px     | `2`            | Khoảng cách mặc định trong hàng, cụm nút  |
+| `sm`      | 12px    | `3`            | Lưới nút "Thêm người thân", footer dialog |
+| `md`      | 16px    | `4`            | Đệm trong thẻ, block form                 |
+| `lg`      | 20px    | `5`            | Đệm header dialog, cụm tiêu đề trang      |
+| `xl`      | 24px    | `6`            | Đệm card, panel, dialog body              |
+| `xxl`     | 32px    | `8`            | Tách header khỏi danh sách                |
+| `xxxl`    | 40px    | `10`           | Khoảng lớn giữa hai vùng nội dung         |
+| `huge`    | 48px    | `12`           | Chiều cao nút cỡ lớn                      |
+| `section` | 64px    | `16`           | Đệm đứng của trang và trạng thái rỗng     |
+
+Quy tắc namespace: tên `xs`, `sm`, `md`, `lg`, `xl`, `2xl` thuộc về thang container
+(`--container-*`, dùng cho `max-w-*`) và thang breakpoint (`sm:`, `md:`). Đặt chúng vào `--spacing-*`
+sẽ làm `max-w-md` biên dịch thành `var(--spacing-md)` thay vì `var(--container-md)`, tức mọi khung
+chịu rộng trên ứng dụng bị bóp xuống đúng số đo khoảng cách.
 
 ### Lưới hiển thị và điểm ngắt
 
@@ -516,7 +546,9 @@ Mỗi thành phần là một hợp đồng giao diện. Nội dung chữ hiển
 ### Button & IconButton
 
 - **Biến thể:** `button-primary` cho hành động chính của màn hình; `button-secondary` cho hành động phụ;
-  `button-ghost` cho thao tác trong toolbar và hàng danh sách; `button-danger` cho hành động phá hủy.
+  `button-ghost` cho thao tác trong toolbar và hàng danh sách; `button-inset` cho ký hiệu nằm _trong_
+  bề mặt của control khác (nút hiện mật khẩu trong ô nhập, nút đóng ở header dialog/sheet/panel) —
+  không tô nền, chỉ đổi màu ký hiệu; `button-danger` cho hành động phá hủy.
 - **Tương tác:** trạng thái xử lý hiển thị spinner 16px tại chỗ, giữ nguyên kích thước, kèm
   `aria-busy="true"`; hover đổi nền theo `primary-soft` hoặc `primary-hover`; press dịch 1px.
 - **Tiếp cận:** IconButton không có chữ hiển thị bắt buộc có `aria-label`. Thẻ `<button>` cho thao tác
@@ -587,20 +619,22 @@ Mỗi thành phần là một hợp đồng giao diện. Nội dung chữ hiển
 
 ## 8. Do's and Don'ts
 
-| Do                                                                | Don't                                                                      |
-| :---------------------------------------------------------------- | :------------------------------------------------------------------------- |
-| Phân tầng bằng hairline, nền `surface` và khoảng trắng.           | Không dùng bóng đổ offset hoặc viền 2px cho phần tử không được chọn.       |
-| Duy trì `primary` là màu nhấn duy nhất.                           | Không bổ sung màu nhấn thứ hai, kể cả màu thương hiệu phụ.                 |
-| Dùng `on-primary` cho chữ trên nền màu nhấn đặc.                  | Không dùng chữ trắng trực tiếp trên `primary-tint`.                        |
-| Lấy màu chữ từ token; `text-secondary` cho chữ phụ.               | Không giảm độ tương phản chữ bằng alpha trên nền ứng dụng.                 |
-| Dùng `border` (3.33:1) cho ô nhập và control.                     | Không dùng `border-default` (1.50:1) làm viền của thành phần có tương tác. |
-| Focus ring 2px `focus`, offset 2px, trên mọi phần tử bấm được.    | Không tắt outline focus trừ khi có cơ chế thay thế tương đương.            |
-| Nhãn sentence case ở `caption`; tên Person bằng serif.            | Không dùng chữ in hoa toàn bộ kèm khoảng chữ rộng làm nhãn.                |
-| Chỉ dùng weight đã nạp: 400/500/600/700.                          | Không dùng weight 900 trên serif chưa nạp.                                 |
-| Kèm ký hiệu hoặc chữ cho giới tính và trạng thái đã mất.          | Không để màu một mình chở thông tin nghiệp vụ.                             |
-| Nút và ô nhập chrome cao 44px, cách nhau ít nhất 8px.             | Không dùng chiều cao lẻ hoặc mục bấm dưới 44px ngoài node canvas.          |
-| Báo lỗi tại trường, kèm lối thoát theo `COPY.md`.                 | Không đẩy toàn bộ lỗi lên toast.                                           |
-| Skeleton đúng hình nội dung khi tải.                              | Không dùng ảnh động hoặc spinner che toàn màn hình.                        |
-| Di sản in dùng bộ biến `print`.                                   | Không để template LegacyBook đọc token màu của ứng dụng.                   |
-| Tham chiếu mọi giá trị màu, khoảng cách, cỡ chữ qua design token. | Không viết mã màu hoặc số đo tuỳ tiện trong mã nguồn component.            |
-| Một chủ đề sáng duy nhất.                                         | Không thêm biến thể tối, không thêm bộ chuyển chủ đề.                      |
+| Do                                                                 | Don't                                                                                                                                          |
+| :----------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------- |
+| Phân tầng bằng hairline, nền `surface` và khoảng trắng.            | Không dùng bóng đổ offset hoặc viền 2px cho phần tử không được chọn.                                                                           |
+| Duy trì `primary` là màu nhấn duy nhất.                            | Không bổ sung màu nhấn thứ hai, kể cả màu thương hiệu phụ.                                                                                     |
+| Dùng `on-primary` cho chữ trên nền màu nhấn đặc.                   | Không dùng chữ trắng trực tiếp trên `primary-tint`.                                                                                            |
+| Ký hiệu lồng trong control khác dùng `button-inset` (chỉ đổi màu). | Không tô nền cho affordance nằm đè lên bề mặt của control hoặc header khác.                                                                    |
+| Lấy màu chữ từ token; `text-secondary` cho chữ phụ.                | Không giảm độ tương phản chữ bằng alpha trên nền ứng dụng.                                                                                     |
+| Dùng `border` (3.33:1) cho ô nhập và control.                      | Không dùng `border-default` (1.50:1) làm viền của thành phần có tương tác.                                                                     |
+| Focus ring 2px `focus`, offset 2px, trên mọi phần tử bấm được.     | Không tắt outline focus trừ khi có cơ chế thay thế tương đương.                                                                                |
+| Nhãn sentence case ở `caption`; tên Person bằng serif.             | Không dùng chữ in hoa toàn bộ kèm khoảng chữ rộng làm nhãn.                                                                                    |
+| Chỉ dùng weight đã nạp: 400/500/600/700.                           | Không dùng weight 900 trên serif chưa nạp.                                                                                                     |
+| Kèm ký hiệu hoặc chữ cho giới tính và trạng thái đã mất.           | Không để màu một mình chở thông tin nghiệp vụ.                                                                                                 |
+| Nút và ô nhập chrome cao 44px, cách nhau ít nhất 8px.              | Không dùng chiều cao lẻ hoặc mục bấm dưới 44px ngoài node canvas.                                                                              |
+| Báo lỗi tại trường, kèm lối thoát theo `COPY.md`.                  | Không đẩy toàn bộ lỗi lên toast.                                                                                                               |
+| Skeleton đúng hình nội dung khi tải.                               | Không dùng ảnh động hoặc spinner che toàn màn hình.                                                                                            |
+| Di sản in dùng bộ biến `print`.                                    | Không để template LegacyBook đọc token màu của ứng dụng.                                                                                       |
+| Tham chiếu mọi giá trị màu, khoảng cách, cỡ chữ qua design token.  | Không viết mã màu hoặc số đo tuỳ tiện trong mã nguồn component.                                                                                |
+| Một chủ đề sáng duy nhất.                                          | Không thêm biến thể tối, không thêm bộ chuyển chủ đề.                                                                                          |
+| Khoảng cách triển khai bằng thang số gốc 4px (`p-4`, `gap-3`).     | Không khai báo `--spacing-xs`…`--spacing-section` trong `@theme`; các tên đó thuộc `--container-*` và `max-w-*` sẽ bóp theo số đo khoảng cách. |
