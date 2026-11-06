@@ -281,14 +281,14 @@ export function AvatarUpload({
                   onClick={handleCropCancel}
                   className="flex-1"
                 >
-                  Hủy
+                  Bỏ ảnh này
                 </Button>
                 <Button
                   onClick={handleCropConfirm}
                   className="flex-1"
                   disabled={!completedCrop}
                 >
-                  Lưu
+                  Dùng ảnh này
                 </Button>
               </div>
             </div>

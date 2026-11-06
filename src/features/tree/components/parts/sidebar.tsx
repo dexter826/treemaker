@@ -268,9 +268,7 @@ export function Sidebar() {
     <>
       <div className="border-border-default bg-surface flex items-start justify-between gap-3 border-b px-6 py-5">
         <div className="flex min-w-0 flex-col gap-0.5">
-          <h2 className="text-title-lg truncate font-semibold">
-            {person.full_name}
-          </h2>
+          <h2 className="text-name-person-lg truncate">{person.full_name}</h2>
           <p className="text-text-secondary text-caption">
             {isReadOnly ? 'Hồ sơ chỉ đọc' : 'Cập nhật hồ sơ'}
           </p>
@@ -455,15 +453,10 @@ export function Sidebar() {
         </DialogBody>
 
         <DialogFooter>
-          <Button
-            variant="secondary"
-            className="flex-1"
-            onClick={resetRelativeState}
-          >
+          <Button variant="secondary" onClick={resetRelativeState}>
             Đóng
           </Button>
           <Button
-            className="flex-1"
             onClick={submitAddRelative}
             disabled={
               isSubmittingRelative ||
@@ -502,14 +495,12 @@ export function Sidebar() {
         <DialogFooter>
           <Button
             variant="secondary"
-            className="flex-1"
             onClick={() => setIsDeleteDialogOpen(false)}
           >
             Giữ lại hồ sơ
           </Button>
           <Button
             variant="danger"
-            className="flex-1"
             onClick={handleDelete}
             disabled={isDeleting}
             aria-busy={isDeleting}

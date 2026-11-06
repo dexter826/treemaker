@@ -342,17 +342,11 @@ export default function DashboardPage() {
               <Button
                 type="button"
                 variant="secondary"
-                className="flex-1"
                 onClick={() => setIsCreateOpen(false)}
               >
                 Đóng
               </Button>
-              <Button
-                type="submit"
-                className="flex-1"
-                disabled={creating}
-                aria-busy={creating}
-              >
+              <Button type="submit" disabled={creating} aria-busy={creating}>
                 {creating && <Loader2 className="animate-spin" />}
                 Tạo gia phả
               </Button>
@@ -387,7 +381,6 @@ export default function DashboardPage() {
               <Button
                 type="button"
                 variant="secondary"
-                className="flex-1"
                 onClick={() => {
                   setIsEditOpen(false);
                   setTreeToEdit(null);
@@ -395,12 +388,7 @@ export default function DashboardPage() {
               >
                 Giữ tên cũ
               </Button>
-              <Button
-                type="submit"
-                className="flex-1"
-                disabled={editing}
-                aria-busy={editing}
-              >
+              <Button type="submit" disabled={editing} aria-busy={editing}>
                 {editing && <Loader2 className="animate-spin" />}
                 Lưu thay đổi
               </Button>
@@ -427,16 +415,11 @@ export default function DashboardPage() {
             </p>
           </DialogBody>
           <DialogFooter>
-            <Button
-              variant="secondary"
-              className="flex-1"
-              onClick={() => setIsDeleteOpen(false)}
-            >
+            <Button variant="secondary" onClick={() => setIsDeleteOpen(false)}>
               Giữ lại gia phả
             </Button>
             <Button
               variant="danger"
-              className="flex-1"
               onClick={handleDeleteTree}
               disabled={deleting}
               aria-busy={deleting}
@@ -463,16 +446,11 @@ export default function DashboardPage() {
             </p>
           </DialogBody>
           <DialogFooter>
-            <Button
-              variant="secondary"
-              className="flex-1"
-              onClick={() => setIsLogoutOpen(false)}
-            >
+            <Button variant="secondary" onClick={() => setIsLogoutOpen(false)}>
               Ở lại
             </Button>
             <Button
               variant="danger"
-              className="flex-1"
               onClick={async () => {
                 setLoading(true);
                 try {

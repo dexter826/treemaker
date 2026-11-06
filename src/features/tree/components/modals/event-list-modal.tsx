@@ -48,7 +48,7 @@ export function EventListModal({ isOpen, onClose }: EventListModalProps) {
         <DialogHeader>
           <div className="flex items-center gap-3">
             <Calendar className="text-primary h-5 w-5" strokeWidth={2.5} />
-            <DialogTitle className="text-lg">Sự kiện Gia phả</DialogTitle>
+            <DialogTitle>Sự kiện gia phả</DialogTitle>
           </div>
         </DialogHeader>
 

@@ -473,13 +473,11 @@ export function TreeToolbar() {
           <DialogFooter>
             <Button
               variant="secondary"
-              className="flex-1"
               onClick={() => setIsAddPersonOpen(false)}
             >
               Đóng
             </Button>
             <Button
-              className="flex-1"
               onClick={handleSubmit(handleAddPerson)}
               disabled={isSubmitting}
               aria-busy={isSubmitting}
@@ -509,14 +507,12 @@ export function TreeToolbar() {
           <DialogFooter>
             <Button
               variant="secondary"
-              className="flex-1"
               onClick={() => setIsDeleteDialogOpen(false)}
             >
               Giữ lại gia phả
             </Button>
             <Button
               variant="danger"
-              className="flex-1"
               onClick={handleDeleteTree}
               disabled={isDeleting}
               aria-busy={isDeleting}
@@ -554,14 +550,12 @@ export function TreeToolbar() {
               <Button
                 type="button"
                 variant="secondary"
-                className="flex-1"
                 onClick={() => setIsEditTreeOpen(false)}
               >
                 Giữ tên cũ
               </Button>
               <Button
                 type="submit"
-                className="flex-1"
                 disabled={isSubmittingEdit}
                 aria-busy={isSubmittingEdit}
               >
@@ -600,13 +594,11 @@ export function TreeToolbar() {
           <DialogFooter>
             <Button
               variant="secondary"
-              className="flex-1"
               onClick={() => setIsExportConfirmOpen(false)}
             >
               Đóng
             </Button>
             <Button
-              className="flex-1"
               onClick={handleExportPdf}
               disabled={isExporting}
               aria-busy={isExporting}

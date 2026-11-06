@@ -103,7 +103,7 @@ export function ShareSettingsDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="overflow-hidden p-0 sm:max-w-md">
         <DialogHeader className="bg-primary-soft border-border-default border-b p-6">
-          <DialogTitle className="flex items-center gap-2 font-serif text-xl font-semibold">
+          <DialogTitle className="flex items-center gap-2">
             <Globe className="size-5" />
             Cài đặt chia sẻ
           </DialogTitle>
@@ -220,19 +220,10 @@ export function ShareSettingsDialog({
         </div>
 
         <DialogFooter className="bg-surface/30 border-border-default gap-2 border-t p-6">
-          <Button
-            variant="secondary"
-            className="flex-1 font-semibold"
-            onClick={() => onOpenChange(false)}
-          >
+          <Button variant="secondary" onClick={() => onOpenChange(false)}>
             Giữ nguyên cài đặt
           </Button>
-          <Button
-            className="flex-1 font-semibold"
-            onClick={handleSave}
-            disabled={loading}
-            aria-busy={loading}
-          >
+          <Button onClick={handleSave} disabled={loading} aria-busy={loading}>
             {loading ? (
               <LoadingSpinner size="sm" className="text-background" />
             ) : (

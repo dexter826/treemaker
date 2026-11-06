@@ -102,7 +102,7 @@ export function ViewPersonModal() {
                   </AvatarFallback>
                 </Avatar>
                 <div className="min-w-0 pr-6">
-                  <DialogTitle className="font-serif text-lg leading-tight font-semibold break-all">
+                  <DialogTitle className="text-name-person-lg font-serif font-semibold break-all">
                     {person.full_name}
                   </DialogTitle>
                   {person.nickname && (

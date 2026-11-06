@@ -35,6 +35,8 @@ print:
   accent: '#8c1f2a'
   muted: '#595549'
   rule: 'rgb(15 13 11 / 0.18)'
+  gender-male: '#005e82'
+  gender-female: '#9e427b'
   serif: 'Cormorant Garamond'
 typography:
   display-brand:
@@ -354,34 +356,36 @@ Hệ thống màu tuân thủ WCAG AA cho văn bản và ngưỡng 3:1 cho các 
 Mọi thành phần giao diện bắt buộc tham chiếu qua token ngữ nghĩa; không định nghĩa mã màu trực tiếp
 trong mã nguồn component.
 
-| Token              | Giá trị                | Vai trò ngữ nghĩa                                                            |
-| :----------------- | :--------------------- | :--------------------------------------------------------------------------- |
-| `background`       | `#f8f5ee`              | Nền canvas của ứng dụng                                                      |
-| `surface`          | `#fbf8f1`              | Bề mặt phân cấp cấp 1: thẻ, panel, node                                      |
-| `surface-elevated` | `#fefcf6`              | Bề mặt nổi: dialog, popover, toolbar, toast                                  |
-| `primary`          | `#8c1f2a`              | Màu nhấn duy nhất; đạt 8.23:1 trên nền giấy                                  |
-| `primary-hover`    | `#72111d`              | Trạng thái press của màu nhấn                                                |
-| `on-primary`       | `#fbf8f1`              | Chữ và biểu tượng trên nền `primary` đặc; đạt 8.96:1                         |
-| `primary-soft`     | `#f7e7e6`              | Nền hover nhẹ                                                                |
-| `primary-tint`     | `#eecfce`              | Nền của phần tử đang được chọn; chữ `primary` trên đó đạt 6.16:1             |
-| `text-primary`     | `#060606`              | Mực chính cho tiêu đề, tên Person và nội dung đọc; đạt 18.61:1               |
-| `text-secondary`   | `#595549`              | Mực phụ cho mô tả, nhãn và siêu dữ liệu; đạt 6.84:1                          |
-| `text-muted`       | `#686357`              | Màu placeholder và gợi ý trong ô nhập; đạt 5.49:1                            |
-| `text-faint`       | `#8b8679`              | Ký tự lớn mang tính trang trí; đạt 3.33:1, **không dùng cho chữ nội dung**   |
-| `border`           | `#8b8679`              | Viền của các thành phần điều khiển có tương tác; đạt 3.33:1                  |
-| `border-default`   | `#cfcabc`              | Hairline phân cách cấu trúc và viền thẻ; 1.50:1, chỉ mang tính trang trí     |
-| `border-strong`    | `#060606`              | Viền 2px đánh dấu node đang được chọn trên canvas                            |
-| `focus`            | `#8c1f2a`              | Đường viền chỉ thị focus bàn phím                                            |
-| `danger`           | `#bf4306`              | Hành động phá hủy và lỗi nhập liệu; đạt 4.80:1, chữ trắng trên đó đạt 5.22:1 |
-| `overlay`          | `rgb(33 31 26 / 0.55)` | Lớp phủ sau dialog và sheet                                                  |
-| `skeleton`         | computed               | Khung chờ nội dung                                                           |
-| `gender-male`      | `#005e82`              | Chỉ dẫn giới nam; đạt 6.60:1                                                 |
-| `gender-female`    | `#9e427b`              | Chỉ dẫn giới nữ; đạt 5.48:1, cách hue thương hiệu 35.8°                      |
-| `deceased`         | `#595549`              | Trạng thái đã mất                                                            |
-| `deceased-surface` | `#e7e4dd`              | Nền của node ở trạng thái đã mất                                             |
-| `print.page`       | `#ffffff`              | Nền trang in của LegacyBook                                                  |
-| `print.ink`        | `#0f0d0b`              | Mực in                                                                       |
-| `print.accent`     | `#8c1f2a`              | Màu nhấn trong ấn bản                                                        |
+| Token                 | Giá trị                | Vai trò ngữ nghĩa                                                            |
+| :-------------------- | :--------------------- | :--------------------------------------------------------------------------- |
+| `background`          | `#f8f5ee`              | Nền canvas của ứng dụng                                                      |
+| `surface`             | `#fbf8f1`              | Bề mặt phân cấp cấp 1: thẻ, panel, node                                      |
+| `surface-elevated`    | `#fefcf6`              | Bề mặt nổi: dialog, popover, toolbar, toast                                  |
+| `primary`             | `#8c1f2a`              | Màu nhấn duy nhất; đạt 8.23:1 trên nền giấy                                  |
+| `primary-hover`       | `#72111d`              | Trạng thái press của màu nhấn                                                |
+| `on-primary`          | `#fbf8f1`              | Chữ và biểu tượng trên nền `primary` đặc; đạt 8.96:1                         |
+| `primary-soft`        | `#f7e7e6`              | Nền hover nhẹ                                                                |
+| `primary-tint`        | `#eecfce`              | Nền của phần tử đang được chọn; chữ `primary` trên đó đạt 6.16:1             |
+| `text-primary`        | `#060606`              | Mực chính cho tiêu đề, tên Person và nội dung đọc; đạt 18.61:1               |
+| `text-secondary`      | `#595549`              | Mực phụ cho mô tả, nhãn và siêu dữ liệu; đạt 6.84:1                          |
+| `text-muted`          | `#686357`              | Màu placeholder và gợi ý trong ô nhập; đạt 5.49:1                            |
+| `text-faint`          | `#8b8679`              | Ký tự lớn mang tính trang trí; đạt 3.33:1, **không dùng cho chữ nội dung**   |
+| `border`              | `#8b8679`              | Viền của các thành phần điều khiển có tương tác; đạt 3.33:1                  |
+| `border-default`      | `#cfcabc`              | Hairline phân cách cấu trúc và viền thẻ; 1.50:1, chỉ mang tính trang trí     |
+| `border-strong`       | `#060606`              | Viền 2px đánh dấu node đang được chọn trên canvas                            |
+| `focus`               | `#8c1f2a`              | Đường viền chỉ thị focus bàn phím                                            |
+| `danger`              | `#bf4306`              | Hành động phá hủy và lỗi nhập liệu; đạt 4.80:1, chữ trắng trên đó đạt 5.22:1 |
+| `overlay`             | `rgb(33 31 26 / 0.55)` | Lớp phủ sau dialog và sheet                                                  |
+| `skeleton`            | computed               | Khung chờ nội dung                                                           |
+| `gender-male`         | `#005e82`              | Chỉ dẫn giới nam; đạt 6.60:1                                                 |
+| `gender-female`       | `#9e427b`              | Chỉ dẫn giới nữ; đạt 5.48:1, cách hue thương hiệu 35.8°                      |
+| `deceased`            | `#595549`              | Trạng thái đã mất                                                            |
+| `deceased-surface`    | `#e7e4dd`              | Nền của node ở trạng thái đã mất                                             |
+| `print.page`          | `#ffffff`              | Nền trang in của LegacyBook                                                  |
+| `print.ink`           | `#0f0d0b`              | Mực in                                                                       |
+| `print.accent`        | `#8c1f2a`              | Màu nhấn trong ấn bản                                                        |
+| `print.gender-male`   | `#005e82`              | Chỉ dẫn giới nam trong ấn bản; đạt 7.18:1 trên nền in                        |
+| `print.gender-female` | `#9e427b`              | Chỉ dẫn giới nữ trong ấn bản; đạt 5.97:1 trên nền in                         |
 
 ### Nguyên tắc sử dụng màu
 

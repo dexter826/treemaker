@@ -90,14 +90,10 @@ export function FamilyTreeCanvas() {
             </p>
           </DialogBody>
           <DialogFooter>
-            <Button
-              variant="secondary"
-              className="flex-1"
-              onClick={() => setIsConfirmOpen(false)}
-            >
+            <Button variant="secondary" onClick={() => setIsConfirmOpen(false)}>
               Giữ lại kết nối
             </Button>
-            <Button variant="danger" className="flex-1" onClick={confirmDelete}>
+            <Button variant="danger" onClick={confirmDelete}>
               Xóa kết nối
             </Button>
           </DialogFooter>
