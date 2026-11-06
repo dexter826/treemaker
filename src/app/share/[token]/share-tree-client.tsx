@@ -1,35 +1,38 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
 import { TreeClient, treeService } from '@/features/tree';
-import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ShieldAlert, Lock, ArrowRight, Home } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Skeleton } from '@/components/ui/skeleton';
+import { ShieldAlert, Lock, Home } from 'lucide-react';
 import Link from 'next/link';
 import { FamilyTree } from '@/types';
 import { toast } from 'sonner';
 import { OTPInput } from '@/components/ui/otp-input';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export function ShareTreeClient({ token }: { token: string }) {
+  const isMobile = useIsMobile();
   const [tree, setTree] = useState<FamilyTree | null>(null);
   const [loading, setLoading] = useState(true);
   const [password, setPassword] = useState('');
+  const [attempt, setAttempt] = useState(0);
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [otpError, setOtpError] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
       try {
         const data = await treeService.getByShareToken(token);
         if (!data) {
-          setError('không tìm thấy dữ liệu cây gia phả.');
+          setError('Không tìm thấy gia phả này.');
           return;
         }
 
         if (data.visibility === 'private') {
-          setError('Cây gia phả này đang ở chế độ riêng tư.');
+          setError('Gia phả này đang để ở chế độ riêng tư.');
           return;
         }
 
@@ -38,7 +41,7 @@ export function ShareTreeClient({ token }: { token: string }) {
           setIsAuthorized(true);
         }
       } catch (err) {
-        setError('Đã xảy ra lỗi khi tải dữ liệu.');
+        setError('Không tải được gia phả. Vui lòng thử lại sau.');
       } finally {
         setLoading(false);
       }
@@ -47,106 +50,106 @@ export function ShareTreeClient({ token }: { token: string }) {
     load();
   }, [token]);
 
-  const handlePasswordSubmit = (currentPassword: string = password) => {
-    if (tree?.share_password === currentPassword) {
+  const handleSubmit = (value: string) => {
+    if (tree?.share_password === value) {
       setIsAuthorized(true);
-      toast.success('Xác thực thành công.');
-    } else if (currentPassword.length === 4) {
-      toast.error('Mật khẩu không chính xác.');
+      setOtpError(null);
+      toast.success('Đã mở gia phả.');
+      return;
+    }
+    if (value.length === 4) {
+      setOtpError('Mật khẩu không đúng. Kiểm tra lại và nhập từ ô đầu tiên.');
+      setPassword('');
+      setAttempt((n) => n + 1);
     }
   };
 
-  // Tự động kiểm tra khi nhập đủ 4 chữ số.
-  const handleOTPChange = (val: string) => {
-    setPassword(val);
-    if (val.length === 4) {
-      handlePasswordSubmit(val);
-    }
+  const handleOTPChange = (value: string) => {
+    setPassword(value);
+    setOtpError(null);
+    handleSubmit(value);
   };
 
   if (loading) {
     return (
-      <div className="bg-background flex h-screen w-full items-center justify-center">
-        <LoadingSpinner size="lg" text="Đang tải dữ liệu..." />
+      <div className="bg-background p-md flex min-h-dvh items-center justify-center">
+        <div className="border-border-default bg-surface rounded-card p-xl w-full max-w-sm border">
+          <Skeleton className="rounded-control mx-auto size-12" />
+          <Skeleton className="mt-md mx-auto h-5 w-40" />
+          <Skeleton className="mt-xs mx-auto h-4 w-52" />
+          <Skeleton className="mt-xl mx-auto h-14 w-52" />
+          <Skeleton className="mt-lg rounded-control h-11 w-full" />
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="bg-background flex h-screen w-full flex-col items-center justify-center p-6 text-center">
-        <div className="bg-destructive/10 border-destructive mb-6 flex h-16 w-16 items-center justify-center border-2">
-          <ShieldAlert className="text-destructive size-8" />
+      <div className="bg-background gap-md p-xl flex min-h-dvh flex-col items-center justify-center text-center">
+        <div className="border-border bg-surface rounded-card flex size-14 items-center justify-center border">
+          <ShieldAlert className="text-danger size-7" />
         </div>
-        <h1 className="mb-2 font-serif text-2xl font-black tracking-tight uppercase">
-          Truy Cập Bị Từ Chối
-        </h1>
-        <p className="text-muted-foreground mb-8 max-w-xs text-sm font-medium">
-          {error}
-        </p>
-        <Link href="/">
-          <Button
-            variant="secondary"
-            className="shadow-brutal-md h-12 border-2 px-8"
-          >
-            <Home className="mr-2 size-4" />
-            Về Trang Chủ
+        <h1 className="text-title-lg font-semibold">Không mở được gia phả</h1>
+        <p className="text-text-secondary text-body-sm max-w-sm">{error}</p>
+        <Link href="/login">
+          <Button variant="secondary">
+            <Home />
+            Đăng nhập để xem gia phả của bạn
           </Button>
         </Link>
       </div>
     );
   }
 
-  return (
-    <AnimatePresence mode="wait">
-      {!isAuthorized ? (
-        <motion.div
-          key="password-gate"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          className="bg-background flex h-screen w-full items-center justify-center p-6"
-        >
-          <div className="border-foreground bg-background shadow-brutal-lg w-full max-w-sm border-2 p-8">
-            <div className="mb-6 flex justify-center">
-              <div className="bg-primary/10 border-primary flex size-12 items-center justify-center border-2">
-                <Lock className="text-primary size-6" />
-              </div>
+  if (!isAuthorized) {
+    return (
+      <div className="bg-background p-md flex min-h-dvh items-center justify-center">
+        <div className="border-border-default bg-surface rounded-card p-xl w-full max-w-sm border">
+          <div className="mb-lg gap-xs flex flex-col items-center text-center">
+            <div className="border-border bg-surface-elevated rounded-card flex size-12 items-center justify-center border">
+              <Lock className="text-primary size-6" />
             </div>
-
-            <h2 className="mb-1 text-center font-serif text-xl font-black tracking-tight uppercase">
-              Yêu Cầu Mật Khẩu
-            </h2>
-            <p className="text-muted-foreground mb-8 text-center text-[10px] font-bold tracking-widest uppercase">
-              Cây gia phả này được bảo vệ
+            <h1 className="text-title-lg font-semibold">Nhập mật khẩu</h1>
+            <p className="text-text-secondary text-caption">
+              Gia phả này được bảo vệ bằng mật khẩu 4 chữ số.
             </p>
-
-            <div className="space-y-6">
-              <div className="flex flex-col items-center gap-4">
-                <OTPInput value={password} onChange={handleOTPChange} />
-              </div>
-
-              <Button
-                onClick={() => handlePasswordSubmit()}
-                className="border-foreground shadow-brutal-md h-12 w-full border-2 font-black tracking-widest uppercase transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
-                disabled={password.length < 4}
-              >
-                Xác Thực Ngay
-                <ArrowRight className="ml-2 size-4" />
-              </Button>
-            </div>
           </div>
-        </motion.div>
-      ) : (
-        <motion.div
-          key="tree-view"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="h-screen w-full"
-        >
-          {tree && <TreeClient treeId={tree.id} />}
-        </motion.div>
+
+          <OTPInput
+            key={attempt}
+            value={password}
+            onChange={handleOTPChange}
+            error={!!otpError}
+          />
+
+          {otpError && (
+            <Alert variant="destructive" className="mt-md">
+              <AlertDescription>{otpError}</AlertDescription>
+            </Alert>
+          )}
+
+          <Button
+            className="mt-lg w-full"
+            onClick={() => handleSubmit(password)}
+            disabled={password.length < 4}
+          >
+            Mở gia phả
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-background relative h-dvh w-full">
+      {tree && <TreeClient treeId={tree.id} />}
+      {isMobile && (
+        <p className="text-text-secondary bottom-md text-caption pointer-events-none absolute left-0 w-full text-center">
+          Xem gia phả trên điện thoại. Muốn sửa, hãy mở liên kết này trên máy
+          tính.
+        </p>
       )}
-    </AnimatePresence>
+    </div>
   );
 }

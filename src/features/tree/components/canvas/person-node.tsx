@@ -10,7 +10,7 @@ import { motion } from 'motion/react';
 import { isDeceased, formatDate } from '@/features/person';
 
 const handleClass =
-  'export-exclude size-2 rounded-none border border-surface opacity-0 transition-opacity group-hover:opacity-100';
+  'export-exclude size-2 rounded-full border border-surface opacity-0 transition-opacity group-hover:opacity-100';
 
 export const PersonNode = memo(function PersonNode({
   data,

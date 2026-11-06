@@ -71,6 +71,7 @@ export function OTPInput({
           ref={(el) => {
             inputRefs.current[i] = el;
           }}
+          autoFocus={i === 0}
           type="text"
           inputMode="numeric"
           pattern="\d*"

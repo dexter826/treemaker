@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { FieldLabel, FieldError } from '@/components/ui/field';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Copy, Check, Globe, Lock, Shield, Eye, Pencil } from 'lucide-react';
@@ -102,32 +102,30 @@ export function ShareSettingsDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="overflow-hidden p-0 sm:max-w-md">
-        <DialogHeader className="bg-primary/5 border-foreground border-b-2 p-6">
-          <DialogTitle className="flex items-center gap-2 font-serif text-xl font-black tracking-widest uppercase">
+        <DialogHeader className="bg-primary-soft border-border-default border-b-2 p-6">
+          <DialogTitle className="flex items-center gap-2 font-serif text-xl font-semibold">
             <Globe className="size-5" />
             Cài Đặt Chia Sẻ
           </DialogTitle>
-          <DialogDescription className="text-muted-foreground mt-1 text-[10px] font-bold tracking-widest uppercase">
+          <DialogDescription className="text-text-secondary text-meta mt-1 font-bold">
             Quản lý quyền truy cập cho cây: {tree.name}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="bg-background space-y-6 p-6">
+        <div className="bg-surface space-y-6 p-6">
           <div className="space-y-2">
-            <Label className="text-xs font-black tracking-widest uppercase">
-              Link Chia Sẻ
-            </Label>
+            <FieldLabel>Link Chia Sẻ</FieldLabel>
             <div className="flex gap-2">
               <Input
                 readOnly
                 value={shareUrl}
-                className="border-foreground bg-muted/50 h-11 rounded-none border-2 font-mono text-[10px]"
+                className="border-border-default bg-surface rounded-control text-meta h-11 border font-mono"
               />
               <Button
                 variant="secondary"
                 size="icon"
                 onClick={handleCopy}
-                className="border-foreground hover:bg-primary hover:text-primary-foreground h-11 w-11 shrink-0 border-2"
+                className="border-border-default hover:bg-primary hover:text-on-primary h-11 w-11 shrink-0 border"
               >
                 {copied ? (
                   <Check className="size-4" />
@@ -140,17 +138,15 @@ export function ShareSettingsDialog({
 
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label className="text-xs font-black tracking-widest uppercase">
-                Chế Độ Truy Cập
-              </Label>
-              <div className="border-foreground bg-muted/30 grid grid-cols-2 gap-2 border-2 p-1">
+              <FieldLabel>Chế Độ Truy Cập</FieldLabel>
+              <div className="border-border-default bg-surface/30 grid grid-cols-2 gap-2 border p-1">
                 <button
                   onClick={() => setVisibility('private')}
                   className={cn(
-                    'flex cursor-pointer items-center justify-center gap-2 border-2 border-transparent py-2 text-[10px] font-black uppercase transition-all',
+                    'text-meta flex cursor-pointer items-center justify-center gap-2 border border-transparent py-2 font-semibold transition-all',
                     visibility === 'private'
-                      ? 'bg-primary text-primary-foreground border-foreground shadow-brutal-sm -translate-x-[1px] -translate-y-[1px]'
-                      : 'hover:bg-background/50'
+                      ? 'bg-primary text-on-primary border-border-default -translate-x-[1px] -translate-y-[1px]'
+                      : 'hover:bg-surface/50'
                   )}
                 >
                   <Lock className="size-3" /> Riêng Tư
@@ -158,10 +154,10 @@ export function ShareSettingsDialog({
                 <button
                   onClick={() => setVisibility('public')}
                   className={cn(
-                    'flex cursor-pointer items-center justify-center gap-2 border-2 border-transparent py-2 text-[10px] font-black uppercase transition-all',
+                    'text-meta flex cursor-pointer items-center justify-center gap-2 border border-transparent py-2 font-semibold transition-all',
                     visibility === 'public'
-                      ? 'bg-primary text-primary-foreground border-foreground shadow-brutal-sm -translate-x-[1px] -translate-y-[1px]'
-                      : 'hover:bg-background/50'
+                      ? 'bg-primary text-on-primary border-border-default -translate-x-[1px] -translate-y-[1px]'
+                      : 'hover:bg-surface/50'
                   )}
                 >
                   <Globe className="size-3" /> Công Khai
@@ -170,17 +166,15 @@ export function ShareSettingsDialog({
             </div>
 
             <div className="space-y-2">
-              <Label className="text-xs font-black tracking-widest uppercase">
-                Quyền Hạn Thành Viên
-              </Label>
-              <div className="border-foreground bg-muted/30 grid grid-cols-2 gap-2 border-2 p-1">
+              <FieldLabel>Quyền Hạn Thành Viên</FieldLabel>
+              <div className="border-border-default bg-surface/30 grid grid-cols-2 gap-2 border p-1">
                 <button
                   onClick={() => setPermission('view')}
                   className={cn(
-                    'flex cursor-pointer items-center justify-center gap-2 border-2 border-transparent py-2 text-[10px] font-black uppercase transition-all',
+                    'text-meta flex cursor-pointer items-center justify-center gap-2 border border-transparent py-2 font-semibold transition-all',
                     permission === 'view'
-                      ? 'bg-foreground text-background border-foreground shadow-brutal-sm -translate-x-[1px] -translate-y-[1px]'
-                      : 'hover:bg-background/50'
+                      ? 'bg-foreground text-background border-border-default -translate-x-[1px] -translate-y-[1px]'
+                      : 'hover:bg-surface/50'
                   )}
                 >
                   <Eye className="size-3" /> Chỉ Xem
@@ -188,10 +182,10 @@ export function ShareSettingsDialog({
                 <button
                   onClick={() => setPermission('edit')}
                   className={cn(
-                    'flex cursor-pointer items-center justify-center gap-2 border-2 border-transparent py-2 text-[10px] font-black uppercase transition-all',
+                    'text-meta flex cursor-pointer items-center justify-center gap-2 border border-transparent py-2 font-semibold transition-all',
                     permission === 'edit'
-                      ? 'bg-foreground text-background border-foreground shadow-brutal-sm -translate-x-[1px] -translate-y-[1px]'
-                      : 'hover:bg-background/50'
+                      ? 'bg-foreground text-background border-border-default -translate-x-[1px] -translate-y-[1px]'
+                      : 'hover:bg-surface/50'
                   )}
                 >
                   <Pencil className="size-3" /> Chỉnh Sửa
@@ -200,16 +194,11 @@ export function ShareSettingsDialog({
             </div>
           </div>
 
-          <div className="border-foreground/10 space-y-4 border-t-2 pt-4">
+          <div className="border-border-default/10 space-y-4 border-t-2 pt-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Shield className="text-primary size-4" />
-                <Label
-                  className="cursor-pointer text-xs font-black tracking-widest uppercase"
-                  htmlFor="use-password"
-                >
-                  Mật Khẩu Bảo Vệ
-                </Label>
+                <FieldLabel htmlFor="use-password">Mật Khẩu Bảo Vệ</FieldLabel>
               </div>
               <Checkbox
                 id="use-password"
@@ -221,7 +210,7 @@ export function ShareSettingsDialog({
 
             {usePassword && (
               <div className="flex flex-col items-center gap-3 py-2">
-                <p className="text-muted-foreground text-[10px] font-black uppercase">
+                <p className="text-text-secondary text-meta font-semibold">
                   Nhập 4 chữ số bảo mật
                 </p>
                 <OTPInput value={password} onChange={setPassword} />
@@ -230,16 +219,16 @@ export function ShareSettingsDialog({
           </div>
         </div>
 
-        <DialogFooter className="bg-muted/30 border-foreground gap-2 border-t-2 p-6">
+        <DialogFooter className="bg-surface/30 border-border-default gap-2 border-t-2 p-6">
           <Button
             variant="secondary"
-            className="h-12 flex-1 font-black"
+            className="flex-1 font-semibold"
             onClick={() => onOpenChange(false)}
           >
             Hủy
           </Button>
           <Button
-            className="h-12 flex-1 font-black"
+            className="flex-1 font-semibold"
             onClick={handleSave}
             disabled={loading}
           >

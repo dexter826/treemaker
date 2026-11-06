@@ -56,7 +56,7 @@ export function EventListModal({ isOpen, onClose }: EventListModalProps) {
           <div className="p-0">
             {!hasAnyEvents ? (
               <div className="py-16 text-center">
-                <p className="text-muted-foreground text-xs font-bold tracking-[0.2em] uppercase italic">
+                <p className="text-text-secondary text-xs font-bold tracking-[0.2em] italic">
                   Chưa có dữ liệu sự kiện
                 </p>
               </div>
@@ -66,9 +66,9 @@ export function EventListModal({ isOpen, onClose }: EventListModalProps) {
                   if (events.length === 0) return null;
 
                   return (
-                    <div key={month} className="bg-background">
-                      <div className="bg-background border-foreground/5 border-b px-5 py-2">
-                        <h3 className="text-foreground bg-primary/10 inline-block px-2 py-0.5 font-sans text-[10px] font-bold tracking-[0.2em] uppercase">
+                    <div key={month} className="bg-surface">
+                      <div className="bg-surface border-border-default/5 border-b px-5 py-2">
+                        <h3 className="text-text-primary bg-primary-soft text-meta inline-block px-2 py-0.5 font-sans font-bold tracking-[0.2em]">
                           Tháng {month.padStart(2, '0')}
                         </h3>
                       </div>
@@ -83,39 +83,39 @@ export function EventListModal({ isOpen, onClose }: EventListModalProps) {
                             <button
                               key={`${event.personId}-${event.type}-${idx}`}
                               onClick={() => handlePersonClick(event.personId)}
-                              className="hover:bg-muted/50 flex w-full cursor-pointer items-center justify-between p-4 text-left transition-colors"
+                              className="hover:bg-surface flex w-full cursor-pointer items-center justify-between p-4 text-left transition-colors"
                             >
                               <div className="flex min-w-0 items-center gap-4">
                                 <div
-                                  className={`flex h-10 w-10 shrink-0 items-center justify-center border-2 font-mono text-lg font-black ${isToday ? 'bg-primary text-primary-foreground border-primary shadow-brutal-sm' : 'border-foreground/10 text-muted-foreground'} `}
+                                  className={`flex h-10 w-10 shrink-0 items-center justify-center border font-mono text-lg font-semibold ${isToday ? 'bg-primary text-on-primary border-primary' : 'border-border-default/10 text-text-secondary'} `}
                                 >
                                   {event.day.toString().padStart(2, '0')}
                                 </div>
 
                                 <div className="min-w-0">
                                   <div className="flex items-center gap-2">
-                                    <p className="truncate font-serif text-sm leading-tight font-bold uppercase">
+                                    <p className="truncate font-serif text-sm leading-tight font-bold">
                                       {event.fullName}
                                     </p>
                                     {isToday && (
-                                      <span className="bg-primary text-primary-foreground px-1.5 py-0.5 text-[8px] font-black tracking-tighter uppercase">
+                                      <span className="bg-primary text-on-primary text-meta px-1.5 py-0.5 font-semibold tracking-tighter">
                                         HÔM NAY
                                       </span>
                                     )}
                                   </div>
 
                                   <div className="mt-1.5 flex flex-wrap items-center gap-2">
-                                    <span className="text-muted-foreground/80 text-[9px] font-bold tracking-widest uppercase">
+                                    <span className="text-text-secondary text-meta font-bold">
                                       {event.type === 'birth'
                                         ? 'Ngày sinh'
                                         : 'Ngày giỗ'}
                                     </span>
 
                                     <div
-                                      className={`flex items-center gap-1 border px-1.5 py-0.5 text-[9px] font-black tracking-tighter uppercase ${
+                                      className={`text-meta flex items-center gap-1 border px-1.5 py-0.5 font-semibold tracking-tighter ${
                                         event.type === 'birth'
                                           ? 'bg-male/10 text-male border-male/20'
-                                          : 'bg-foreground/5 text-muted-foreground border-foreground/10'
+                                          : 'bg-foreground/5 text-text-secondary border-border-default/10'
                                       } `}
                                     >
                                       {event.type === 'birth' ? (
@@ -128,7 +128,7 @@ export function EventListModal({ isOpen, onClose }: EventListModalProps) {
                                     </div>
 
                                     {event.milestone && (
-                                      <div className="bg-primary text-primary-foreground border-primary shadow-brutal-sm border-2 px-1.5 py-0.5 text-[9px] font-black tracking-tighter uppercase">
+                                      <div className="bg-primary text-on-primary border-primary text-meta border px-1.5 py-0.5 font-semibold tracking-tighter">
                                         {event.milestone}
                                       </div>
                                     )}

@@ -48,7 +48,7 @@ export function ViewPersonModal() {
               <Button
                 variant="secondary"
                 size="icon"
-                className="bg-background border-foreground shadow-brutal-sm absolute top-3 right-3 z-50 border-2 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
+                className="bg-surface border-border-default absolute top-3 right-3 z-50 border hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
               />
             }
           >
@@ -64,47 +64,47 @@ export function ViewPersonModal() {
         <div className="flex min-h-0 flex-1 flex-col overflow-hidden p-0">
           {showFullBio ? (
             <div className="flex h-full flex-col">
-              <div className="border-foreground bg-primary/5 flex shrink-0 items-center justify-between border-b-2 px-5 py-3">
-                <span className="font-serif text-sm font-black tracking-tight uppercase">
+              <div className="border-border-default bg-primary-soft flex shrink-0 items-center justify-between border-b-2 px-5 py-3">
+                <span className="font-serif text-sm font-semibold tracking-tight">
                   Tiểu sử chi tiết
                 </span>
                 <Button
                   variant="secondary"
                   size="default"
                   onClick={() => setShowFullBio(false)}
-                  className="bg-background border-foreground shadow-brutal-sm h-8 gap-1 border-2 px-2 text-[10px] font-bold hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
+                  className="bg-surface border-border-default text-meta h-8 gap-1 border px-2 font-bold hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
                 >
                   <ArrowLeft size={12} strokeWidth={3} />
                   QUAY LẠI
                 </Button>
               </div>
               <div className="min-w-0 flex-1 overflow-y-auto p-6">
-                <p className="text-foreground text-sm leading-relaxed font-medium break-all whitespace-pre-wrap italic">
+                <p className="text-text-primary text-sm leading-relaxed font-medium break-all whitespace-pre-wrap italic">
                   {person.bio}
                 </p>
               </div>
             </div>
           ) : (
             <div className="flex h-full flex-col">
-              <div className="border-foreground bg-primary/5 relative flex shrink-0 items-center gap-4 border-b-2 p-4">
-                <Avatar className="border-foreground bg-background shadow-brutal-sm h-13 w-13 shrink-0 rounded-none border-2">
+              <div className="border-border-default bg-primary-soft relative flex shrink-0 items-center gap-4 border-b-2 p-4">
+                <Avatar className="border-border-default bg-surface rounded-control h-11 w-13 shrink-0 border">
                   <AvatarImage
                     src={person.avatar_url || ''}
                     className="object-cover"
                   />
                   <AvatarFallback
-                    className="rounded-none font-serif text-xl font-black"
+                    className="rounded-control font-serif text-xl font-semibold"
                     style={{ color: genderColor }}
                   >
                     {person.full_name.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="min-w-0 pr-6">
-                  <DialogTitle className="font-serif text-lg leading-tight font-black tracking-tight break-all uppercase">
+                  <DialogTitle className="font-serif text-lg leading-tight font-semibold tracking-tight break-all">
                     {person.full_name}
                   </DialogTitle>
                   {person.nickname && (
-                    <p className="text-muted-foreground truncate text-xs font-medium italic">
+                    <p className="text-text-secondary truncate text-xs font-medium italic">
                       &quot;{person.nickname}&quot;
                     </p>
                   )}
@@ -141,7 +141,7 @@ export function ViewPersonModal() {
                       person.country_code ? (
                         <Flag
                           code={person.country_code}
-                          className="border-foreground/20 h-3.5 w-5 border object-cover"
+                          className="border-border-default h-3.5 w-5 border object-cover"
                         />
                       ) : null
                     }
@@ -155,7 +155,7 @@ export function ViewPersonModal() {
                   )}
                 </div>
 
-                <div className="border-foreground/10 space-y-2 border-t-2 pt-3">
+                <div className="border-border-default/10 space-y-2 border-t-2 pt-3">
                   <div className="flex items-start justify-between gap-4">
                     <InfoItem
                       label="Địa chỉ"
@@ -174,7 +174,7 @@ export function ViewPersonModal() {
                             );
                           }
                         }}
-                        className="bg-background border-foreground shadow-brutal-sm mt-4 shrink-0 border-2 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
+                        className="bg-surface border-border-default mt-4 shrink-0 border hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
                         title="Xem trên Google Maps"
                       >
                         <Map size={12} strokeWidth={3} />
@@ -187,17 +187,17 @@ export function ViewPersonModal() {
                     fullWidth
                   />
                   <div className="col-span-2 flex min-w-0 flex-col">
-                    <span className="text-muted-foreground/80 mb-0.5 text-[9px] font-bold tracking-widest uppercase">
+                    <span className="text-text-secondary text-meta mb-0.5 font-bold">
                       Tiểu sử
                     </span>
                     <div className="relative min-w-0">
-                      <p className="text-muted-foreground/90 line-clamp-3 text-sm leading-relaxed font-normal break-all whitespace-pre-wrap italic">
+                      <p className="text-text-secondary/90 line-clamp-3 text-sm leading-relaxed font-normal break-all whitespace-pre-wrap italic">
                         {person.bio || '—'}
                       </p>
                       {person.bio && person.bio.length > 100 && (
                         <button
                           onClick={() => setShowFullBio(true)}
-                          className="text-primary mt-1 flex cursor-pointer items-center gap-1 text-[10px] font-black uppercase underline-offset-2 hover:underline"
+                          className="text-primary text-meta mt-1 flex cursor-pointer items-center gap-1 font-semibold underline-offset-2 hover:underline"
                         >
                           [ Xem thêm tiểu sử ]
                         </button>
@@ -236,15 +236,15 @@ function InfoItem({
         fullWidth ? 'col-span-2' : 'col-span-1'
       )}
     >
-      <span className="text-muted-foreground/80 mb-0.5 truncate text-[9px] font-bold tracking-widest uppercase">
+      <span className="text-text-secondary text-meta mb-0.5 truncate font-bold">
         {label}
       </span>
       <div className="flex min-w-0 items-center gap-2">
         {icon && <div className="shrink-0">{icon}</div>}
         <p
           className={cn(
-            'text-foreground min-w-0 text-sm font-bold break-all',
-            isDestructive && 'text-destructive'
+            'text-text-primary min-w-0 text-sm font-bold break-all',
+            isDestructive && 'text-danger'
           )}
         >
           {value}
