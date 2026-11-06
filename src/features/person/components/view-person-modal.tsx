@@ -26,7 +26,9 @@ export function ViewPersonModal() {
   if (!person) return null;
 
   const isMale = person.gender === 'male';
-  const genderColor = isMale ? 'var(--color-male)' : 'var(--color-female)';
+  const genderColor = isMale
+    ? 'var(--color-gender-male)'
+    : 'var(--color-gender-female)';
 
   return (
     <Dialog
@@ -64,18 +66,18 @@ export function ViewPersonModal() {
         <div className="flex min-h-0 flex-1 flex-col overflow-hidden p-0">
           {showFullBio ? (
             <div className="flex h-full flex-col">
-              <div className="border-border-default bg-primary-soft flex shrink-0 items-center justify-between border-b-2 px-5 py-3">
-                <span className="font-serif text-sm font-semibold tracking-tight">
+              <div className="border-border-default bg-primary-soft flex shrink-0 items-center justify-between border-b px-5 py-3">
+                <span className="font-serif text-sm font-semibold">
                   Tiểu sử chi tiết
                 </span>
                 <Button
                   variant="secondary"
                   size="default"
                   onClick={() => setShowFullBio(false)}
-                  className="bg-surface border-border-default gap-xs px-md text-body-sm hover:bg-primary-soft h-11 border font-medium"
+                  className="bg-surface border-border-default text-body-sm hover:bg-primary-soft h-11 gap-2 border px-4 font-medium"
                 >
                   <ArrowLeft size={12} strokeWidth={3} />
-                  QUAY LẠI
+                  Quay lại
                 </Button>
               </div>
               <div className="min-w-0 flex-1 overflow-y-auto p-6">
@@ -86,7 +88,7 @@ export function ViewPersonModal() {
             </div>
           ) : (
             <div className="flex h-full flex-col">
-              <div className="border-border-default bg-primary-soft relative flex shrink-0 items-center gap-4 border-b-2 p-4">
+              <div className="border-border-default bg-primary-soft relative flex shrink-0 items-center gap-4 border-b p-4">
                 <Avatar className="border-border-default bg-surface rounded-control h-11 w-13 shrink-0 border">
                   <AvatarImage
                     src={person.avatar_url || ''}
@@ -100,7 +102,7 @@ export function ViewPersonModal() {
                   </AvatarFallback>
                 </Avatar>
                 <div className="min-w-0 pr-6">
-                  <DialogTitle className="font-serif text-lg leading-tight font-semibold tracking-tight break-all">
+                  <DialogTitle className="font-serif text-lg leading-tight font-semibold break-all">
                     {person.full_name}
                   </DialogTitle>
                   {person.nickname && (
@@ -155,7 +157,7 @@ export function ViewPersonModal() {
                   )}
                 </div>
 
-                <div className="border-border-default/10 space-y-2 border-t-2 pt-3">
+                <div className="border-border-default/10 space-y-2 border-t pt-3">
                   <div className="flex items-start justify-between gap-4">
                     <InfoItem
                       label="Địa chỉ"
@@ -187,11 +189,11 @@ export function ViewPersonModal() {
                     fullWidth
                   />
                   <div className="col-span-2 flex min-w-0 flex-col">
-                    <span className="text-text-secondary text-meta mb-0.5 font-bold">
+                    <span className="text-text-secondary text-meta mb-0.5 font-semibold">
                       Tiểu sử
                     </span>
                     <div className="relative min-w-0">
-                      <p className="text-text-secondary/90 line-clamp-3 text-sm leading-relaxed font-normal break-all whitespace-pre-wrap italic">
+                      <p className="text-text-secondary line-clamp-3 text-sm leading-relaxed font-normal break-all whitespace-pre-wrap italic">
                         {person.bio || '—'}
                       </p>
                       {person.bio && person.bio.length > 100 && (
@@ -236,14 +238,14 @@ function InfoItem({
         fullWidth ? 'col-span-2' : 'col-span-1'
       )}
     >
-      <span className="text-text-secondary text-meta mb-0.5 truncate font-bold">
+      <span className="text-text-secondary text-meta mb-0.5 truncate font-semibold">
         {label}
       </span>
       <div className="flex min-w-0 items-center gap-2">
         {icon && <div className="shrink-0">{icon}</div>}
         <p
           className={cn(
-            'text-text-primary min-w-0 text-sm font-bold break-all',
+            'text-text-primary min-w-0 text-sm font-semibold break-all',
             isDestructive && 'text-danger'
           )}
         >

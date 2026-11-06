@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 
 const beVietnamPro = Be_Vietnam_Pro({
   subsets: ['latin', 'vietnamese'],
-  weight: ['400', '500', '600', '700'],
+  weight: ['400', '500', '600'],
   variable: '--font-be-vietnam-pro',
 });
 const cormorantGaramond = Cormorant_Garamond({

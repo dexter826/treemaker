@@ -71,7 +71,6 @@ export function OTPInput({
           ref={(el) => {
             inputRefs.current[i] = el;
           }}
-          autoFocus={i === 0}
           type="text"
           inputMode="numeric"
           pattern="\d*"
@@ -82,7 +81,7 @@ export function OTPInput({
           disabled={disabled}
           aria-invalid={error || undefined}
           className={cn(
-            'border-border bg-surface rounded-control text-title-lg h-14 w-12 border text-center font-semibold tabular-nums transition-colors outline-none',
+            'border-border bg-surface rounded-control text-body h-14 w-12 border text-center font-medium tabular-nums transition-colors outline-none',
             'focus:border-primary focus:bg-primary-soft',
             error && 'border-danger',
             'disabled:cursor-not-allowed disabled:opacity-50'

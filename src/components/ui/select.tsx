@@ -7,6 +7,7 @@ import { cn, removeVietnameseTones } from '@/lib/utils';
 import { ChevronDown, Check, Search } from 'lucide-react';
 import { ScrollArea } from './scroll-area';
 import { Input } from './input';
+import { useFieldDescribedBy } from './field';
 
 export function Select({
   options,
@@ -29,6 +30,7 @@ export function Select({
 }) {
   const [open, setOpen] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState('');
+  const describedBy = useFieldDescribedBy();
 
   const selectedOption = options.find((opt) => opt.value === value);
 
@@ -54,6 +56,8 @@ export function Select({
       <Popover open={open} onOpenChange={handleOpenChange}>
         <PopoverTrigger
           disabled={disabled}
+          aria-invalid={error || undefined}
+          aria-describedby={describedBy}
           className="w-full cursor-pointer disabled:cursor-not-allowed"
         >
           <div

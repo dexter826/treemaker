@@ -15,6 +15,8 @@ import {
   Loader2,
   CalendarDays,
   Pencil,
+  ZoomIn,
+  ZoomOut,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
@@ -56,7 +58,7 @@ import { EventListModal } from '../modals/event-list-modal';
 import { pdfService } from '../../services/pdf.service';
 import { BookOpen } from 'lucide-react';
 import { useReactFlow } from '@xyflow/react';
-import { ANIMATION_DURATION } from '../../constants';
+import { ANIMATION_DURATION, ANIMATION_DELAY } from '../../constants';
 
 // Thanh công cụ điều khiển cây gia phả.
 export function TreeToolbar() {
@@ -68,7 +70,7 @@ export function TreeToolbar() {
   const setCurrentTree = useStore((state) => state.setCurrentTree);
   const relationships = useStore((state) => state.relationships);
   const router = useRouter();
-  const { fitView } = useReactFlow();
+  const { fitView, zoomIn, zoomOut } = useReactFlow();
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [isAddPersonOpen, setIsAddPersonOpen] = useState(false);
@@ -224,7 +226,10 @@ export function TreeToolbar() {
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: 0.1 }}
+      transition={{
+        duration: ANIMATION_DURATION.OVERLAY / 1000,
+        delay: ANIMATION_DELAY.TOOLBAR_ENTRANCE,
+      }}
       className="absolute top-3 right-3 left-3 z-10 flex items-stretch gap-2 md:top-4 md:right-auto md:left-4 md:gap-3"
     >
       <Link
@@ -241,7 +246,7 @@ export function TreeToolbar() {
       </Link>
 
       <div
-        className={`group/name border-border-default bg-surface-elevated px-md relative flex h-12 min-w-0 flex-1 flex-col justify-center border md:flex-none ${!isReadOnly ? 'hover:bg-primary-soft cursor-pointer' : ''}`}
+        className={`group/name border-border-default bg-surface-elevated relative flex h-12 min-w-0 flex-1 flex-col justify-center border px-4 md:flex-none ${!isReadOnly ? 'hover:bg-primary-soft cursor-pointer' : ''}`}
         onClick={() => {
           if (!isReadOnly) {
             setEditValue('name', currentTree.name);
@@ -325,6 +330,27 @@ export function TreeToolbar() {
       <Button
         variant="secondary"
         size="icon"
+        className="shrink-0"
+        aria-label="Phóng to"
+        title="Phóng to"
+        onClick={() => zoomIn({ duration: ANIMATION_DURATION.CANVAS_LAYOUT })}
+      >
+        <ZoomIn className="size-4 md:size-5" />
+      </Button>
+      <Button
+        variant="secondary"
+        size="icon"
+        className="shrink-0"
+        aria-label="Thu nhỏ"
+        title="Thu nhỏ"
+        onClick={() => zoomOut({ duration: ANIMATION_DURATION.CANVAS_LAYOUT })}
+      >
+        <ZoomOut className="size-4 md:size-5" />
+      </Button>
+
+      <Button
+        variant="secondary"
+        size="icon"
         className="hidden shrink-0"
         onClick={() => setIsEventListOpen(true)}
         title="Danh mục sự kiện"
@@ -338,6 +364,7 @@ export function TreeToolbar() {
         className="hidden shrink-0"
         onClick={() => setIsExportConfirmOpen(true)}
         disabled={isExporting}
+        aria-busy={isExporting}
         title="Xuất Gia Phả (PDF)"
       >
         {isExporting ? (
@@ -455,6 +482,7 @@ export function TreeToolbar() {
               className="flex-1"
               onClick={handleSubmit(handleAddPerson)}
               disabled={isSubmitting}
+              aria-busy={isSubmitting}
             >
               {isSubmitting && <Loader2 className="animate-spin" />}
               Thêm người
@@ -491,6 +519,7 @@ export function TreeToolbar() {
               className="flex-1"
               onClick={handleDeleteTree}
               disabled={isDeleting}
+              aria-busy={isDeleting}
             >
               {isDeleting && <Loader2 className="animate-spin" />}
               Xóa gia phả
@@ -534,6 +563,7 @@ export function TreeToolbar() {
                 type="submit"
                 className="flex-1"
                 disabled={isSubmittingEdit}
+                aria-busy={isSubmittingEdit}
               >
                 {isSubmittingEdit && <Loader2 className="animate-spin" />}
                 Lưu thay đổi
@@ -579,6 +609,7 @@ export function TreeToolbar() {
               className="flex-1"
               onClick={handleExportPdf}
               disabled={isExporting}
+              aria-busy={isExporting}
             >
               {isExporting ? (
                 <Loader2 className="animate-spin" />

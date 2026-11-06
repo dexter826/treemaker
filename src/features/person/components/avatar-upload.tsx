@@ -185,7 +185,7 @@ export function AvatarUpload({
         onClick={() => {
           if (!disabled) fileInputRef.current?.click();
         }}
-        className={`group relative h-32 w-32 border ${error ? 'border-destructive' : 'border-border-default'} bg-surface hover:border-primary cursor-pointer overflow-hidden transition-all ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
+        className={`group relative h-32 w-32 border ${error ? 'border-danger' : 'border-border'} bg-surface hover:border-primary cursor-pointer overflow-hidden transition-all ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
       >
         {displayUrl ? (
           <>
@@ -197,16 +197,14 @@ export function AvatarUpload({
             />
             {!disabled && (
               <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
-                <Upload className="h-6 w-6 text-white" />
+                <Upload className="text-on-primary h-6 w-6" />
               </div>
             )}
           </>
         ) : (
           <div className="text-text-secondary flex h-full w-full flex-col items-center justify-center gap-2">
             <User className="h-10 w-10" />
-            <span className="text-meta font-bold tracking-tighter">
-              Tải ảnh lên
-            </span>
+            <span className="text-meta font-semibold">Tải ảnh lên</span>
           </div>
         )}
 
@@ -222,7 +220,7 @@ export function AvatarUpload({
         )}
       </div>
 
-      {error && <p className="text-danger text-meta font-bold">{error}</p>}
+      {error && <p className="text-danger text-meta font-semibold">{error}</p>}
 
       <input
         type="file"
@@ -237,7 +235,7 @@ export function AvatarUpload({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
           <div className="bg-surface rounded-control w-full max-w-md p-6">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="font-bold">Cắt ảnh</h3>
+              <h3 className="font-semibold">Cắt ảnh</h3>
               <Button
                 variant="secondary"
                 size="icon"

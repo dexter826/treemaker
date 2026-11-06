@@ -5,6 +5,7 @@ import { TreeClient, treeService } from '@/features/tree';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useDeferredPending } from '@/hooks/use-deferred-pending';
 import { ShieldAlert, Lock, Home } from 'lucide-react';
 import Link from 'next/link';
 import { FamilyTree } from '@/types';
@@ -21,6 +22,7 @@ export function ShareTreeClient({ token }: { token: string }) {
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [otpError, setOtpError] = useState<string | null>(null);
+  const deferredLoading = useDeferredPending(loading);
 
   useEffect(() => {
     async function load() {
@@ -71,6 +73,9 @@ export function ShareTreeClient({ token }: { token: string }) {
   };
 
   if (loading) {
+    if (!deferredLoading) {
+      return <div className="bg-background min-h-dvh" />;
+    }
     return (
       <div className="bg-background flex min-h-dvh items-center justify-center p-4">
         <div className="border-border-default bg-surface rounded-card w-full max-w-sm border p-6">

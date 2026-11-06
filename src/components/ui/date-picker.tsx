@@ -2,6 +2,7 @@
 import * as React from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { Button, buttonVariants } from './button';
+import { useFieldDescribedBy } from './field';
 import { cn } from '@/lib/utils';
 import {
   Calendar as CalendarIcon,
@@ -53,6 +54,7 @@ export function DatePicker({
   error?: boolean;
 }) {
   const [open, setOpen] = React.useState(false);
+  const describedBy = useFieldDescribedBy();
   const [currentMonth, setCurrentMonth] = React.useState(() =>
     value ? (parseDateValue(value) ?? new Date()) : new Date()
   );
@@ -202,7 +204,7 @@ export function DatePicker({
             isSelected
               ? 'bg-primary text-on-primary font-semibold'
               : 'text-text-primary hover:bg-primary-soft',
-            !isCurrentMonth && 'text-text-faint',
+            !isCurrentMonth && 'text-text-muted',
             isToday &&
               !isSelected &&
               'border-primary text-primary border font-semibold'
@@ -226,6 +228,8 @@ export function DatePicker({
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger
           disabled={disabled}
+          aria-invalid={error || undefined}
+          aria-describedby={describedBy}
           className="w-full cursor-pointer disabled:cursor-not-allowed"
         >
           <div

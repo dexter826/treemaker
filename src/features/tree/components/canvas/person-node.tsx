@@ -5,7 +5,11 @@ import { useStore } from '@/lib/store';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { User } from 'lucide-react';
-import { TREE_NODE_WIDTH, TREE_NODE_HEIGHT } from '../../constants';
+import {
+  TREE_NODE_WIDTH,
+  TREE_NODE_HEIGHT,
+  ANIMATION_DURATION,
+} from '../../constants';
 import { motion } from 'motion/react';
 import { isDeceased, formatDate } from '@/features/person';
 
@@ -60,7 +64,7 @@ export const PersonNode = memo(function PersonNode({
       )}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.26, delay }}
+      transition={{ duration: ANIMATION_DURATION.CANVAS_LAYOUT / 1000, delay }}
       onClick={handleOpen}
       onKeyDown={handleKeyDown}
     >
@@ -108,7 +112,7 @@ export const PersonNode = memo(function PersonNode({
       <div
         className={cn(
           'border-border-default bg-surface rounded-node flex h-full items-center gap-3 border p-2 transition-colors',
-          isSelected && 'border-primary bg-selected',
+          isSelected && 'border-primary bg-selected border-2',
           deceased && !isSelected && 'border-deceased bg-deceased-surface'
         )}
       >

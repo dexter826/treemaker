@@ -470,13 +470,14 @@ export function Sidebar() {
               (!newRelativeName && !selectedExistingPersonId) ||
               hasSiblingOrderConflict
             }
+            aria-busy={isSubmittingRelative}
           >
             {isSubmittingRelative ? (
               <Loader2 className="animate-spin" />
             ) : (
               <UserPlus />
             )}
-            Lưu
+            Thêm người thân
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -511,6 +512,7 @@ export function Sidebar() {
             className="flex-1"
             onClick={handleDelete}
             disabled={isDeleting}
+            aria-busy={isDeleting}
           >
             {isDeleting && <Loader2 className="animate-spin" />}
             Xóa hồ sơ

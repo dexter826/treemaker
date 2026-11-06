@@ -57,7 +57,7 @@ export function ShareSettingsDialog({
   const handleCopy = () => {
     navigator.clipboard.writeText(shareUrl);
     setCopied(true);
-    toast.success('Đã sao chép link chia sẻ');
+    toast.success('Đã sao chép liên kết chia sẻ.');
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -102,24 +102,24 @@ export function ShareSettingsDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="overflow-hidden p-0 sm:max-w-md">
-        <DialogHeader className="bg-primary-soft border-border-default border-b-2 p-6">
+        <DialogHeader className="bg-primary-soft border-border-default border-b p-6">
           <DialogTitle className="flex items-center gap-2 font-serif text-xl font-semibold">
             <Globe className="size-5" />
-            Cài Đặt Chia Sẻ
+            Cài đặt chia sẻ
           </DialogTitle>
-          <DialogDescription className="text-text-secondary text-meta mt-1 font-bold">
+          <DialogDescription className="text-text-secondary text-meta mt-1 font-semibold">
             Quản lý quyền truy cập cho cây: {tree.name}
           </DialogDescription>
         </DialogHeader>
 
         <div className="bg-surface space-y-6 p-6">
           <div className="space-y-2">
-            <FieldLabel>Link Chia Sẻ</FieldLabel>
+            <FieldLabel>Liên kết chia sẻ</FieldLabel>
             <div className="flex gap-2">
               <Input
                 readOnly
                 value={shareUrl}
-                className="border-border-default bg-surface rounded-control text-meta h-11 border font-mono"
+                className="border-border-default bg-surface rounded-control text-meta h-11 border"
               />
               <Button
                 variant="secondary"
@@ -138,7 +138,7 @@ export function ShareSettingsDialog({
 
           <div className="space-y-4">
             <div className="space-y-2">
-              <FieldLabel>Chế Độ Truy Cập</FieldLabel>
+              <FieldLabel>Chế độ truy cập</FieldLabel>
               <div className="border-border-default bg-surface/30 grid grid-cols-2 gap-2 border p-1">
                 <button
                   onClick={() => setVisibility('private')}
@@ -149,7 +149,7 @@ export function ShareSettingsDialog({
                       : 'hover:bg-surface/50'
                   )}
                 >
-                  <Lock className="size-3" /> Riêng Tư
+                  <Lock className="size-3" /> Riêng tư
                 </button>
                 <button
                   onClick={() => setVisibility('public')}
@@ -160,13 +160,13 @@ export function ShareSettingsDialog({
                       : 'hover:bg-surface/50'
                   )}
                 >
-                  <Globe className="size-3" /> Công Khai
+                  <Globe className="size-3" /> Công khai
                 </button>
               </div>
             </div>
 
             <div className="space-y-2">
-              <FieldLabel>Quyền Hạn Thành Viên</FieldLabel>
+              <FieldLabel>Quyền hạn thành viên</FieldLabel>
               <div className="border-border-default bg-surface/30 grid grid-cols-2 gap-2 border p-1">
                 <button
                   onClick={() => setPermission('view')}
@@ -177,7 +177,7 @@ export function ShareSettingsDialog({
                       : 'hover:bg-surface/50'
                   )}
                 >
-                  <Eye className="size-3" /> Chỉ Xem
+                  <Eye className="size-3" /> Chỉ xem
                 </button>
                 <button
                   onClick={() => setPermission('edit')}
@@ -188,17 +188,17 @@ export function ShareSettingsDialog({
                       : 'hover:bg-surface/50'
                   )}
                 >
-                  <Pencil className="size-3" /> Chỉnh Sửa
+                  <Pencil className="size-3" /> Chỉnh sửa
                 </button>
               </div>
             </div>
           </div>
 
-          <div className="border-border-default/10 space-y-4 border-t-2 pt-4">
+          <div className="border-border-default/10 space-y-4 border-t pt-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Shield className="text-primary size-4" />
-                <FieldLabel htmlFor="use-password">Mật Khẩu Bảo Vệ</FieldLabel>
+                <FieldLabel htmlFor="use-password">Mật khẩu bảo vệ</FieldLabel>
               </div>
               <Checkbox
                 id="use-password"
@@ -219,23 +219,24 @@ export function ShareSettingsDialog({
           </div>
         </div>
 
-        <DialogFooter className="bg-surface/30 border-border-default gap-2 border-t-2 p-6">
+        <DialogFooter className="bg-surface/30 border-border-default gap-2 border-t p-6">
           <Button
             variant="secondary"
             className="flex-1 font-semibold"
             onClick={() => onOpenChange(false)}
           >
-            Hủy
+            Giữ nguyên cài đặt
           </Button>
           <Button
             className="flex-1 font-semibold"
             onClick={handleSave}
             disabled={loading}
+            aria-busy={loading}
           >
             {loading ? (
               <LoadingSpinner size="sm" className="text-background" />
             ) : (
-              'Lưu Cài Đặt'
+              'Lưu cài đặt'
             )}
           </Button>
         </DialogFooter>

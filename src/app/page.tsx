@@ -27,6 +27,7 @@ import {
 import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useDeferredPending } from '@/hooks/use-deferred-pending';
 import { FamilyTree } from '@/types';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -42,6 +43,7 @@ export default function DashboardPage() {
   const [trees, setTrees] = useState<FamilyTree[]>([]);
   const [loading, setLoading] = useState(true);
   const setUserId = useStore((state) => state.setUserId);
+  const deferredLoading = useDeferredPending(loading);
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -179,6 +181,10 @@ export default function DashboardPage() {
   };
 
   if (loading) {
+    // Chưa đủ 150ms thì giữ nền giấy trống, chưa vội hiện skeleton.
+    if (!deferredLoading) {
+      return <div className="bg-background min-h-dvh" />;
+    }
     return (
       <div className="bg-background flex min-h-dvh flex-col gap-6 p-6 lg:px-8">
         <Skeleton className="h-10 w-64" />
@@ -341,7 +347,12 @@ export default function DashboardPage() {
               >
                 Đóng
               </Button>
-              <Button type="submit" className="flex-1" disabled={creating}>
+              <Button
+                type="submit"
+                className="flex-1"
+                disabled={creating}
+                aria-busy={creating}
+              >
                 {creating && <Loader2 className="animate-spin" />}
                 Tạo gia phả
               </Button>
@@ -384,7 +395,12 @@ export default function DashboardPage() {
               >
                 Giữ tên cũ
               </Button>
-              <Button type="submit" className="flex-1" disabled={editing}>
+              <Button
+                type="submit"
+                className="flex-1"
+                disabled={editing}
+                aria-busy={editing}
+              >
                 {editing && <Loader2 className="animate-spin" />}
                 Lưu thay đổi
               </Button>
@@ -423,6 +439,7 @@ export default function DashboardPage() {
               className="flex-1"
               onClick={handleDeleteTree}
               disabled={deleting}
+              aria-busy={deleting}
             >
               {deleting && <Loader2 className="animate-spin" />}
               Xóa gia phả
@@ -468,6 +485,7 @@ export default function DashboardPage() {
                 window.location.href = '/login';
               }}
               disabled={loading}
+              aria-busy={loading}
             >
               {loading && <Loader2 className="animate-spin" />}
               Đăng xuất

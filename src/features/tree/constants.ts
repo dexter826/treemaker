@@ -16,8 +16,14 @@ export const CANVAS_ZOOM = {
 };
 
 export const ANIMATION_DURATION = {
-  PRESS: 120,
   OVERLAY: 200,
   CANVAS_LAYOUT: 260,
   CANVAS_FIT_VIEW: 260,
 } as const;
+
+export const ANIMATION_DELAY = {
+  TOOLBAR_ENTRANCE: 0.1,
+} as const;
+
+export const PENDING_DELAY_MS = 150;
+export const PENDING_MIN_MS = 300;

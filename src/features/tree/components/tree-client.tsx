@@ -12,6 +12,7 @@ import { authService } from '@/features/auth';
 import { toast } from 'sonner';
 import { LegacyBookTemplate } from './parts/legacy-book-template';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useDeferredPending } from '@/hooks/use-deferred-pending';
 
 export default function TreeClient({ treeId }: { treeId: string }) {
   const setCurrentTree = useStore((state) => state.setCurrentTree);
@@ -25,6 +26,7 @@ export default function TreeClient({ treeId }: { treeId: string }) {
   const currentTree = useStore((state) => state.currentTree);
   const persons = useStore((state) => state.persons);
   const relationships = useStore((state) => state.relationships);
+  const deferredLoading = useDeferredPending(isLoading);
 
   useEffect(() => {
     const loadTree = async () => {
@@ -66,6 +68,10 @@ export default function TreeClient({ treeId }: { treeId: string }) {
   ]);
 
   if (isLoading) {
+    // Chưa đủ 150ms thì giữ nền giấy trống, chưa vội hiện skeleton.
+    if (!deferredLoading) {
+      return <div className="bg-background h-dvh w-full" />;
+    }
     return (
       <div className="bg-background flex h-dvh w-full flex-col gap-4 p-4">
         <Skeleton className="h-12 w-72 self-center" />
