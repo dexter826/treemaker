@@ -16,10 +16,10 @@ TreeMaker là ứng dụng web xây dựng, trực quan hóa và lưu trữ gia 
 
 ## Tính năng chính
 
-- **Dựng FamilyTree trên canvas 2D**: Định vị, phóng to, thu nhỏ và tự động sắp xếp sơ đồ phả hệ bằng React Flow kết hợp thuật toán Dagre.
-- **Quản lý Person và Relationship**: Lưu trữ thông tin nhân khẩu học (ngày sinh, ngày mất, quê quán, ảnh đại diện) và thiết lập quan hệ hôn phối hoặc phụ mẫu trực hệ.
-- **Khởi tạo Root Person tự động**: Thiết lập điểm neo phả hệ gốc (thủy tổ) khi tạo mới một FamilyTree.
-- **Xuất bản LegacyBook**: Tổng hợp toàn bộ dữ liệu phả hệ thành ấn phẩm kỷ yếu định dạng PDF sẵn sàng cho việc in ấn.
+- **Sơ đồ phả hệ tương tác:** Xây dựng và điều hướng cây phả hệ trên canvas 2D với bố cục tự động bằng Dagre.
+- **Hồ sơ nhân khẩu & Quan hệ:** Quản lý thông tin cá nhân đa thế hệ, thiết lập quan hệ hôn phối và phân nhánh trực hệ.
+- **Điểm neo phả hệ:** Tự động thiết lập nhân vật khởi tổ (Root Person) khi khởi tạo sơ đồ mới.
+- **Kỷ yếu gia phả:** Xuất bản tài liệu phả hệ hoàn chỉnh định dạng PDF chất lượng cao phục vụ in ấn.
 - **Đồng bộ thời gian thực**: Cập nhật trạng thái sơ đồ giữa các thiết bị thông qua Supabase Realtime.
 - **Phân quyền truy cập**: Bảo mật dữ liệu trên PostgreSQL qua cơ chế Row Level Security (RLS) của Supabase.
 
@@ -59,20 +59,20 @@ npm run dev
 
 Khai báo các biến môi trường trong tệp `.env`:
 
-| Biến | Bắt buộc | Mô tả |
-| :--- | :---: | :--- |
-| `NEXT_PUBLIC_SUPABASE_URL` | Có | URL dự án trên Supabase |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Có | Khóa truy cập công khai (Anon Key) từ Supabase |
+| Biến                            | Bắt buộc | Mô tả                                          |
+| :------------------------------ | :------: | :--------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      |    Có    | URL dự án trên Supabase                        |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` |    Có    | Khóa truy cập công khai (Anon Key) từ Supabase |
 
 ## Lệnh thực thi
 
-| Lệnh | Thao tác |
-| :--- | :--- |
-| `npm run dev` | Khởi chạy máy chủ phát triển cục bộ |
-| `npm run build` | Kiểm tra kiểu và đóng gói mã nguồn cho môi trường production |
-| `npm run start` | Khởi chạy ứng dụng sau khi đã hoàn tất build |
-| `npm run lint` | Kiểm tra quy chuẩn mã nguồn với ESLint |
-| `npm run format` | Định dạng toàn bộ mã nguồn với Prettier |
+| Lệnh             | Thao tác                                                     |
+| :--------------- | :----------------------------------------------------------- |
+| `npm run dev`    | Khởi chạy máy chủ phát triển cục bộ                          |
+| `npm run build`  | Kiểm tra kiểu và đóng gói mã nguồn cho môi trường production |
+| `npm run start`  | Khởi chạy ứng dụng sau khi đã hoàn tất build                 |
+| `npm run lint`   | Kiểm tra quy chuẩn mã nguồn với ESLint                       |
+| `npm run format` | Định dạng toàn bộ mã nguồn với Prettier                      |
 
 ## Cấu trúc thư mục
 
