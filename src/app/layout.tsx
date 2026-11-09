@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { Be_Vietnam_Pro, Cormorant_Garamond } from 'next/font/google';
 import { Toaster } from '@/components/ui/sonner';
@@ -19,11 +19,14 @@ const cormorantGaramond = Cormorant_Garamond({
 const appUrl =
   process.env.NEXT_PUBLIC_APP_URL || 'https://treemaker.vercel.app';
 
+const description =
+  'TreeMaker là không gian dành cho gia phả và những câu chuyện gia đình, nơi cội nguồn được trân trọng và các thế hệ được gắn kết qua thời gian.';
+
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
+  applicationName: 'TreeMaker',
   title: 'TreeMaker | Xây dựng cây gia phả trực tuyến',
-  description:
-    'Nền tảng hiện đại để lưu giữ và kết nối các thế hệ trong gia đình bạn.',
+  description,
   icons: {
     icon: ['/favicon.svg', '/favicon.ico'],
     apple: '/apple-touch-icon.png',
@@ -31,9 +34,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'vi_VN',
+    url: '/',
     title: 'TreeMaker | Xây dựng cây gia phả trực tuyến',
-    description:
-      'Nền tảng hiện đại để lưu giữ và kết nối các thế hệ trong gia đình bạn.',
+    description,
     siteName: 'TreeMaker',
     images: [
       {
@@ -48,10 +51,35 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'TreeMaker | Xây dựng cây gia phả trực tuyến',
-    description:
-      'Nền tảng hiện đại để lưu giữ và kết nối các thế hệ trong gia đình bạn.',
+    description,
     images: ['/twitter-image.png'],
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#8c1f2a',
+};
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': `${appUrl}/#website`,
+      url: appUrl,
+      name: 'TreeMaker',
+      description,
+      inLanguage: 'vi-VN',
+      publisher: { '@id': `${appUrl}/#organization` },
+    },
+    {
+      '@type': 'Organization',
+      '@id': `${appUrl}/#organization`,
+      name: 'TreeMaker',
+      url: appUrl,
+      logo: `${appUrl}/brand/lockup-horizontal.svg`,
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -72,6 +100,12 @@ export default function RootLayout({
         className="bg-background text-text-primary min-h-screen font-sans antialiased"
         suppressHydrationWarning
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c'),
+          }}
+        />
         <ErrorBoundary>{children}</ErrorBoundary>
         <Toaster position="top-center" closeButton />
       </body>
