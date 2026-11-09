@@ -2,9 +2,9 @@ import { AuthForm } from '@/features/auth';
 import { Metadata } from 'next';
 import Image from 'next/image';
 
-const title = 'Đăng nhập | TreeMaker';
+const title = 'Đăng nhập TreeMaker | Gìn giữ gia phả và kết nối thế hệ';
 const description =
-  'TreeMaker là không gian dành cho gia phả và những câu chuyện gia đình, nơi cội nguồn được trân trọng và các thế hệ được gắn kết qua thời gian.';
+  'TreeMaker là không gian dành cho gia phả và câu chuyện gia đình, nơi trân trọng cội nguồn và gắn kết thế hệ qua thời gian.';
 
 export const metadata: Metadata = {
   title,

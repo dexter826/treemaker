@@ -20,12 +20,12 @@ const appUrl =
   process.env.NEXT_PUBLIC_APP_URL || 'https://treemaker.vercel.app';
 
 const description =
-  'TreeMaker là không gian dành cho gia phả và những câu chuyện gia đình, nơi cội nguồn được trân trọng và các thế hệ được gắn kết qua thời gian.';
+  'TreeMaker là không gian dành cho gia phả và câu chuyện gia đình, nơi trân trọng cội nguồn và gắn kết thế hệ qua thời gian.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
   applicationName: 'TreeMaker',
-  title: 'TreeMaker | Xây dựng cây gia phả trực tuyến',
+  title: 'TreeMaker | Gìn giữ gia phả và kết nối các thế hệ gia đình',
   description,
   icons: {
     icon: ['/favicon.svg', '/favicon.ico'],
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'vi_VN',
     url: '/',
-    title: 'TreeMaker | Xây dựng cây gia phả trực tuyến',
+    title: 'TreeMaker | Gìn giữ gia phả và kết nối các thế hệ gia đình',
     description,
     siteName: 'TreeMaker',
     images: [
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'TreeMaker | Xây dựng cây gia phả trực tuyến',
+    title: 'TreeMaker | Gìn giữ gia phả và kết nối các thế hệ gia đình',
     description,
     images: ['/twitter-image.png'],
   },

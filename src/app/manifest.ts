@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: 'TreeMaker | Xây dựng cây gia phả trực tuyến',
     short_name: 'TreeMaker',
     description:
-      'TreeMaker là không gian dành cho gia phả và những câu chuyện gia đình, nơi cội nguồn được trân trọng và các thế hệ được gắn kết qua thời gian.',
+      'TreeMaker là không gian dành cho gia phả và câu chuyện gia đình, nơi trân trọng cội nguồn và gắn kết thế hệ qua thời gian.',
     start_url: '/',
     display: 'standalone',
     background_color: '#f8f5ee',
