@@ -18,6 +18,8 @@
 
 TreeMaker là ứng dụng web xây dựng, trực quan hóa và lưu trữ cây gia phả (FamilyTree). Ứng dụng hỗ trợ dựng sơ đồ phả hệ tương tác trên canvas 2D, quản lý hồ sơ nhân khẩu học cá nhân (Person) và xuất bản kỷ yếu gia phả (LegacyBook) dạng PDF phục vụ in ấn.
 
+https://github.com/user-attachments/assets/cc8ebe3c-1eb0-47e8-8b4e-a39480a5f09f
+
 ## Tính năng chính
 
 - **Dựng FamilyTree trên canvas 2D:** Hiển thị và điều hướng sơ đồ phả hệ trên canvas `@xyflow/react`, tự động tính toán vị trí và bố cục phân nhánh bằng Dagre.
