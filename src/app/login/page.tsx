@@ -25,7 +25,7 @@ export const metadata: Metadata = {
         width: 1200,
         height: 630,
         type: 'image/png',
-        alt: 'TreeMaker - Đăng nhập để quản lý cây gia phả',
+        alt: 'TreeMaker, nền tảng dựng cây gia phả và lưu giữ câu chuyện dòng họ',
       },
     ],
   },
@@ -33,7 +33,14 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title,
     description,
-    images: ['/twitter-image.png'],
+    images: [
+      {
+        url: '/twitter-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'TreeMaker, nền tảng dựng cây gia phả và lưu giữ câu chuyện dòng họ',
+      },
+    ],
   },
 };
 
